@@ -115,7 +115,7 @@ int main(int argc, char *argv[])
 long
 post_survey_result(char *resultbuf, struct TEXT_HEADER *th, int conf, int ouid, int ogrp)
 {
-    int fd, fdinfile, fdoutfile, usernum, oldconf, ml, sqt, i;
+    int fd, fdoutfile, usernum, oldconf, ml, i;
     char *buf, *oldbuf, *nbuf, *fbuf, *sb;
     LINE conffile, confdir, textfile, home, cname, newline;
     struct CONF_ENTRY ce;

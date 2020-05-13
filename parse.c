@@ -349,7 +349,7 @@ char *expand_name (name, type, quiet, expanded_type)
 char *name;
 int type, quiet, *expanded_type;
 {
-    int fd, i, overflow = 0, found = 0, mm;
+    int fd, i, overflow = 0, found = 0;
     char *buf, *tmpbuf;
     LINE tmp;
     struct CONF_ENTRY ce;

@@ -90,9 +90,9 @@ char *survey_result;
 int n_quest;
 {
   int fd, i, j, ret, n;
-  LINE confdir, resfile, home;
+  LINE confdir, resfile;
   char *buf, *fbuf, *t;
-  char saveanswer[4], defans[2];
+  char saveanswer[4];
   struct RESSHOW *resbuf;
 #ifdef SURVEYDEBUG
   LINE debfile, tist;
@@ -216,7 +216,7 @@ int n_quest;
       non_critical();
 
 #ifdef SURVEYDEBUG
-      sprintf(debfile, "%s%ld.%ld.res", confdir, survey, Uid);
+      sprintf(debfile, "%s%ld.%d.res", confdir, survey, Uid);
 
       time_string(time(0), tist, 1);
       strcat(debugbuf, tist);
@@ -263,7 +263,7 @@ double
 my_atof(s)
 char *s;
 {
-  char *t, *s1, *s2;
+  char *t;
   LINE tmp;
   double d;
 
@@ -325,8 +325,8 @@ int n_quest;
 {
   struct TEXT_BODY *tb, *tbut;
   struct TEXT_ENTRY te;
-  int fd, i, j, k, n, quest, qtype, nalt, bryt, n2;
-  LINE confdir, resfile, infofile, home, utlinje, uttmp;
+  int fd, i, j, k, n, quest, qtype, nalt, n2;
+  LINE confdir, resfile, infofile, utlinje, uttmp;
   char *buf, *t, *utbuf, *buf2;
   struct RESSHOW *resbuf;
   long *repbuf;
@@ -586,7 +586,7 @@ long survey;
 int conf;
 {
   int fd;
-  LINE confdir, infofile, home;
+  LINE confdir, infofile;
   char *buf, *fbuf;
 #ifdef SURVEYDEBUG
   LINE debfile, tist;
@@ -647,7 +647,7 @@ int conf;
     non_critical();
 
 #ifdef SURVEYDEBUG
-      sprintf(debfile, "%s%ld.%ld.usr", confdir, survey, Uid);
+      sprintf(debfile, "%s%ld.%d.usr", confdir, survey, Uid);
 
       time_string(time(0), tist, 1);
       strcat(debugbuf, "\n");
@@ -679,7 +679,7 @@ long survey;
 int conf;
 {
   int fd, ret;
-  LINE confdir, infofile, home;
+  LINE confdir, infofile;
   char *buf, uidbuf[20];
 
   ret = -1;
@@ -708,7 +708,7 @@ int conf;
     
 
     if (strstr(buf, uidbuf) == NULL) /* Uid not found in file */
-      ret = 0;
+        ret = 0;
     
     free(buf);
   }    
@@ -722,9 +722,9 @@ time_t  cur_tim;
 {
   int ok,  days, hours, minutes;
   LINE repl;
-  struct tm ts;
   
   /*
+  struct tm ts;
   memcpy(&ts, localtime(&def_tim), sizeof(struct tm));
 
   sprintf(def_dat, "%.4d-%.2d-%.2d", ts.tm_year+1900, ts.tm_mon+1, ts.tm_mday);
@@ -788,7 +788,6 @@ parse_survey_line(lin)
 char *lin;
 {
   char *s, *s2, *s3;
-  int ret;
   long n;
 
   if (strncmp(lin, "##", 2)) 
@@ -837,9 +836,9 @@ input_survey_quest(lin, reply, qtype, flag)
 LINE lin, reply;
 int qtype, flag;
 {
-  char *s, *strim, *s2;
+  char *s, *s2;
   long n1, n2;
-  int i, j, t, ret;
+  int i = 0, j = 0, t, ret;
 
   ret = 0;
   if (qtype != SURVEY_FREETEXT && qtype != SURVEY_FREENUMBER) {
@@ -859,7 +858,7 @@ int qtype, flag;
     if (s2 != NULL) {
       /*      i = 0;          This is an obsolete format
       while (s) {
-	strim = s + strspn(s, " ");
+	char *strim = s + strspn(s, " ");
 	ret = output("%d. %s\n", i+1, strim);
 	if (ret == -1) break;
 	s = strtok(NULL, ":");
@@ -876,7 +875,7 @@ int qtype, flag;
     if (s2 != NULL) {
       /* i = 0;        This is an obsolete format
       while (s) {
-	strim = s + strspn(s, " ");
+	char *strim = s + strspn(s, " ");
 	ret = output("%c. %s\n", 'a'+i, strim);
 	if (ret == -1) break;
 	s = strtok(NULL, ":");

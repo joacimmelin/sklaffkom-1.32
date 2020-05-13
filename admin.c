@@ -93,7 +93,7 @@ int type;
 void display_welcome()
 {
     LINE name, home, fname;
-    int fd, fd2;
+    int fd;
     struct USER_ENTRY *ue;
     struct SKLAFFRC *rc;
 #ifdef MODEM_POOL
@@ -349,7 +349,6 @@ char *search;
     FILE *pipe;
     int found;
     long lasttext, curtext;
-    char *s, *s2;
 
     lasttext = last_text(conf, Uid);
 
@@ -660,9 +659,9 @@ char *s;
 int show_status (num, flag, st_type)
 int num, flag, st_type;
 {
-    int u_num = -1, c_num = -1, first = 0, fd, i_tmp;
-    char *u_name, *buf, *oldbuf, *c_name, *tmpname;
-    static LINE tmp, home, cname, uname, rad;
+    int u_num = -1, c_num = -1, first = 0, fd;
+    char *u_name, *buf, *oldbuf, *c_name;
+    static LINE tmp, home, cname, uname;
     struct SKLAFFRC *rc;
     struct CONF_ENTRY *ce;
     struct CONFS_ENTRY cse;
@@ -920,7 +919,7 @@ int who_type;
 {
     long itime;
     LINE  tid, idle, namn;
-    char *buf, *oldbuf, *ptr;
+    char *buf, *oldbuf;
     int nactive, nidle, i;
 
     struct ACTIVE_ENTRY
@@ -943,6 +942,7 @@ int who_type;
     ActiveFD=-1;
 
     /* Old vilka-lista 
+    char *ptr;
 
     output("\n%-25s %7s  %-12s %-8s  %s\n\n", MSG_NAME, MSG_TIME,
        MSG_WHEN, MSG_ACT, MSG_FROM);

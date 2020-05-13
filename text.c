@@ -1548,7 +1548,6 @@ char
     char
 	    *buf,
 	    *oldbuf,
-	    *ptr,
 	    *ptr2, *ptr3, *ptr4, sav, c;
     long
 	    firsttext,
@@ -1807,8 +1806,8 @@ char *fname;
 struct TEXT_HEADER *th;
 int conf;
 {
-    int fd, fdinfile, fdoutfile, usernum, oldconf, ml, sqt;
-    char *buf, *oldbuf, *nbuf, *inbuf, *fbuf, *sb;
+    int fd, fdinfile, fdoutfile, usernum, oldconf, ml;
+    char *buf, *oldbuf, *nbuf, *inbuf, *fbuf;
     LINE conffile, confdir, textfile, home;
     struct CONF_ENTRY ce;
     

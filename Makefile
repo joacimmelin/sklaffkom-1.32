@@ -7,7 +7,7 @@ SKLAFFDIR=/usr/local/sklaff
 
 #CC=gcc
 #CFLAGS=-O2 -m486
-#CFLAGS=-O
+CFLAGS=-O2 -pipe -Wall -Werror
 
 # uncomment for SYSV
 #LIBS=-lc_s -lsklaff -ltermcap -lcposix -linet -lm

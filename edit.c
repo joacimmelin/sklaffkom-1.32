@@ -77,6 +77,7 @@ char *mailrec;
     waste[0] = '\0';
     numlines = 1;
     Size = 1;
+    c = 0;
     
     if ((fd = open(fname, O_RDONLY)) != -1) {
 	close(fd);
@@ -117,13 +118,11 @@ char *mailrec;
     Globalth = th;
     if (allow_abort) signal(SIGHUP, abort_edit);
     for (;;) {
-	
 	len = strlen(ptr->line);
 	if (allow_say) display_msg(0);
 	output("%3d:%s", numlines, ptr->line);
 	
 	for (;;) {
-	    
 	    lastchar = c;
  	    if (Timeout) {
 		alarm(60 * Timeout);

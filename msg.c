@@ -139,13 +139,11 @@ int tmp;
  * ret: ok (0) or error (-1)
  */
 
-int
-	display_msg(num)
-int num;
+int display_msg(int num)
 {
     int
 	    nl, l, r,
-	    fd, x, tmpptr;
+	    fd, x;
     
     char
 	    *oldbuf,

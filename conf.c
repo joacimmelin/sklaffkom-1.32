@@ -689,7 +689,6 @@ int uid, type, cr_num;
 	xit = 0;
     }
     else {
-        ul = ul;
 	while (ul) {
 	    if (ul->num == uid) break;
 	    else ul = ul->next;
@@ -1418,7 +1417,7 @@ struct CONF_ENTRY *get_all_confs(void)
 int list_news(uid)
 int uid;
 {
-    int fd, fd2, xit, confnum;
+    int fd, fd2, xit;
     long unreads, left;
     char *buf, *oldbuf, *buf2, *oldbuf2;
     LONG_LINE confsname, mboxname;

@@ -43,7 +43,7 @@ char *args;
 {
     LINE tmpdir, cwd, cmdline, dest, source, cname, answer;
     LONG_LINE tmpline;
-    int fd, fd2, conf, saveconf;
+    int fd, fd2;
     long num;
     char *oldbuf, *buf, *nbuf;
     struct CONFS_ENTRY cse;
@@ -77,7 +77,7 @@ char *args;
     FILE *fp, *cof, *mep, *msf;
     struct stat stbuf;
     LINE package;
-    char sbuf[256], pdate[24], *ptr2, ch;
+    char sbuf[256], pdate[24], *ptr2, ch = 0;
     int usrc, cnfc, ssc, c, l, usr_find, to_find, msg_count = 0, blocks;
     FILE *nep;
     char filler[1], msint[4];
@@ -826,7 +826,7 @@ char
 {
       long itime;
     LINE  tid, idle, namn;
-    char *buf, *oldbuf, *ptr;
+    char *buf, *oldbuf;
     int nactive, nidle, i;
 
 
@@ -852,6 +852,7 @@ char
     ActiveFD=-1;
 
     /* Old vilka-lista 
+    char *ptr;
 
     output("\n%-25s %7s  %-12s %-8s  %s\n\n", MSG_NAME, MSG_TIME,
        MSG_WHEN, MSG_ACT, MSG_FROM);
@@ -2309,8 +2310,7 @@ char *args;
     int confid, fd;
     long textnum;
     struct CONF_ENTRY *ce;
-    LONG_LINE uname, tmp, group, cmdline;
-    struct passwd *pw;
+    LONG_LINE uname, group, cmdline;
     FILE *pipe;
     struct SKLAFFRC *rc;
     
@@ -2347,7 +2347,8 @@ char *args;
 #endif
 #ifdef POSTING_OK
     if (ce->type == NEWS_CONF) {
-	pw = getpwuid(Uid);
+        LONG_LINE tmp;
+	struct passwd *pw = getpwuid(Uid);
 	sprintf(uname, "%s@%s (%s)", pw->pw_name, MACHINE_NAME,
 		user_name(Uid, tmp));
 	un = uname;
@@ -2961,7 +2962,7 @@ char
 	    *name;
     
     LINE
-	    msg, dtmp;
+	    msg;
     
     int
 	    xit,
@@ -3040,7 +3041,7 @@ char
 	    nl;
     
     LINE
-	    msg, dtmp;
+	    msg;
     
     rtrim(args);
     output("\n");
@@ -3081,10 +3082,9 @@ char
  * ret: ok (0) or error (-1)
  */
 
-int cmd_mod_note (args)
-char *args;
+int cmd_mod_note(char *args)
 {
-    int u_num, i, j;
+    int u_num, j;
     char u_name[255];
     struct SKLAFFRC *rc;
     char user_home[255];
@@ -3150,7 +3150,7 @@ char *args;
 int cmd_mod_sig (args)
 char *args;
 {
-    int u_num, i, j;
+    int u_num, j;
     char u_name[255];
     struct SKLAFFRC *rc;
     char user_home[255];
@@ -3256,7 +3256,7 @@ char *args;
 int cmd_mod_login (args)
 char *args;
 {
-    int u_num, i, j;
+    int u_num, j;
     char u_name[255];
     struct SKLAFFRC *rc;
     char user_home[255];
@@ -4340,7 +4340,6 @@ int cmd_download(args)
 char *args;
 {
     LINE fname, cwd, filed;
-    HUGE_LINE cmdline;
 #ifdef BSD
     int oldsigmask;
 #endif    
@@ -5180,7 +5179,6 @@ char *args;
     struct UR_STACK *start, *ptr, *saved;
     char *buf, *oldbuf;
     LONG_LINE cname;
-    LINE sub, uname;
     char *expname;
     long num, count;
     int fd, jumpuid;
@@ -5267,7 +5265,7 @@ char *args;
 int cmd_answermsg(args)
 char *args;
 {
-    LINE msg, dtmp;
+    LINE msg;
     int xit, uid;
     struct MSG_LIST *current;
     
@@ -5322,7 +5320,6 @@ char *args;
 int cmd_I(args)
 char *args;
 {
-  LINE dtmp;
   rtrim(args);
   output("\n");
   if (strlen(args)) {
@@ -5342,7 +5339,6 @@ char *args;
 int cmd_my(args)
 char *args;
 {
-  LINE dtmp;
   rtrim(args);
   output("\n");
   if (strlen(args)) {
@@ -5460,15 +5456,13 @@ int cmd_post_survey(args)
 char *args;
 {
     LINE fname, cname;
-    char *confname, *un, *inbuf;
+    char *confname, *un;
     struct TEXT_HEADER th;
-    int confid, fd;
+    int confid;
     long textnum;
     struct CONF_ENTRY *ce;
-    LONG_LINE uname, tmp, group, cmdline;
-    struct passwd *pw;
+    LONG_LINE cmdline;
     FILE *pipe;
-    struct SKLAFFRC *rc;
     struct tm reporttime;
 
     Change_prompt = 1;
