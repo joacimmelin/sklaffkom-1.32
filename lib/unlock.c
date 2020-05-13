@@ -25,10 +25,10 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <errno.h>
+#include <fcntl.h>
+
 #include "sklaff.h"
-#ifdef BSD
-#include <sys/file.h>
-#endif
 
 /* 
  * unlock - unlocks locked file

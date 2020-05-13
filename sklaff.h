@@ -581,10 +581,6 @@ void buggy_sunOS_fix (int);
 int parse_init (char *);
 char *expand_name (char*, int, int, int*);
 
-/* sklaffkom.c */
-
-void main (int, char**);
-
 /* text.c */
 
 int check_if_read (long, int);
@@ -867,10 +863,6 @@ int (*parse ()) ();
 void buggy_sunOS_fix ();
 int parse_init ();
 char *expand_name ();
-
-/* sklaffkom.c */
-
-void main ();
 
 /* text.c */
 

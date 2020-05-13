@@ -31,9 +31,7 @@
 #include <signal.h>
 #include <sys/stat.h>
 
-void main(argc, argv)
-int	argc;
-char	*argv[];
+int main(int argc, char *argv[])
 {
     char *name, *buf, *oldbuf, *buf2, *oldbuf2, *buf3, *oldbuf3;
     int u_num, fd, conf, fd2, fd3, pdate, ndays;

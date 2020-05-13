@@ -30,9 +30,7 @@
 #include <pwd.h>
 #include <fcntl.h>
 
-void main(argc, argv)
-int	argc;
-char	*argv[];
+int main(int argc, char *argv[])
 {
     LINE name, login, passwd, inet, tele, cmdline, fname;
     HUGE_LINE outbuf;

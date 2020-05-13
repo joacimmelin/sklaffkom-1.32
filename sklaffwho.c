@@ -28,9 +28,7 @@
 #include "sklaff.h"
 #include "globals.h" 
 
-void main(argc, argv)
-int	argc;
-char	*argv[];
+int main(int argc, char *argv[])
 {
   LINE namearg, expname;
   char *t;

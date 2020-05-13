@@ -33,6 +33,7 @@
 #include <utmp.h>
 #endif
 #include <fcntl.h>
+#include <arpa/inet.h>
 #include <netdb.h>
 #include <sys/socket.h>
 

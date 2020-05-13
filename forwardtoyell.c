@@ -5,8 +5,7 @@
 #include <signal.h>
 
 void
-get_phoneno(inbuf, utbuf)
-char *inbuf, *utbuf;
+get_phoneno(char *inbuf, char *utbuf)
 {
   int c, d, i;
   
@@ -34,9 +33,7 @@ char *inbuf, *utbuf;
   }
 }
 
-void main(argc, argv)
-int argc;
-char *argv[];
+int main(int argc, char *argv[])
 {
     char *ptr, *ptr2, *buf, *oldbuf;
     unsigned char *mpt;
@@ -105,4 +102,3 @@ char *argv[];
     
     exit(0);
 }
-

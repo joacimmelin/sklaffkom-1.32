@@ -42,9 +42,7 @@ long send_news(int, char *, int, int, long);
 long find_ref(char *);
 int add_text();
 
-void main(argc, argv)
-int argc;
-char *argv[];
+int main(int argc, char *argv[])
 {
     LONG_LINE newslib, article, ng;
     LINE refer;
@@ -207,11 +205,7 @@ char *argv[];
     exit(0);
 }
 
-long send_news(confid, mbuf, ouid, ogrp, com)
-int confid;
-char *mbuf;
-int ouid, ogrp;
-long com;
+long send_news(int confid, char *mbuf, int ouid, int ogrp, long com)
 {
     LINE textfile, cname, newline;
     struct CONF_ENTRY ce;
@@ -355,9 +349,7 @@ long com;
 }
 
 
-long first_news(newslib, last)
-char *newslib;
-long last;
+long first_news(char *newslib, long last)
 {
     LINE fname;
     long first, ptr;
@@ -425,8 +417,7 @@ int add_text()
 }
 
 
-long find_ref(refer)
-char *refer;
+long find_ref(char *refer)
 {
     struct REFLIST *look;
     

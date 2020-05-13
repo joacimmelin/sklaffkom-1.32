@@ -4,9 +4,7 @@
 #include <fcntl.h>
 #include <signal.h>
 
-void main(argc, argv)
-int argc;
-char *argv[];
+int main(int argc, char *argv[])
 {
     struct passwd *pw;
     char *ptr, *ptr2, *buf, *oldbuf;

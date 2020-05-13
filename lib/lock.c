@@ -25,31 +25,19 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <errno.h>
+#include <fcntl.h>
+
 #include "sklaff.h"
-#ifdef BSD
-#include <sys/file.h>
-#endif
-#include <sys/errno.h>
+
 /* 
  * lock - locks file
  * args: file descriptor (fd)
  */
-
-void lock(fd)
-int fd;
+void lock(int fd)
 {
-#ifdef LINUXELF
-    lseek(fd, 0L, 0);
-    lockf(fd, F_LOCK, 0L);
-#else
-#ifdef BSD
     lseek(fd, 0L, 0);
     if (flock(fd, LOCK_EX)) {
       output("\nFel %d vid flock(). Notera detta felmeddelande och meddela info@skom.se.\n", errno);
     }
-#else
-    lseek(fd, 0L, 0);
-    lockf(fd, F_LOCK, 0L);
-#endif
-#endif
 }

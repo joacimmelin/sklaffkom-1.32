@@ -26,4 +26,4 @@ libsklaff.a: $(OBJS)  ../sklaff.h ../ext_globals.h ../struct.h ../lang.h
 extobjs: $(EXTOBJS)
 
 clean:
-	-rm *.o \#* *~ core libsklaff.a
+	-rm -f *.o \#* *~ core libsklaff.a

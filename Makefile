@@ -5,9 +5,9 @@
 SKLAFFBIN=/usr/local/bin
 SKLAFFDIR=/usr/local/sklaff
 
-CC=gcc
+#CC=gcc
 #CFLAGS=-O2 -m486
-CFLAGS=-g
+#CFLAGS=-O
 
 # uncomment for SYSV
 #LIBS=-lc_s -lsklaff -ltermcap -lcposix -linet -lm
@@ -64,8 +64,8 @@ $(FTYOBJ): sklaff.h globals.h struct.h lang.h
 
 sklaffkom: $(SKLAFFLIB) $(KOMOBJ) $(OBJS)
 	$(CC) -g -o sklaffkom $(KOMOBJ) $(OBJS) -Llib $(LIBS)
-	chmod u+s sklaffkom
-	chown sklaff sklaffkom
+	#chmod u+s sklaffkom
+	#chown sklaff sklaffkom
 
 sklaffadm: $(SKLAFFLIB) $(ADMOBJ) $(OBJS)
 	$(CC) -o sklaffadm $(ADMOBJ) $(OBJS) -Llib $(LIBS)
@@ -75,12 +75,12 @@ sklaffadm: $(SKLAFFLIB) $(ADMOBJ) $(OBJS)
 sklaffwho: $(SKLAFFLIB) $(WHOOBJ) $(OBJS)
 	$(CC) -o sklaffwho $(WHOOBJ) $(OBJS) -Llib $(LIBS)
 	strip sklaffwho
-	chmod u+s sklaffwho
+	#chmod u+s sklaffwho
 
 sklaffacct: $(SKLAFFLIB) $(ACCTOBJ) $(OBJS)
 	$(CC) -o sklaffacct $(ACCTOBJ) $(OBJS) -Llib $(LIBS)
 	strip sklaffacct
-	chmod u+s sklaffacct
+	#chmod u+s sklaffacct
 
 mailtoss: $(SKLAFFLIB) $(MTOSSOBJ) $(OBJS)
 	$(CC) -o mailtoss $(MTOSSOBJ) $(OBJS) -Llib $(LIBS)
@@ -96,7 +96,7 @@ survreport: $(SKLAFFLIB) $(SURVREPOBJ) $(OBJS)
 
 forwardtoconf: $(SKLAFFLIB) $(FTCOBJ) $(OBJS)
 	$(CC) -o forwardtoconf $(FTCOBJ) $(OBJS) -Llib $(LIBS)
-#	strip forwardtoconf
+	strip forwardtoconf
 
 forwardtoyell: $(SKLAFFLIB) $(FTYOBJ) $(OBJS)
 	$(CC) -o forwardtoyell $(FTYOBJ) $(OBJS) -Llib $(LIBS)

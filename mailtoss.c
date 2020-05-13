@@ -30,9 +30,7 @@
 #include <fcntl.h>
 #include <signal.h>
 
-void main(argc, argv)
-int argc;
-char *argv[];
+int main(int argc, char *argv[])
 {
     LINE username, mbox;
     struct passwd *pw;
@@ -90,10 +88,7 @@ char *argv[];
     exit(0);
 }
 
-int send_mail(uid, mbuf, ouid, ogrp)
-int uid;
-char *mbuf;
-int ouid, ogrp;
+int send_mail(int uid, char *mbuf, int ouid, int ogrp)
 {
     LINE home, conffile, confdir, textfile;
     struct CONF_ENTRY ce;

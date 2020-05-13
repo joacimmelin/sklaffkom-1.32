@@ -33,9 +33,7 @@
 
 long post_survey_result(char *, struct TEXT_HEADER *, int, int, int);
 
-void main(argc, argv)
-int argc;
-char *argv[];
+int main(int argc, char *argv[])
 {
     int confid, fd;
     long num;
@@ -61,18 +59,18 @@ char *argv[];
     
     if ((fd = open_file(survtxt, OPEN_QUIET)) == -1) {
       output("\n%s\n\n", MSG_NOSURVEY);
-      return;
+      return 1;
     }	
 	
     if ((buf = read_file(fd)) == NULL) {
       output("\n%s\n\n", MSG_NOREAD);
-      return;
+      return 1;
     }
 
     oldbuf = buf;
 
     if (close_file(fd) == -1) {
-      return ;
+      return 1;
     }
     
     buf = get_text_entry(buf, &te);
@@ -115,11 +113,7 @@ char *argv[];
 */
 
 long
-post_survey_result(resultbuf, th, conf, ouid, ogrp)
-char *resultbuf;
-struct TEXT_HEADER *th;
-int conf;
-int ouid, ogrp;
+post_survey_result(char *resultbuf, struct TEXT_HEADER *th, int conf, int ouid, int ogrp)
 {
     int fd, fdinfile, fdoutfile, usernum, oldconf, ml, sqt, i;
     char *buf, *oldbuf, *nbuf, *fbuf, *sb;
@@ -184,18 +178,18 @@ int ouid, ogrp;
 
     /* Compute size of buffer, in lines */
 
-    for (th->size = 0, sb = resultbuf; sb=strchr(sb, '\n'); sb++, th->size++)
+    for (th->size = 0, sb = resultbuf; (sb = strchr(sb, '\n')) != NULL; sb++, th->size++)
       ;
     
     if (th->type == TYPE_TEXT)
-      sprintf(fbuf, "%ld:%d:%ld:%ld:%d:%d:%d:%d\n", ce.last_text, th->author,
-	      th->time, th->comment_num, th->comment_conf,
+      sprintf(fbuf, "%ld:%d:%lld:%ld:%d:%d:%d:%d\n", ce.last_text, th->author,
+	      (long long)th->time, th->comment_num, th->comment_conf,
 	      th->comment_author, th->size, th->type);
     else
-      sprintf(fbuf, "%ld:%d:%ld:%ld:%d:%d:%d:%d:%d:%ld\n", ce.last_text, th->author,
-	      th->time, th->comment_num, th->comment_conf,
+      sprintf(fbuf, "%ld:%d:%lld:%ld:%d:%d:%d:%d:%d:%lld\n", ce.last_text, th->author,
+	      (long long)th->time, th->comment_num, th->comment_conf,
 	      th->comment_author, th->size, th->type,
-	      th->sh.n_questions, th->sh.time);
+	      th->sh.n_questions, (long long)th->sh.time);
     strcat(fbuf, th->subject);
     strcat(fbuf, "\n");
     strcat(fbuf, resultbuf);
