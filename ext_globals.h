@@ -25,6 +25,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <signal.h>
 #include <termios.h>
 #include <sys/ttycom.h>
 #include <sys/ioctl.h>
@@ -88,9 +89,7 @@ extern int Clear;				/* Clear screen		   */
 extern int Header;				/* email header		   */
 extern int Presbeep;				/* Beep at present msg     */
 extern struct termios Tty_mode;
-#ifdef BSD
-extern int Oldmask;
-#endif
+sigset_t Oldmask;
 
 int ActiveFD;                           /* Global file descriptor used
                                            for the active file.         */

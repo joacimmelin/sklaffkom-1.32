@@ -35,10 +35,9 @@
 
 void critical()
 {
-#ifdef BSD
-    Oldmask = sigblock(sigmask(SIGHUP) | sigmask(SIGTERM));
-#else
-    sighold(SIGHUP);
-    sighold(SIGTERM);
-#endif
+    sigset_t set;
+    sigemptyset(&set);
+    sigaddset(&set, SIGHUP);
+    sigaddset(&set, SIGTERM);
+    sigprocmask(SIG_BLOCK, &set, &Oldmask);
 }

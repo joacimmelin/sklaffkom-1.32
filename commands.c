@@ -48,9 +48,7 @@ char *args;
     char *oldbuf, *buf, *nbuf;
     struct CONFS_ENTRY cse;
     struct UR_STACK *start, *ptr, *saved;
-#ifdef BSD
-    int oldsigmask;
-#endif    
+    sigset_t sigmask, oldsigmask;
     
     /* QWK handling variables */
 
@@ -122,11 +120,7 @@ char *args;
 
     sprintf(tmpdir, "/tmp/%d", getpid());
     mkdir(tmpdir, 0777);
-#ifndef GETCWD
-    getwd(cwd);
-#else
     getcwd(cwd, LINE_LEN);
-#endif    
     chdir(tmpdir);
 
     /* copy userlist */
@@ -536,12 +530,11 @@ char *args;
 
     fclose(cof);
 
-#ifdef BSD
-    oldsigmask = sigblock(sigmask(SIGNAL_NEW_TEXT) | sigmask(SIGNAL_NEW_MSG));
-#else
-    sighold(SIGNAL_NEW_TEXT);
-    sighold(SIGNAL_NEW_MSG);
-#endif
+    sigemptyset(&sigmask);
+    sigaddset(&sigmask, SIGNAL_NEW_TEXT);
+    sigaddset(&sigmask, SIGNAL_NEW_MSG);
+    sigprocmask(SIG_BLOCK, &sigmask, &oldsigmask);
+
     signal(SIGNAL_NEW_TEXT, SIG_IGN);
     signal(SIGNAL_NEW_MSG, SIG_IGN);
 
@@ -588,13 +581,7 @@ char *args;
     
     signal(SIGNAL_NEW_TEXT, baffo);
     signal(SIGNAL_NEW_MSG, newmsg);
-#ifdef BSD
-    /*    sigblock(oldsigmask);  This must be wrong. OR, 98-04-10 */
-    sigsetmask(oldsigmask);
-#else
-    sigrelse(SIGNAL_NEW_TEXT);
-    sigrelse(SIGNAL_NEW_MSG);
-#endif
+    sigprocmask(SIG_UNBLOCK, &oldsigmask, NULL);
 
     do {
 	output("\n%s", MSG_URQ);
@@ -3996,9 +3983,7 @@ int cmd_long_help (args)
 char *args;
 {
     static LINE tmp, fname;
-#ifdef BSD
     char *tmp2;
-#endif
     int (*fcn) (), i, fd;
     char *buf;
     if (args && *args) {
@@ -4006,16 +3991,12 @@ char *args;
 	if (fcn) {
 	    for (i = 0; Par_ent[i].func[0]; i++) {
 		if (fcn == Par_ent[i].addr) {
-#ifdef BSD
 		    tmp2 = strchr (Par_ent[i].func, '_') + 1;
 		    if (strlen(tmp2) == 1 || !strchr (tmp2, '_')) {
 			strcpy (tmp, tmp2);
 		    } else {
 			strcpy (tmp, strchr (tmp2, '_') + 1);
 		    }
-#else	  
-		    strcpy (tmp, strchr (Par_ent[i].func, '_') + 1);
-#endif	  
 		    sprintf (fname, "%s/%s", HELP_DIR, tmp);
 		    if (file_exists (fname)) {
 			output ("\n%s\n\n", MSG_NOHELP);
@@ -4071,13 +4052,10 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int	cmd_change_passwd(args)
-char	*args;
+int cmd_change_passwd(char *args)
 {
     struct passwd *p;
-#ifdef BSD
-    int oldsigmask;
-#endif    
+    sigset_t sigmask, oldsigmask;
     
     Change_prompt = 1;
     if (strlen(args)) {
@@ -4086,12 +4064,10 @@ char	*args;
     }
     output("\n");
     tty_reset();
-#ifdef BSD
-    oldsigmask = sigblock(sigmask(SIGNAL_NEW_TEXT) | sigmask(SIGNAL_NEW_MSG));
-#else
-    sighold(SIGNAL_NEW_TEXT);
-    sighold(SIGNAL_NEW_MSG);
-#endif
+    sigemptyset(&sigmask);
+    sigaddset(&sigmask, SIGNAL_NEW_TEXT);
+    sigaddset(&sigmask, SIGNAL_NEW_MSG);
+    sigprocmask(SIG_BLOCK, &sigmask, &oldsigmask);
     p = getpwuid(Uid);
     if (fork()) {
 	(void)wait(NULL);
@@ -4100,13 +4076,7 @@ char	*args;
 	execl(SKLAFFPASSWD, SKLAFFPASSWD, (char *)0);
     }
     tty_raw();
-#ifdef BSD
-    /*    sigblock(oldsigmask);  This must be wrong. OR, 98-04-10 */
-    sigsetmask(oldsigmask);
-#else
-    sigrelse(SIGNAL_NEW_TEXT);
-    sigrelse(SIGNAL_NEW_MSG);
-#endif
+    sigprocmask(SIG_UNBLOCK, &oldsigmask, NULL);
     output("\n");
     return 0;
 }
@@ -4305,11 +4275,7 @@ char *args;
 
     set_avail(Uid, 1);
     output("\n");
-#ifndef GETCWD
-    getwd(cwd);
-#else
     getcwd(cwd, LINE_LEN);
-#endif    
     signal(SIGNAL_NEW_TEXT, SIG_IGN);
     signal(SIGNAL_NEW_MSG, SIG_IGN);
     sprintf(filed, "%s/%d", FILE_DB, Current_conf);
@@ -4340,9 +4306,7 @@ int cmd_download(args)
 char *args;
 {
     LINE fname, cwd, filed;
-#ifdef BSD
-    int oldsigmask;
-#endif    
+    sigset_t sigmask, oldsigmask;
     
     Change_msg = 1;
     Change_prompt = 1;
@@ -4371,18 +4335,12 @@ char *args;
 	return 0;
     }
 
-#ifndef GETCWD
-    getwd(cwd);
-#else
     getcwd(cwd, LINE_LEN);
-#endif    
 
-#ifdef BSD
-    oldsigmask = sigblock(sigmask(SIGNAL_NEW_TEXT) | sigmask(SIGNAL_NEW_MSG));
-#else
-    sighold(SIGNAL_NEW_TEXT);
-    sighold(SIGNAL_NEW_MSG);
-#endif
+    sigemptyset(&sigmask);
+    sigaddset(&sigmask, SIGNAL_NEW_TEXT);
+    sigaddset(&sigmask, SIGNAL_NEW_MSG);
+    sigprocmask(SIG_BLOCK, &sigmask, &oldsigmask);
     signal(SIGNAL_NEW_TEXT, SIG_IGN);
     signal(SIGNAL_NEW_MSG, SIG_IGN);
     set_avail(Uid, 1);
@@ -4398,13 +4356,7 @@ char *args;
     tty_raw();
     signal(SIGNAL_NEW_TEXT, baffo);
     signal(SIGNAL_NEW_MSG, newmsg);
-#ifdef BSD
-    /*    sigblock(oldsigmask);  This must be wrong. OR, 98-04-10 */
-    sigsetmask(oldsigmask);
-#else
-    sigrelse(SIGNAL_NEW_TEXT);
-    sigrelse(SIGNAL_NEW_MSG);
-#endif
+    sigprocmask(SIG_UNBLOCK, &oldsigmask, NULL);
     chdir(cwd);
     tty_raw();
     output("\n");
@@ -4970,19 +4922,15 @@ char *args;
 int cmd_nethack(args)
 char *args;
 {
-#ifdef BSD
-    int oldsigmask;
-#endif    
+    sigset_t sigmask, oldsigmask;
 
     Change_msg = 1;
     Change_prompt = 1;
 
-#ifdef BSD
-    oldsigmask = sigblock(sigmask(SIGNAL_NEW_TEXT) | sigmask(SIGNAL_NEW_MSG));
-#else
-    sighold(SIGNAL_NEW_TEXT);
-    sighold(SIGNAL_NEW_MSG);
-#endif
+    sigemptyset(&sigmask);
+    sigaddset(&sigmask, SIGNAL_NEW_TEXT);
+    sigaddset(&sigmask, SIGNAL_NEW_MSG);
+    sigprocmask(SIG_BLOCK, &sigmask, &oldsigmask);
     signal(SIGNAL_NEW_TEXT, SIG_IGN);
     signal(SIGNAL_NEW_MSG, SIG_IGN);
     set_avail(Uid, 1);
@@ -4996,13 +4944,7 @@ char *args;
     }
     signal(SIGNAL_NEW_TEXT, baffo);
     signal(SIGNAL_NEW_MSG, newmsg);
-#ifdef BSD
-    /*    sigblock(oldsigmask);  This must be wrong. OR, 98-04-10 */
-    sigsetmask(oldsigmask);
-#else
-    sigrelse(SIGNAL_NEW_TEXT);
-    sigrelse(SIGNAL_NEW_MSG);
-#endif
+    sigprocmask(SIG_UNBLOCK, &oldsigmask, NULL);
     tty_raw();
     output("\n");
     set_avail(Uid, 0);

@@ -115,22 +115,14 @@ int type_filter;
 void newmsg(tmp)
 int tmp;
 {
-#ifdef BSD
-    int oldsigmask;
-#endif    
-    
-#ifdef BSD
-    oldsigmask = sigblock(sigmask(SIGNAL_NEW_MSG));
-#else
-    sighold(SIGNAL_NEW_MSG);
-#endif    
+    sigset_t sigmask, oldsigmask;
+
+    sigemptyset(&sigmask);
+    sigaddset(&sigmask, SIGNAL_NEW_MSG);
+    sigprocmask(SIG_BLOCK, &sigmask, &oldsigmask);
     signal(SIGNAL_NEW_MSG, newmsg);
     Change_msg = 1;
-#ifdef BSD
-    sigsetmask(oldsigmask);
-#else
-    sigrelse(SIGNAL_NEW_MSG);
-#endif    
+    sigprocmask(SIG_UNBLOCK, &oldsigmask, NULL);
 }
 
 /*
@@ -141,41 +133,21 @@ int tmp;
 
 int display_msg(int num)
 {
-    int
-	    nl, l, r,
-	    fd, x;
-    
-    char
-	    *oldbuf,
-	    *buf;
-#ifdef SYSV
-    char	*kludge;
-#endif	
-#ifdef BSD
-    int	oldsigmask;
-#endif    
-    LINE
-	    name,
-	    msgfile;
-    
-    struct MSG_ENTRY
-	    me;
+    int nl, l, r, fd, x;
+    char *oldbuf, *buf;
+    sigset_t sigmask, oldsigmask;
+    LINE name, msgfile;
+    struct MSG_ENTRY me;
     
     if (!Change_msg) return 0;
 
     sprintf(name, "enters display_msg()");    debuglog(name, 30);
 
-#ifdef BSD
-    /* oldsigmask = sigblock(sigmask(SIGNAL_NEW_MSG)); This causes major
-                                                       problems if a new text
-                                                       signal is received and
-                                                       its signal handler 
-                                                       is haffo. OR, 98-07-20 */
-    oldsigmask = sigblock(sigmask(SIGNAL_NEW_TEXT) | sigmask(SIGNAL_NEW_MSG));
-#else
-    sighold(SIGNAL_NEW_MSG);
-    sighold(SIGNAL_NEW_TEXT); /* See above. OR 98-07-20 */
-#endif    
+    sigemptyset(&sigmask);
+    sigaddset(&sigmask, SIGNAL_NEW_TEXT);
+    sigaddset(&sigmask, SIGNAL_NEW_MSG);
+    sigprocmask(SIG_BLOCK, &sigmask, &oldsigmask);
+
     strcpy(msgfile, Home);
     strcat(msgfile, MSG_FILE);
     
@@ -195,17 +167,10 @@ int display_msg(int num)
     
     critical();
     
-#ifdef BSD
     if (ftruncate(fd,(off_t)0L) == -1) {
 	sys_error("display_,msg",3,"ftruncate");
 	return -1;
     }
-#endif
-#ifdef SYSV	
-    kludge = (char *)malloc(1);
-    *kludge = '\0';
-    write_file(fd, kludge);
-#endif	
     
     if (close_file(fd) == -1) {
 	sys_error("display_msg", 4, "close_file");
@@ -316,12 +281,7 @@ int display_msg(int num)
     }
     free (oldbuf);
     Change_msg = 0;
-#ifdef BSD
-    sigsetmask(oldsigmask);
-#else
-    sigrelse(SIGNAL_NEW_MSG);
-    sigrelse(SIGNAL_NEW_TEXT); /* See above. OR 98-07-20 */
-#endif    
+    sigprocmask(SIG_UNBLOCK, &oldsigmask, NULL);
     sprintf(name, "exits display_msg()");    debuglog(name, 30); 
 
     return nl;

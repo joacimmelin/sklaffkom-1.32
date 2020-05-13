@@ -38,6 +38,7 @@
 #else
 #include <termio.h>
 #endif
+#include <signal.h>
 
 int Uid;				/* Uid of current user	*/
 LINE Home;				/* home_dir of current user */
@@ -102,7 +103,7 @@ int Presbeep;				/* Beep at present msg        	*/
 struct termio Tty_mode;
 #endif
 #ifdef BSD
-int Oldmask;
+sigset_t Oldmask;
 #endif
 
 int ActiveFD;                           /* Global file descriptor used

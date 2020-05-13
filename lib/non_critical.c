@@ -35,10 +35,5 @@
 
 void non_critical()
 {
-#ifdef BSD
-    sigsetmask(Oldmask);
-#else
-    sigrelse(SIGHUP);
-    sigrelse(SIGTERM);
-#endif
+    sigprocmask(SIG_UNBLOCK, &Oldmask, NULL);
 }

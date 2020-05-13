@@ -39,17 +39,12 @@ int tmp;
 {
     int x, y;
     LINE oldprompt;
+    sigset_t sigmask, oldsigmask;
 
-#ifdef BSD
-    int oldsigmask;
-#endif    
-    
-#ifdef BSD
-    oldsigmask = sigblock(sigmask(SIGNAL_NEW_TEXT | SIGNAL_NEW_MSG));
-#else
-    sighold(SIGNAL_NEW_MSG);
-    sighold(SIGNAL_NEW_TEXT);
-#endif    
+    sigemptyset(&sigmask);
+    sigaddset(&sigmask, SIGNAL_NEW_TEXT);
+    sigaddset(&sigmask, SIGNAL_NEW_MSG);
+    sigprocmask(SIG_BLOCK, &sigmask, &oldsigmask);
     signal(SIGNAL_NEW_MSG, haffo);
     signal(SIGNAL_NEW_TEXT, haffo);
     if (tmp == SIGNAL_NEW_TEXT) Change_prompt = 1;
@@ -69,13 +64,7 @@ int tmp;
 	if (x) output (MSG_MSGPROMPT);
     }
     fflush(stdout);
-#ifdef BSD
-    sigsetmask(oldsigmask);
-#else
-    sigrelse(SIGNAL_NEW_MSG);
-    sigrelse(SIGNAL_NEW_TEXT);
-#endif    
-
+    sigprocmask(SIG_UNBLOCK, &oldsigmask, NULL);
 }
 
 /*
@@ -86,22 +75,14 @@ int tmp;
 void baffo(tmp)
 int tmp;
 {
-#ifdef BSD
-    int oldsigmask;
-#endif    
+    sigset_t sigmask, oldsigmask;
     
-#ifdef BSD
-    oldsigmask = sigblock(sigmask(SIGNAL_NEW_TEXT));
-#else
-    sighold(SIGNAL_NEW_TEXT);
-#endif    
+    sigemptyset(&sigmask);
+    sigaddset(&sigmask, SIGNAL_NEW_TEXT);
+    sigprocmask(SIG_BLOCK, &sigmask, &oldsigmask);
     signal(SIGNAL_NEW_TEXT, baffo);
     Change_prompt = 1;
-#ifdef BSD
-    sigsetmask(oldsigmask);
-#else
-    sigrelse(SIGNAL_NEW_TEXT);
-#endif    
+    sigprocmask(SIG_UNBLOCK, &oldsigmask, NULL);
 }
 
 /* 
