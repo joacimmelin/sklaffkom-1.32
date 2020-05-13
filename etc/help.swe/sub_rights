@@ -1,0 +1,15 @@
+Argument:
+  <Anv{ndarnamn>
+
+Beskrivning:
+  Detta kommando fr}ntar den givna anv{ndaren sina r{ttigheter i
+  aktuellt m|te.
+
+  Med r{ttigheter avses r{tten att (1) bli medlem i m|tet; (2) l{sa
+  texter skrivna i m|tet; (3) skriva egna texter i m|tet.  [r m|tet
+  hemligt avses {ven r{tten att se m|tet i till exempel m|teslistan.
+
+Observera:
+  Kommandot kan endast utf|ras av m|tets skapare.
+
+  R{ttigheter kan inte subtraheras i brevl}dan.

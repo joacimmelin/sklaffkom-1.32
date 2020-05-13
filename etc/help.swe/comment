@@ -1,0 +1,15 @@
+Argument:
+  (<Textnummer/'kommenterade'/'senaste'>)  
+
+Beskrivning:
+  Skriver en kommentar till texten med det angivna textnumret.  Om
+  m|tet {r ett news-m|te, skickas ett news iv{g n{r du sparar
+  texten.
+
+  Anges 'kommenterade' skrivs en kommentar till den text som den
+  senast l{sta texten var kommentar till.
+
+  Anges 'senaste' skrivs kommentaren till den text som senast l{sts
+  med '(L{sa) n{sta text' eller '(L{sa) n{sta kommentar'.
+
+  Anges inget textnummer kommenteras den senast l{sta texten.

@@ -1,0 +1,15 @@
+Argument:
+  (<Textnummer/'kommenterade'/'senaste'>)
+
+Beskrivning:
+  Ol{smarkerar det kommentarstr{d texten med det angivna textnumret
+  tillh|r.
+
+  Ett kommentarstr{d {r en text och alla dess kommentarer, och alla
+  dess kommentarers kommentarer, och s} vidare.
+
+  I detta fall har orden 'kommenterade' och 'senaste' samma funktion,
+  eftersom de b}da betyder texter i samma kommentarstr{d.
+
+  Anges inget textnummer ol{smarkeras alla texter i det tr{d som den
+  senast l{sta texten tillh|rde.

@@ -1,0 +1,104 @@
+#
+# etc/parse.swe
+# 
+# <command>:<function name>:<short help string>
+#
+Addera r{ttigheter:cmd_add_rights:Addera r{ttigheter f|r en anv{ndare i aktuellt m|te 
+(Definera) alias:cmd_alias:Definierar ett alias f|r ett kommando
+(L{sa) alla (texter):cmd_readall:Visar alla dina ol{sta texter
+Beskriv (fil):cmd_describe:Beskriv en fil i m|tets filarea
+Avprioritera (m|te):cmd_deprio:Avprioritera m|te
+(Skriv) brev:cmd_mail:Skicka brev till anv{ndare
+Backa:cmd_back_text:Backar ett antal texter
+B|rja om:cmd_restart:B|rjar om med en ny inloggning
+Cls:cmd_cls:Rensa sk{rmen
+Endast:cmd_only:V{lj hur m}nga texter i aktuellt m|te som skall vara nya
+Fr}n:cmd_from:Visa var du {r ifr}n
+Globals|k:cmd_global_grep:S|ka efter en str{ng i alla m|tens texter
+Grep:cmd_grep:S|ka efter en str{ng i m|tet
+G} (till m|te):cmd_change_conf:G} till ett annat m|te {n det nuvarande
+(Visa) hela (texten):cmd_whole_text:Visar texten med absolut datum
+(Visa) hj{lp:cmd_long_help:Visa utf|rlig hj{lp om s{rskilt kommando
+Hoppa (|ver kommentars-) tr{d:cmd_jump_tree:Hoppa |ver alla texter i tr{det
+Hoppa anv{ndare:cmd_jumpuser:Hoppa |ver alla texter skrivan av en anv{ndare
+Hoppa {rende:cmd_jumpsub:Hoppa |ver alla texter med ett visst {rende
+Hoppa |ver (alla kommentarer):cmd_jump_over:Hoppa |ver alla ol{sta kommentarer
+H{mta:cmd_sendbatch:Skickar dina ol{sta texter i QWK-format
+(L{sa texten) igen:cmd_display_last:]terse den senast l{sta texten
+(Visa) information:cmd_info:Visa information om systemet, etc
+(Skriv) inl{gg:cmd_post_text:Skriv en text i aktuellt m|te
+Jag:cmd_I:Tala om f|r alla hur du {r
+Kommentera (text):cmd_comment:Skriv en kommentar till en text
+Ladda ner:cmd_download:Ladda ner en fil fr}n m|tets filarea
+Ladda upp:cmd_upload:Ladda upp en fil till m|tets filarea
+Lista anv{ndare:cmd_list_users:Lista alla registrerade anv{ndare
+Lista filer:cmd_list_files:Lista alla filer i m|tets filarea
+Lista flaggor:cmd_list_flags:Lista alla flaggor
+Lista kommandon:cmd_help:Lista alla kommandon
+Lista medlemmar:cmd_list_member:Lista medlemmar i ett m|te
+Lista m|ten:cmd_list_confs:Lista alla |ppna och slutna m|ten
+Lista nyheter:cmd_list_news:Lista nya texter sedan senaste sessionen
+Lista ol{sta:cmd_list_news:Synonymt med 'Lista nyheter'
+Lista personer:cmd_list_users:Synonymt med 'Lista anv{ndare'
+Lista r{ttigheter:cmd_list_rights:Lista vilka anv{ndare som har tilltr{de till aktuellt m|te
+Lista senast (inloggade):cmd_list_last:Lista de senast inloggade anv{ndarna
+Lista {renden:cmd_list_subj:Lista {renden i aktuellt m|te
+Logout:cmd_end_session:Avsluta denna session
+L{sa (text):cmd_read_text:L{s en viss text
+L{sa kommenterad (text):cmd_display_commented:L{ser kommenterad text
+L{sa senaste (text):cmd_read_last_text:L{ser senast l{sta nya text
+(Bli) medlem:cmd_subscribe:Bli medlem i ett m|te
+(L{sa) n}gra (texter):cmd_readsome:Visar alla ol{sta texter i aktuellt m|te
+(L{sa) n{sta inl{gg:cmd_next_text:L{s n{sta text i aktuellt m|te
+(L{sa) n{sta kommentar:cmd_next_comment:L{s n{sta kommentar
+(G} till) n{sta m|te:cmd_next_conf:G} till n{sta m|te med nya texter
+(L{sa) n{sta text:cmd_next_text:Synonymt med '(L{sa) n{sta inl{gg'
+Mina:cmd_my:Tala om f|r alla hur du {r, genitivform
+Ol{s deltr{d:cmd_goto_text:G} till en text och ol{smarkera allt under
+Ol{s text:cmd_unread_text:Ol{smarkera en text vid utloggning
+Ol{s tr{d:cmd_unread_tree:Ol{smarkera alla texter i tr{det
+Ol{s {rende:cmd_unreadsub:Ol{smarkera alla texter med ett visst {rende
+Personlig (kommentar):cmd_personal:Skriv ett brev till originaltextskrivaren
+Prioritera (m|te):cmd_prio:Prioritera m|te
+Radera fil:cmd_unlink:Radera en fil fr}n m|tets filarea
+Radera m|te:cmd_delete_conf:Radera ett m|te
+Radera text:cmd_delete_text:Radera en text
+(Redovisa) resultat (f|r enk{t):cmd_survey_result:Redovisa fullst{ndigt enk{tresultat
+Ropa:cmd_yell:Skicka meddelande till alla inloggade anv{ndare
+Rot13:cmd_display_rot13:]terse den senast l{sta texten med rot13-konvertering
+Skapa enk{t:cmd_post_survey:Skapa en enk{t i aktuellt m|te
+Skapa (nytt) m|te:cmd_create_conf:Skapa ett nytt m|te
+Skrik:cmd_yell:Synonymt med 'Ropa'
+Skriv (inl{gg):cmd_post_text:Synonymt med '(Skriv) inl{gg'
+S|k:cmd_grep:Synonymt med 'grep'
+Sluta:cmd_end_session:Synonymt med 'Logout'
+Sl} av (flagga):cmd_off_flag:Sl} av en flagga
+Sl} p} (flagga):cmd_on_flag:Sl} p} en flagga
+(Visa) status:cmd_show_status:Visa information om en anv{ndare eller ett m|te
+Subtrahera r{ttigheter:cmd_sub_rights:Subtrahera r{ttigheter f|r en anv{ndare i aktuellt m|te
+Svara:cmd_answermsg:Svara p} ett s{g-meddelande
+S{g:cmd_say:Skicka meddelande till en inloggad anv{ndare
+(G} till) text:cmd_goto_text:Synonymt med 'Ol{s deltr{d'
+(Se) tiden:cmd_display_time:Se aktuell tid samt sessionens l{ngd
+Uttr{d (ur):cmd_unsubscribe:Uttr{d ur ett m|te
+Var (befinner jag mig):cmd_where:Visa aktuellt m|te
+Vilka ({r inloggade):cmd_who:Se vilka som k|r SklaffKOM just nu
+Visa licens:cmd_licens:Visa licensfilen f|r SklaffKOM
+Visa ol{sta (texter):cmd_reclaim_unread:Ol{smarkerar dina ol{sta texter direkt.
+]terse (text):cmd_read_text:Synonymt med 'L{sa (text)'
+]terse kommenterad (text):cmd_display_commented:Synonymt med 'L{sa kommenterad (text)'
+]terse senaste (text):cmd_read_last_text:Synonymt med 'L{sa senaste (text)'
+]terse skrikmeddelanden:cmd_list_yells:Listar mottagna skrik- och jagmeddelanden
+]terse s{gmeddelanden:cmd_list_says:Listar mottagna s{gmeddelanden
+[ndra lapp:cmd_mod_note:[ndra din "lapp p} d|rren"
+[ndra l|senord:cmd_change_passwd:[ndra ditt l|senord
+[ndra m|tesnamn:cmd_change_cname:[ndra namn p} ett m|te
+[ndra kommentarsm|te:cmd_change_comc:[ndra kommentarsm|te till ett m|te
+[ndra personuppgifter:cmd_mod_pinfo:[ndra dina personuppgifter
+[ndra plan:cmd_mod_sig:[ndra din plan-fil
+[ndra timeout:cmd_mod_timeout:[ndra tid f|r inaktivitetsutloggning
+[ndra uppstartskommandon:cmd_mod_login:[ndra vilka kommandon som k|rs vid login
+
+?:cmd_help:Synonymt med 'Lista kommandon'
++:cmd_next_conf:Synonymt med '(G} till) n{sta m|te'
+-:cmd_display_commented:Synonymt med 'L{sa kommenterad (text)'

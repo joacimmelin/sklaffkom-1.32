@@ -1,0 +1,19 @@
+Argument:
+  (<Textnummer/'kommenterade'/'senaste'>)
+
+Beskrivning:
+  Skriver en personlig kommentar - dvs en kommentar som hamnar i m|tet
+  'Brevl}dan' och som endast kan l{sas av dig och personen som skrivit
+  den kommenterade texten - till texten med det angivna textnumret.
+
+  Om texten du kommenterar personligt {r en news-text, skickas ett
+  email till f|rfattaren.
+
+  Anges 'kommenterade' skrivs en personlig kommentar till den text som
+  den senast l{sta texten var kommentar till. 
+
+  Anges 'senaste' skrivs kommentaren till den text som senast l{sts
+  med '(L{sa) n{sta text' eller '(L{sa) n{sta kommentar'.
+
+  Anges inget textnummer skrivs en personlig kommentar till den senast
+  l{sta texten.

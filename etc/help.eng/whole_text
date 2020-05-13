@@ -1,0 +1,12 @@
+Parameter:
+  (<Article number/'followed-up'/'last'>)
+
+Description:
+  Displays article with the given number in the current conference. The
+  article is displayed with absolute date.
+
+  If 'followed-up' is supplied the article last read article was a 
+  follow-up to is displayed.
+
+  If 'last' is supplied, the article last read with '(Display) next article'
+  or '(Display) next follow-up' is displayed.

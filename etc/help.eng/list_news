@@ -1,0 +1,6 @@
+Parameter:
+  (<User name>)
+
+Description:
+  Counts number of new articles in all conferences. If a user name is
+  supplied counts for the given user.

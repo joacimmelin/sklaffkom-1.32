@@ -1,0 +1,6 @@
+Parameter:
+  <Search string>
+
+Description:
+  This command searches for the given search string in every article
+  in every conference you subscribe to.

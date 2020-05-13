@@ -1,0 +1,13 @@
+Parameter:
+  (<Article number/'followed-up'/'last'>)
+
+Description:
+  Marks tree containing article as new.
+
+  A tree is an article and all of its' follow-ups and all of the
+  follow-ups' follow-ups and so on.
+
+  In this case the parameters 'followed-up' and 'last' fill the same
+  function since they all refer to the same tree.
+
+  If no article number is supplied it last article read is assumed.

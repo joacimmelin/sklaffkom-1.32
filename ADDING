@@ -1,0 +1,137 @@
+Adding new commands to SklaffKOM v1.11, 9 March 1996.
+
+Introduction
+------------
+This file is meant to be read by people planning to improve SklaffKOM
+by adding new commands.  By new commands I don't mean commands messing
+with SklaffKOM's database (simply because it's not very well
+documented yet and you will end up in trouble by guessing how things
+work) but independent commands, for example games, vote functions and
+the like.
+
+Where should I put my code?
+---------------------------
+You should put all functions except the user command function (cmd_)
+in a file of its own.  All user command functions reside in commands.c
+and are the only ones called by the command parser.  They all have the
+same argument type and return value type.  Look in the file commands.c
+for examples.  All functions in this file MUST begin with "cmd_".
+SklaffKOM uses the function nlist to find out where in the executable
+a function is located after matching the user input with the commands
+listed in the parse-file (etc/parse.swe and etc/parse.eng).
+
+Be sure to add copyright/license information at the top to make sure
+nobody messes with your code without telling. The "cmd_" function
+should be put in commands.c, well documented at the bottom of the
+file.  Function prototypes should be put in sklaff.h, at the proper
+place for that source-file.  There are two prototypes for each
+function, one for ANSI C and one for K&R C.  You also have to update
+the makefile with the name of the file containing your functions.
+Normally you just need to add the filename to the OBJS variable.
+
+When SklaffKOM starts it outputs a copyright notice, like this:
+-------------------------------------------------------------------
+SklaffKOM version 1.11(#1)  English
+
+Copyright (C) 1993 Torbj|rn B}}th, Peter Forsberg, Peter Lindberg,
+                   Odd Petersson, Carl Sundbom.
+
+add your copyright message here, for example:
+
+Cookie extensions (C) 1994 by James Brown.
+-------------------------------------------------------------------
+The function "display_welcome" in admin.c does the actual output, so
+you have to change here.  Look below for information how to output
+things the right way in SklaffKOM.
+
+Coding standard
+---------------
+SklaffKOM sourcefiles uses four positions as indent level.  All
+functions have a "mini-header" describing the function briefly, their
+arguments and the return values. For example:
+
+/*
+ * mark_as_read - mark text as read
+ * args: text (text), conference (conf)
+ * ret: ok (1) or already marked (0) or failure (-1)
+ */
+
+int mark_as_read(text, conf)
+long text;
+int conf;
+{
+    .
+    .
+    .
+}
+
+Global variables
+----------------
+All globals should be entered into two files, globals.h and
+ext_globals.h.  Only sklaffkom.c includes globals.h, all other
+source-files should include ext_globals.h.  A small comment next to
+the global is helpful.  All globals begin with a capital letter.
+
+Globals you may want to use:
+
+int  Uid			/* uid of current user		   */
+
+
+Input/Output
+------------
+User input is always made with the function "input":
+
+/* 
+ * input - inputs string
+ * args: default string (in_str), input string (out_str), max number
+ *       of characters allowed (max_len), don't echo output (noecho)
+ *       allow wordwrap (wrap), history buffer (hist)
+ * ret:	pointer to input string
+ */
+
+char *input(in_str, out_str, max_len, noecho, wrap, hist)
+char *in_str, *out_str;
+int max_len;
+int noecho;
+int wrap;
+int hist;
+
+Output is done with the function "output":
+
+"output" with works just like printf does.  It also paginates the
+output and converts between different character sets.  It returns -1 if
+the output should be halted, check for this in loops.  Since SklaffKOM
+is multi-language you can't use constant strings in output, e.g.
+output("New text in conference").  You have to make #defines for all
+strings you would like to output, in the file lang.h.  This file
+contains all constant string SklaffKOM ever uses.  Each string is
+#defined TWICE, once in Swedish and once in English.  If you look
+through the file, you will see how it is organized.  Then you can make
+outputs like output(MSG_NEWCONFTEXT) and get it multi-language.  Put
+all your string #defines together near the end and well documented.
+
+Other useful functions
+----------------------
+Look around in sklaff-1.11/lib for other useful functions.  Try to use
+these as much as possible instead of your UNIX-specific ones to make
+the source more portable.
+
+Parsefiles
+----------
+The files sklaff-1.11/etc/parse.swe and parse.eng contains all user
+commands in SklaffKOM and what function each command runs.  This file
+may be altered without recompiling SklaffKOM, for example to put in
+aliases for existing commands.  When you add your own "cmd_" function
+to commands.c, put in the function and the user command to run it in
+both of these files (at the end, well documented).  This way SklaffKOM
+knows how to find what user command goes with which program function.
+
+Helpfiles
+---------
+The directories sklaff-1.11/etc/help.eng and help.swe contains
+helpfiles for all "cmd_" functions.  The filename corresponds to the
+function name without the "cmd_" prefix.  For each new command you
+create, put a swedish and english helpfile in these directories.  Then
+you should be able to get help on your new commands.
+
+For questions, mail sklaff@skom.se

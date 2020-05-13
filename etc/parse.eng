@@ -1,0 +1,94 @@
+#
+# etc/parse.eng
+# 
+# <command>:<function name>:<short help string>
+#
+Add permissions:cmd_add_rights:Add permissions for user in current conference 
+(Display article) again:cmd_display_last:Redisplay last article read
+(Define) alias:cmd_alias:Defines an alias for a command
+(Read) all (texts):cmd_readall:Displays all your unread articles
+Answer:cmd_answermsg:Answer a say-message
+Back:cmd_back_text:Unreads latest read <number of articles> articles
+Cls:cmd_cls:Clear screen
+Change loginscript:cmd_mod_login:Change commands executed at login
+Change note:cmd_mod_note:Change your "note"
+Change password:cmd_change_passwd:Change your password
+Change conferencename:cmd_change_cname:Change conference name
+Change replyconference:cmd_change_comc:Change reply conference
+Change personal (information):cmd_mod_pinfo:Change personal information
+Change plan:cmd_mod_sig:Change your plan file
+Change timeout:cmd_mod_timeout:Change timeout period
+Create conference:cmd_create_conf:Create a new conference
+Delete article:cmd_delete_text:Delete a specific article
+Delete conference:cmd_delete_conf:Deletes a conference
+Delete file:cmd_unlink:Deletes a file from current conference
+Describe (file):cmd_describe:Describe a file in current conference
+Display (article):cmd_read_text:Displays a specific article
+Download (file):cmd_download:Download a file from current conference
+Enter (article):cmd_post_text:Same as 'Write (article)'
+Find:cmd_grep:Search for a string in conference
+Follow-up:cmd_comment:Post a follow-up to an article
+From:cmd_from:Show where you are from
+Get (QWK-packet):cmd_sendbatch:Send all your unread texts in QWK-format
+Globalfind:cmd_global_grep:Search for a string among all conferences
+Goto (conference):cmd_change_conf:Goto another conference
+Help:cmd_long_help:Display help about a specific command
+High (priority) (conference):cmd_prio:Give high priority to conference
+I:cmd_I:Tell others how you are
+(Show) information:cmd_info:Display information about the system
+Last (logged in):cmd_list_last:Show last logged in users
+List commands:cmd_help:List all commands
+List conferences:cmd_list_confs:List all conferences
+List files:cmd_list_files:List all files in current conference
+List flags:cmd_list_flags:List all flags
+List news:cmd_list_news:Count new articles in all conferences
+List permissions:cmd_list_rights:Show permissions for users in conference
+List subjects:cmd_list_subj:List subjects in current conference
+List subscribers:cmd_list_member:List all subscribers to a conference
+List users:cmd_list_users:List all users
+Logout:cmd_end_session:End session
+Low (priority) (conference):cmd_deprio:Give low priority to conference
+Mail:cmd_mail:Send mail
+Me:cmd_my:Tell others how you are, genitive case
+New:cmd_only:Specify number of new articles in current conference
+(Goto) next conference:cmd_next_conf:Goto next conference with new articles
+(Display) next follow-up:cmd_next_comment:Displays next follow-up in current conference
+(Display) next article:cmd_next_text:Displays next new article in current conference
+Only:cmd_only:Same as 'New'
+Post (article):cmd_post_text:Same as 'Write (article)'
+Reply:cmd_personal:Write a personal reply (mail) to article author
+Restart:cmd_restart:Restart program and login again
+(Report survey) result:cmd_survey_result:Report full survey result
+Read (article):cmd_read_text:Same as 'Display (article)'
+Rot13:cmd_display_rot13:Read last text read with rot13 conversion
+Shout:cmd_yell:Send message to all logged in users
+Show license:cmd_licens:Show SklaffKOM license information
+Skip branch:cmd_jump_over:Skip all articles in branch
+Skip tree:cmd_jump_tree:Skip all articles in tree
+Skip subject:cmd_jumpsub:Skip all articles with a certain subject
+Skip user:cmd_jumpuser:Skip all articles written by a certain user
+(Read) some (texts):cmd_readsome:Displays all unread articles in current conf
+(Show) status:cmd_show_status:Show information about a user or a conference
+Subscribe (to):cmd_subscribe:Subscribe to a conference
+Subtract permission:cmd_sub_rights:Subtract permissions for a user in a conference
+Tell:cmd_say:Send message to a logged in user
+(Show) time:cmd_display_time:Show current time
+Turn off (flag):cmd_off_flag:Turn off a flag
+Turn on (flag):cmd_on_flag:Turn on a flag
+Unread article:cmd_unread_text:Unread a specific article at logout-time
+Unread branch:cmd_goto_text:Unread all articles below a specific article
+Unread tree:cmd_unread_tree:Unread all articles in current tree
+Unread subject:cmd_unreadsub:Unread all articles with a certain subject
+Unsubscribe (to):cmd_unsubscribe:Unsubscribe to a conference
+Upload (file):cmd_upload:Upload a file to current conference
+Where (am I):cmd_where:Show current conference
+Who (is online):cmd_who:Show logged in users
+(Show) entire (text):cmd_whole_text:Show text with absolute date
+Write (article):cmd_post_text:Write a new article in a conference
+Yell:cmd_yell:Same as 'shout'
+I:cmd_I:Tell everyone how you are
+(Make) survey:cmd_post_survey:Make a survey in the current conference
+
+?:cmd_help:Same as 'List commands'
++:cmd_next_conf:Same as 'Next conference'
+-:cmd_display_commented:Same as 'Display followed-up'

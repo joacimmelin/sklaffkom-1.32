@@ -1,0 +1,4 @@
+Beskrivning:
+  Listar alla anv{ndare i systemet, sorterat efter tiden f|r senaste
+  inloggningen (egentligen tiden d} anv{ndaren loggade ut senast) med
+  den absolut senaste inloggningen f|rst.

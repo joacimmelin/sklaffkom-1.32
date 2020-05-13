@@ -1,0 +1,5 @@
+Parameter:
+  <Flag name>
+
+Description:
+  Turn on a flag (sets it to 'true').

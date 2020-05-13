@@ -1,0 +1,12 @@
+Argument:
+  (<Textnummer/'kommenterade'/'senaste'>)
+
+Beskrivning:
+  L{ser texten med det angivna textnumret i aktuellt m|te. Texten visas
+  med absolut datum.
+
+  Anges 'kommenterade' l{ses den text som den senast l{sta texten var
+  kommentar till.
+
+  Anges 'senaste' l{ses den text som senast l{sts med '(L{sa) n{sta
+  text' eller '(L{sa) n{sta kommentar'.

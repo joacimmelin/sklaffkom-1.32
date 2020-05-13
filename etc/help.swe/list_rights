@@ -1,0 +1,9 @@
+Argument:
+  (<M|tesnamn>)
+
+Beskrivning:
+  Visar r{ttigheter i det angivna - eller aktuellt, om inget m|tesnamn
+  anges - m|tet.
+
+  [r m|tet \PPET eller NEWS visas alla anv{ndare som INTE har r{ttigheter 
+  i m|tet; {r m|tet SLUTET eller HEMLIGT visas alla som HAR r{ttigheter.

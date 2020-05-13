@@ -1,0 +1,17 @@
+Parameter:
+  (<Article number/'followed-up'/'last'>)
+
+Description:
+  Writes a personal reply, i.e. a reply in the form of a mail to the
+  author of the article replied.
+
+  If the text replied to is a usenet news, a email is sent to the
+  author.
+
+  If 'followed-up' is supplied a personal reply is written to the article
+  last read article was a follow-up to.
+
+  If 'last' is supplied a personal reply is written to the article last
+  read with either '(Display) next article' or '(Display) next followed-up'.
+
+  The default is last article read.

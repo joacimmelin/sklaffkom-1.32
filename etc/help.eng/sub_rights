@@ -1,0 +1,13 @@
+Parameter:
+  <User name>
+
+Description:
+  This command denies the given user to subscribe to the current conference. 
+
+  If the conference is secret, the user cannot see the conference in
+  the conference list any longer.
+
+Observe:
+  The command can only be executed by the creator of the conference.
+
+  You cannot subtract permissions in your mailbox.

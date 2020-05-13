@@ -1,0 +1,7 @@
+Parameter:
+  (<Subject string>)
+
+Description:
+  Marks articles with <Subject string> as read.
+
+  If no subject is supplied last article's subject is assumed.

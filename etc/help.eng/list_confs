@@ -1,0 +1,8 @@
+Description:
+  Lists all conferences in the system that you are allowed to see,
+  and the number of texts written in the conference.
+
+  If you do not subscribe to a conference an asterisk (*) is shown in
+  front of the conference name.  A "C" before the name means that you
+  are the creator of that conference.  A "F" before the name means
+  that the conference contains files.

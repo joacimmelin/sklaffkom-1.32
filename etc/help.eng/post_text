@@ -1,0 +1,7 @@
+Parameter:
+  (<Conference name>)
+
+Description:
+  Post an article in the current, or named, conference. If the conference
+  is a news-conference, a news is posted instead.
+

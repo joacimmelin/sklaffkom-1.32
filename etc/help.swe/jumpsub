@@ -1,0 +1,8 @@
+Argument:
+  (<[rende>)
+
+Beskrivning:
+  L{smarkerar alla texter med <[rende> som {rende.
+
+  Anges inget {rende l{smarkeras alla texter med samma {rende som den
+  senast l{sta texten.

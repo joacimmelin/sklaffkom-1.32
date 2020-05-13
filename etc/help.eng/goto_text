@@ -1,0 +1,17 @@
+Parameter:
+  <Article number/'followed-up'/'last'>
+
+Description:
+  This command marks as new the given article and all of its' follow-ups
+  and all of the follow-ups' follow-ups and so on.
+
+  If 'followed-up' is supplied, the article last read article was a 
+  follow-up to is marked as new, including all its' follow-ups.
+
+  If 'last' is supplied, the article last read with '(Display) next article' 
+  or '(Display) next follow-up' is used as the first article.
+
+Example:
+  Assume that article 4 has follow-ups 5 and 7 and that article 5 
+  has follow-ups in articles 6 and 8. If you supply article 4, 
+  articles 4, 5, 6, 7 and 8 will by marked as new.

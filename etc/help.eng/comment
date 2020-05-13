@@ -1,0 +1,14 @@
+Parameter:
+  (<Article number/'followed-up'/'last'>)  
+
+Description:
+  Writes a follow-up to the given article. If the article is a usenet
+  news, a follow-up news is posted.
+
+  If 'followed-up' is supplied, you write a follow-up to the article 
+  last read article was a follow-up to.
+
+  If 'last' is supplied, the follow-up is written to the article last read
+  with '(Display) next article' or '(Display) next follow-up'.
+
+  If no article number is supplied, the last read article is followed-up.

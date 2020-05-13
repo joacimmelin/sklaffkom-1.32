@@ -1,0 +1,10 @@
+Parameter:
+  <User name>
+
+Description:
+  This command adds permissions to the given user in the current conference.
+
+Observe:
+  Command can only by used by by the conference creator.
+
+  You cannot add permissions to your mailbox.

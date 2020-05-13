@@ -1,0 +1,6 @@
+Argument:
+  (<M|tesnamn eller anv{ndarnamn>)
+
+Beskrivning:
+  Ger detaljerad information om ett specifikt m|te eller en specifik
+  anv{ndare, eller om ens egen anv{ndare om inget argument ges.

@@ -1,0 +1,10 @@
+Parameter:
+  (<Num>, <Subject string>)
+
+Description:
+  Marks articles with <Subject string> as new.  If <num> is supplied,
+  only <num> texts are marked as new, counting from the last text written
+  with the subject.  If <num> is not supplied, all texts with the subject
+  are marked as new.
+
+  If no subject is supplied last article's subject is assumed.

@@ -1,0 +1,11 @@
+Parameter:
+  (<Conference name>)
+
+Description:
+  Removes the conference supplied, or current conference if no
+  conference name is given.
+
+  For security reasons you are asked to confirm the removal.
+
+Observe:
+  Only the creator of a conference may remove it.

@@ -1,0 +1,6 @@
+Parameter:
+  (<Conference name>)
+
+Description:
+  Used by the conference creator to change the name of the conference.
+  If no new name is supplied, the name stays unchanged.

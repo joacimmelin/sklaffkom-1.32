@@ -1,0 +1,6 @@
+Argument:
+  (<M|tesnamn>)
+
+Beskrivning:
+  Skriver en text i det aktuella, eller det angivna, m|tet. Om m|tet
+  {r ett news-m|tet skickas ett news iv{g.

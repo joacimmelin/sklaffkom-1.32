@@ -1,0 +1,6 @@
+Parameter:
+  (<Conference name or user name>)
+
+Description:
+  Gives detailed information about a specific user or conference, or
+  on yourself if no argument is given.

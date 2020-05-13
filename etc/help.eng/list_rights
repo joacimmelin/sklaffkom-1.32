@@ -1,0 +1,6 @@
+Parameter:
+  (<Conference name>)
+
+Description:
+  Displays who are allowed - or not allowed - to subscribe to the
+  given conference, or current conference if no parameter is supplied.

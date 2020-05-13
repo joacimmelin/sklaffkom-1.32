@@ -1,0 +1,29 @@
+Argument:
+  <Antal> <dagar,timmar,minuter>
+
+Beskrivning:
+  Detta kommando anv{nds f|r att {ndra antalet ol{sta texter i det
+  aktuella m|tet. Det {r alltid de senast skrivna texterna som ol{s-
+  markeras. 
+
+  Anropat med en parameter ol{smarkerar Endast det angivna antalet
+  texter. 
+
+  Endast kan ocks} anropas med tv} parametrar, d{r andra 
+  parameterna {r "dagar", "timmar" eller "minuter". Resultatet
+  blir att de texter som skrivits under den angivna tidsperioden 
+  ol{smarkeras. Andra parametern kan f|rkortas till "d", "t" och
+  "m".
+
+Exempel:
+  Har du exempelvis blivit medlem i ett nytt m|te med m}nga skrivna
+  texter och inte vill l{sa alla kan du, till exempel, g|ra 
+  "Endast 50" f|r att endast f} l{sa de femtio senast skrivna texterna.
+  Alternativt kan du g|ra
+
+  Endast 10 dagar   - de senaste 10 dagarnas texter i m|tet blir ol{sta
+  Endast 5 timmar   -       "     5 timmarnas        "
+  Endast 1 minut    - den   "     minutens           "
+
+
+  

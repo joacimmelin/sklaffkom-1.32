@@ -1,0 +1,6 @@
+Parameter:
+  <Number of articles>
+
+Description:
+  This command is used to unread a number of articles read during
+  this session. The arguments says how many.

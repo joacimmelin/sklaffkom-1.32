@@ -1,0 +1,12 @@
+Argument:
+  <Textnummer/'kommenterade'/'senaste')
+
+Beskrivning:
+  Texten med angivet textnummer raderas, f|rutsatt att du har skrivit
+  den.
+
+  Anges 'kommenterade' raderas den text som den senast l{sta texten
+  var kommentar till.
+
+  Anges 'senaste' raderas den text som senast l{sts med '(L{sa) n{sta
+  text' eller '(L{sa) n{sta kommentar'.

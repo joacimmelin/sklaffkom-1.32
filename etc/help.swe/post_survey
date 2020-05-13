@@ -1,0 +1,88 @@
+Argument:
+  (<M|tesnamn>)
+
+Beskrivning:
+  Skapar ett ny enk{t i det m|te du st}r i eller det vars namn du
+  anger.
+
+  Enk{ter {r vanliga inl{gg d{r man ocks} har m|jligheten att
+  l{gga in valfritt antal fr}gor till l{saren. Det finns
+  fem olika typer av fr}gor:
+
+  1. Singelval. Fr}gor d{r det finns ett fixt antal alternativ och
+     anv{ndaren bara f}r ge ett av alternativen som svar.
+
+  2. Multipelval. Fr}gor d{r det finns ett fixt antal alternativ och
+     anv{ndaren kan ange valfritt antal alternativ som 
+     svar.
+
+  3. Intervall. Fr}gor d{r svaret ska vara ett tal i ett intervall,
+     tex 1-10.
+
+  4. Nummer. Fr}gor d{r svaret {r ett godtyckligt tal.
+
+  5. Text. Fr}gor d{r svaret {r en rad med text.
+
+  Fr}gor infogas p} en egen rad och inleds alltid med
+  koden ##. D{refter f|ljer ett ord som identifierar
+  fr}getyp (singel, multipel, intervall, nummer, text), fast
+  bara f|rsta bokstaven {r signifikant (s, m, i, n, t).
+  Slutligen ska man f|r de f|rsta tre typerna ange
+  argument, separerade med kolon. Se exemplet nedan f|r
+  detaljer. Syntaxen f|r fr}getyperna ges ocks} av
+  hj{lpkommandot !? i editorn n{r man skapar en enk{t.
+
+  N{r man sparar enk{ten f}r man ange hur l}ngt fram i tiden
+  som enk{ten ska redovisas. Redovisningen sker automatiskt 
+  vid den tidpunkten i en text av Fr}gedemonen. 
+
+  De olika fr}getyperna redovisas p} lite olika s{tt. F|r 
+  singel- och multipelvalfr}gorna ges procentsatser f|r 
+  andelen som valt de olika alternativen. F|r intervall- 
+  och nummerfr}gorna anges samtliga svar sorterade i
+  v{xande ordning tillsammans med n}gra statistiska 
+  m}tt: min, max, median, medel och standardavvikelse. 
+  F|r textfr}gor listas alla svar utan kommentar.
+
+  S} snart enk{ten redovisats g}r det att se det totala 
+  resultatet, r}datan, med kommandot RESULTAT <enk{tno>.
+  Detta {r anv{ndbart om man tex vill se korrelationen
+  mellan svaren till flera fr}gor.
+
+  Exempel:
+
+  [r det sv}rt att g|ra enk{ter (singelfr}ga, endast 1 
+  svarsalternativ f}r v{ljas)?
+  1. Ja
+  2. Nej
+  3. Vet inte
+  ## s:3
+
+  Vilka av f|ljande p}st}enden st{mmer in p} dig (multipelval,
+  fler alternativ f}r v{ljas)?
+  a. Jag {r man
+  b. Jag {r kvinna
+  c. Jag {r hungrig
+  d. Jag har varit i Askersund
+  e. Jag vill ha ett bra, kul v{lbetald jobb. 
+  ## m:5
+
+  P} en skala 1-10, hur bra {r Skom f|r dig (intervall, endast
+  v{rden mellan 1 och 10 f}r v{ljas)?
+  ## i:1:10
+
+  Hur stor {r din utgift per m}nad i sk "fasta kostnader", ja,
+  du f}r sj{lv v{lja vad som ing}r (tal, endast ett v{rde f}r
+  v{ljas, dvs inga bokst{ver eller andra tecken)?
+  ## n
+
+  Skriv g{rna en liten kommentar om du har lust (text, en rad
+  med fritext kan knappas in, valfria tecken).
+  ## t
+
+Credits:
+  Olof Runborg f|r funktionen.
+  Tomas Wallgren f|r enk{texemplet.
+
+
+

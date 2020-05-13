@@ -1,0 +1,8 @@
+Argument:
+  (<S|kstr{ng>)
+
+Beskrivning:
+  Detta kommando listar textnumret, namnet p} textf|rfattaren och
+  textens {renderad f|r alla texter i det aktuella m|tet. Om en 
+  s|kstr{ng anges listas bara de {renderader som inneh}ller
+  s|kstr{ngen.

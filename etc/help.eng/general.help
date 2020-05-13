@@ -1,0 +1,23 @@
+SklaffKOMs' help system contains help about every command in the
+program. To get help about a specific command, for example 'Mail',
+type:
+
+  (Display) time - help mail
+
+to get help about the command. The help texts use the following
+layout.
+
+  (1) Command:  This section contains the name of the command and
+      all identical commands.
+
+  (2) Parameter:  This section shows possible parameters to the
+      command.
+
+      A parameter is written after the command.
+
+  (3) Description:  Describes the command, how it works, etc.
+
+  (4) Observe:  Things to keep in mind when using the command.
+
+  (5) Background:  For some commands the historical background is
+      described.

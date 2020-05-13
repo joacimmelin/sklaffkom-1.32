@@ -1,0 +1,11 @@
+Argument:
+  (<M|tesnamn>)
+
+Beskrivning:
+  Utpl}nar det angivna m|tet, eller det aktuella om inget m|tesnamn
+  angivits.
+
+  Av s{kerhetssk{l st{lls en fr}ga om du verkligen vill utpl}na m|tet.
+
+Observera:
+  Endast m|tets skapare kan utf|ra kommandot.

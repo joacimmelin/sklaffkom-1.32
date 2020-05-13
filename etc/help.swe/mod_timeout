@@ -1,0 +1,7 @@
+Beskrivning:
+  [ndrar din inaktivitetstimeout i minuter.
+
+  N{r antalet minuter har g}tt utan att du tryckt p} n}gon knapp f}r
+  du en varning att du kommer att bli utloggad om en minut. Trycks
+  fortfarande ingen knapp ned loggas du ut. Om du anger noll minuter
+  blir du aldrig utloggad pga timeout.

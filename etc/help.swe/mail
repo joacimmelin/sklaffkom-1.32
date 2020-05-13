@@ -1,0 +1,10 @@
+Argument:
+  <Anv{ndarnamn>
+
+Beskrivning:
+  Detta kommando anv{nds f|r att skicka ett brev till en annan
+  anv{ndare.  Ett brev {r en text som hamnar i m|tet 'Brevl}dan' och
+  som endast kan l{sas av dig och den du skickar brevet till.
+
+  Om en email-adress anges, allts} ett namn som inneh}ller '@',
+  (ex calle@skom.se), skickas ist{llet ett email till personen i fr}ga.

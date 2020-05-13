@@ -1,0 +1,11 @@
+Argument:
+  (<Num>, <[rende>)
+
+Beskrivning:
+  Ol{smarkerar alla texter med <[rende> som {rende.  Om <num> anges
+  ol{ses maximalt num antal texter, r{knat fr}n den sist skrivna
+  texten i m|tet som matchar {rendet.  Om inget nummer anges ol{ses alla
+  texter i m|tet med {rendet.
+
+  Anges inget {rende ol{smarkeras alla texter med samma {rende som den
+  senast l{sta texten.

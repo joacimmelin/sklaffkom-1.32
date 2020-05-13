@@ -1,0 +1,5 @@
+Description:
+  Used to change your password. First you have to supply your current
+  password ('Old password:'), and you are then prompted to supply your new
+  password ('New password:'), and verify it ('Re-enter new password:')
+  to make sure you typed correctly.

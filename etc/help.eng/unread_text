@@ -1,0 +1,12 @@
+Parameter:
+  (<Article number/'followed-up'/'last'>)
+
+Description:
+  This command makes the article supplied to be marked as new at logout.
+
+  If 'followed-up' as supplied, the article last article was a follow-up 
+  to is marked.
+
+  If 'last' is supplied, the article last read is marked.
+
+  The default is last article read.

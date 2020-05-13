@@ -1,0 +1,11 @@
+Parameter:
+  <Number of articles>
+
+Description:
+  This command is used to change the number of new articles in the current
+  conference.
+
+Example:
+  You have 50 new articles in a conference and wishes to skip to first 30
+  articles. You give the parameter '20' to set the number of new articles to
+  20, ignoring the others.

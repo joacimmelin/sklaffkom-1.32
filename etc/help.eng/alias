@@ -1,0 +1,9 @@
+Argument:
+  <Command>, <Alias>
+
+Beskrivning:
+  Creates an "alias" for a command, i.e. another name for that 
+  command.
+
+  If you enter the command "alias who, *" you can enter "*" to
+  get an up-to-date list of who are currently on.

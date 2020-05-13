@@ -1,0 +1,13 @@
+Parameter:
+  <Article number/'followed-up'/'last'/'msg'>
+
+Description:
+  Displays article with the given number in the current conference.
+
+  If 'followed-up' is supplied the article last read article was a 
+  follow-up to is displayed.
+
+  If 'msg' is supplied, the last message received is displayed again.
+
+  If 'last' is supplied, the article last read with '(Display) next article'
+  or '(Display) next follow-up' is displayed.

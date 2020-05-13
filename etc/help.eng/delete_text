@@ -1,0 +1,11 @@
+Parameter:
+  <Article number/'followed-up'/'last')
+
+Description:
+  Article is deleted, assuming you have written it.
+
+  If 'followed-up' is supplied, the article last read article was a 
+  follow-up to is deleted.
+
+  If 'last' is supplied, the the article last read with '(Display) next
+  article' or '(Display) next follow-up'.

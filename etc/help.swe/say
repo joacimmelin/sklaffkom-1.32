@@ -1,0 +1,10 @@
+Argument:
+  <Anv{ndarnamn> (, <Meddelande>)
+
+Beskrivning:
+  Skickar meddelandet till den givna anv{ndaren, f|rutsatt att denna
+  {r inloggad.
+
+  Anger du inget meddelande p} kommandoraden kommer du fr}gas efter
+  nytt meddelande att skicka till de andra inloggade {nda tills du
+  trycker return p} en tom rad.

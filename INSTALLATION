@@ -1,0 +1,160 @@
+Installation instructions for SklaffKOM v1.11, 9 Mars 1996.
+
+What is SklaffKOM?
+------------------ 
+SklaffKOM is a computer-based conference system, much like KOM. It's a
+command-driven, simple groupware for interuser communication.  For
+rules and stuff regarding distribution of the program, see file
+COPYING.  This program is dedicated to the memory of Staffan
+Bergstrom, a BBS-user who died much to young.
+
+How to install SklaffKOM on your favorite UN*X system
+----------------------------------------------------- 
+SklaffKOM was never intended to be portable to every possible UN*X
+system around, but it seems to work nice with vanilla BSD and SysV
+systems. The program compiles ok with gcc and cc on SunOS, Interactive
+Unix, 386BSD, MT_XINU, DG/UX, LINUX, UNIXWARE and ULTRIX. I haven't
+tested it on any other systems, but I think it would be quite easy to
+get it up and running. Since I don't know very much about what differs
+between UNIX-systems, the various #defines are quite braindead. You
+probably have to change the #defines in some places for new systems.
+
+1. Create a user named "sklaff" on your system. This is the user that
+should own all files used by SklaffKOM and it's also the only person
+that is allowed to run the "sklaffadm" program for SklaffKOM
+administration. You should be able to login as sklaff and get a shell
+prompt.
+
+2. Unpack this archive somewhere, for example in /usr/local/src.  It
+is wise to do this when you are logged in as sklaff. Use for example
+the command line "uncompress < sklaff.tar.Z | tar xvof -".
+
+3. Configure SklaffKOM. There are a few files you must edit.  First
+edit the makefile in the sklaff-1.11 directory. If you're not using
+gcc, change CC to something else (cc) and modify "-O2" to "-O" in
+CFLAGS.  Define where you want the sklaff database to reside (default
+/usr/local/sklaff, it you change this, you must change in sklaff.h
+also) and where you want the exectables to go (default
+/usr/local/bin). Also define LIBS as the extra libraries you need.
+You must almost certainly change this for untested systems.
+
+The next file to edit is sklaff-1.11/sklaff.h. This file defines just
+about everything in SklaffKOM. Normally, you just have to change the
+following #defines.
+
+Target system, this is either BSD, SYSV, DG_UX, UNIXWARE, LINUX,
+ULTRIX, SUNOS or MT_XINU. SYSV means ISC v3.
+
+Language desired, this is either ENGLISH or SWEDISH. The database
+supports multiple languages so you can compile the system once again
+after changing this define if you want two different executables, one
+for each language. Remember to save to old "sklaffkom"-executable
+under a different name first so it won't get overwritten.
+
+MODEM_POOL - this variable contains the name of the terminal server
+(for BSD) or tty port (for SYSV) running as a modem pool. You only
+have to define this if you want to check if the people reaching
+SklaffKOM via the terminal server/tty have paid their fee. If you plan
+to setup SklaffKOM for free, define this as something silly (i.e.
+"silly").
+
+MODEM_GROUP - Group id for people who must pay to access SklaffKOM
+from the MODEM_POOL host/tty. All other groups may access SklaffKOM
+for free except INET_GROUP.
+
+INET_GROUP - Group id for people who only can access SklaffKOM from
+Internet and not from the MODEM_POOL host/tty. These people don't have
+to pay a fee.
+
+If the environment variable TERM is not set or set equal to the
+#define NO_TERM the #define SKLAFF_TERM is used for clearing the
+screen when SklaffKOM starts up.
+
+All other #defines may be left "as is", but you may want to browse
+through them to be sure everything looks ok. If you're planning to run
+SklaffKOM from another directory than /usr/local/sklaff, you have to
+change a lot of defines in this file, in the section "Files used by
+SklaffKOM".
+
+Programs used by SklaffKOM.  Check those and change them if any of
+your common programs reside somwhere else or needs options.  "ls" MUST
+output the filenames in ONE column, this is "ls -1" for BSD and just
+"ls" for SYSV in LSOPTIONS.  The *OPT #defines are quite akward, but I
+couldn't find any other way of solving the problem caused by the way
+execl works.
+
+You can browse through the "Change nothing below this line..." section
+to make sure everything gets defined ok for your system and make
+necessary changes.
+
+The rest of sklaff.h contains function prototypes for all functions in
+SklaffKOM, both for ANSI C and K&R C.
+
+4. Edit SklaffKOMs infofiles. These files reside in sklaff-1.11/etc
+and contains system-specific information. The files you should edit
+are.
+
+inet - File displayed if you're trying to access SklaffKOM from the
+MODEM_POOL and belong to the INET_GROUP group.
+
+pay - File displayed if you're trying to access SklaffKOM from the
+MODEM_POOL and belong to the MODEM_GROUP group and haven't paid your
+fee.
+
+newacct - File displayed by the sklaffacct-program containing a short
+presentation of SklaffKOM and instructions for applying for an
+account.
+
+news - Newsfile containing news about the system. Updated by "sklaff"
+and displayed everytime someone logs in.
+
+info - File displayed with the sklaffkom "information" command.
+Contains information about the system in general, i.e. machine, OS,
+version and so on.
+
+5. Time to make it. Just type "make" in sklaff-1.11 and wait. You may
+have to patch the source files a little to get it through the compiler
+if you're running a system we haven't tested. After a few minutes
+(fast system) you should have three executables, "sklaffkom",
+"sklaffacct" and "sklaffadm". DON'T try to run any of them yet,
+because it won't work.  NEVER STRIP SKLAFFKOM, IT NEEDS THE SYMBOL
+INFORMATION TO RUN.
+
+6. Become root and install SklaffKOM with "make install". This copies
+all executables to where you defined them to go. Don't worry about
+error messages here if they are ignored. 
+
+7. Install the database files (still as root). THIS DELETES ANY
+PREVIOUS DATABASE FILES, SO BE CAREFUL HERE! Just type "make
+installdb". This creates the directories etc, user and db and installs
+relevant databases for both swedish and english executables.
+
+8. Run "sklaffkom" to start the program (you can't run the program as
+root so login as something else). You should get a command prompt and
+should be able to end the program with "logout". If everything looks
+ok, you have probably made it.
+
+9. Normally, users start the program by typing "sklaffkom". If you
+like to use captive accounts, set the login shell to "sklaffkom".
+
+10. If you're using captive accounts, you may want to add an account
+for new users.  Do this by creating a user "account" or "konto"
+without a password and with "sklaffacct" as login shell.  "sklaffacct"
+allows a person to choose login name and password, then sends the
+account application by mail to user "sklaff".  All account
+applications are also logged in the file etc/acctlog.
+
+11. "sklaffadm" if fairly easy to use. Just type "sklaffadm" to get a
+list of possible commands.  Use this to delete texts and snoop around
+in the database, as well as disable and enable users and change their
+paydate (for how long they have paid, in format YYMMDD).
+
+12. The user documentationen for the system is available with an
+online "help" command. Detailed system documentation doesn't exists
+yet, but see the file ADDING for information on adding your own
+commands to SklaffKOM.
+
+13. SklaffKOM has a mailinglist called "sklaffkom-list@skom.se".  If
+you are interested in discussions about SklaffKOM, please join this
+list by mailing "sklaffkom-list-request@skom.se".  For questions and
+bug-reports mail "sklaff@skom.se".

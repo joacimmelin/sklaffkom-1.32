@@ -1,0 +1,7 @@
+Parameter:
+  (<Search string>)
+
+Description:
+  This command displays article number, name of author and the subject
+  of all articles in the current conference. If a seach string is supplied
+  only subjects containing the search string is displayed.

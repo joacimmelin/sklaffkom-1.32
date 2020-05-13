@@ -1,0 +1,8 @@
+Beskrivning:
+  Listar alla m|ten som finns i systemet - undantaget de hemliga m|ten
+  du inte har r{ttigheter i, samt det totala antalet skrivna texter
+  i m|tet.
+
+  [r du inte medlem i ett m|te visas en asterisk (*) framf|r m|tes-
+  namnet.  [r du skapare av m|tet visas ett "S" f|re m|tenamnet. 
+  Inneh}ller m|tet filer visas ett "F" f|re m|tesnamnet.

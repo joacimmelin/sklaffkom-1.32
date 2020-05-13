@@ -1,0 +1,8 @@
+Argument:
+  (<Meddelande>)
+
+Beskrivning:
+  Skickar meddelandet till alla inloggade anv{ndare.  Anger du inget
+  meddelande p} kommandoraden kommer du fr}gas efter nytt meddelande
+  att skicka till de andra inloggade {nda tills du trycker return p}
+  en tom rad.

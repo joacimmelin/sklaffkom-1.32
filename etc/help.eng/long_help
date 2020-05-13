@@ -1,0 +1,6 @@
+Parameter:
+  (<Command name>)
+
+Description:
+  Displays help for the given command. If no command is supplied information
+  about the help system is displayed.

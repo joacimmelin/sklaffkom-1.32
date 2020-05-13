@@ -1,0 +1,13 @@
+Argument:
+  <Textnummer/'kommenterade'/'senaste'/'s{g'>
+
+Beskrivning:
+  L{ser texten med det angivna textnumret i aktuellt m|te.
+
+  Anges 'kommenterade' l{ses den text som den senast l{sta texten var
+  kommentar till.
+
+  Anges 's{g' visar den senaste s{gen igen.
+
+  Anges 'senaste' l{ses den text som senast l{sts med '(L{sa) n{sta
+  text' eller '(L{sa) n{sta kommentar'.

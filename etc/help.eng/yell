@@ -1,0 +1,9 @@
+Parameter:
+  (<Message>)
+
+Description:
+  Sends message to all logged in users. 
+
+  If no message is supplied at the command line, you will by prompted
+  for a message. If you enter a message here, you will be prompted for
+  another one until you supply an empty message.

@@ -1,0 +1,6 @@
+Parameter:
+  <Conference name>
+
+Description:
+  Enters the given conference. If you are not subscribing to it, you
+  are prompted for subscription.

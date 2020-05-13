@@ -1,0 +1,7 @@
+Argument:
+  (<M|tesnamn>)
+
+Beskrivning:
+  Ol{smarkerar de texter du gjort "Ol{s text" p} direkt ist{llet
+  f|r n{r du loggar ut. Om du anger ett m|tesnamn s} {r det endast
+  de texter du gjort "Ol{s text" p} i det m|tet som tas med.

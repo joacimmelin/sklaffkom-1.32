@@ -1,0 +1,7 @@
+Parameter:
+  <File name>
+
+Description:
+  Deletes a specific file from the current conference. Wildcards are not
+  accepted.
+

@@ -1,0 +1,6 @@
+Argument:
+  (<M|tesnamn>)
+
+Beskrivning:
+  Listar de anv{ndare som {r medlemmar i det angivna m|tet (anges
+  inget m|tesnamn listas medlemmar i det aktuella m|tet).

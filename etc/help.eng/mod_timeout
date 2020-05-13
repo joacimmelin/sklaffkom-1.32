@@ -1,0 +1,6 @@
+Description:
+  Changes your inactivity timeout limit (in minutes).
+
+  If you remain inactive for a number of minutes equaling your
+  timeout period, you will be logged out. Zero minutes equals
+  no timeout.

@@ -1,0 +1,15 @@
+Argument:
+  (<Textnummer/'kommenterade'/'senaste'>)
+
+Beskrivning:
+  Detta kommando g|r s} att texten med det angivna textnumret
+  ol{smarkeras n{r du loggar ut, s} att du p} nytt f}r l{sa texten
+  n{sta g}ng du loggar in i systemet.
+
+  Anges 'kommenterade' ol{smarkeras den text som den senast l{sta
+  texten var kommentar till.
+
+  Anges 'senaste' ol{smarkeras den text som senast l{sts med '(L{sa)
+  n{sta text' eller '(L{sa) n{sta kommentar'.
+
+  Anges inget textnummer ol{smarkeras den senast l{sta texten.

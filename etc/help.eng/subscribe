@@ -1,0 +1,5 @@
+Parameter:
+  <Conference name>
+
+Description:
+  Makes you a subscriber of the given conference, if you are allowed to.

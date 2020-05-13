@@ -1,0 +1,95 @@
+Sat Jan 11 17:01:21 1997  Olof Runborg  <olofr@c2m2-12.nada.kth.se>
+
+	* survreport.c (argv): 
+
+	* Fixed a bug in the file locking. Under SOLARIS files
+	were not locked properly, which e.g. resulted in a loss of
+	survey replies when two users took the same survey at
+	the same time. Question mark remains as to whether the 
+	file locking works under Linux.
+
+	* Made some minor changes in the handling of the
+	at command (for survey reports).
+
+	* Added code in survreport.c to change ownership
+	and group of survey reports.
+	
+Thu Jan  9 15:58:01 1997  Olof Runborg  <olofr@c2m2-12.nada.kth.se>
+
+	* Version 1.28 released.
+
+	* edit.c (mailrec;): Added help text for surveys.
+
+	* survreport.c (argv): New separate program that
+	reports surveys. Moved summary information report
+	to this program. Handle survery reporting via at
+	command.
+
+	* During readsome and readall, users are not prompted
+	for survey replies.
+
+Sat Jan  4 20:30:41 1997  Olof Runborg  <olofr@c2m2-12.nada.kth.se>
+
+	* sklaffadm.c (argv): Exclude surveys when the sklaffadm
+	'purge' command is run. Surveys are not deleted.
+
+	Earlier: 
+
+	- Fixed a bug that crashed the system when very
+	  long mail addresses were used.
+	- Added the "result" command for displaying full
+	  survey results (raw data).
+	- Made survey reports in summary form, for the different
+	  question types.
+
+Thu Jan  2 16:10:46 1997  Olof Runborg  <olofr@c2m2-12.nada.kth.se>
+
+	* Ported SklaffKOM to Solaris systems.
+
+	* Version 1.27, added surveys. New file: survey.c. Fixed
+	a bug in edit.c; messages sent from within the editor were
+	converted to lower case.
+
+Sun Dec 22 14:28:16 1996  S|derKOM administration  <sklaff@skom.skom.se>
+
+	* Reinvented the wheel. The cmd_answermsg() function didn't take
+	into account that the found message could be one that you sent
+	yourself. This I fixed in a version that I never released officially,
+	so I can't blame anyone except myself. Anyways, here is 1.27.
+
+Sun Dec 22 09:23:57 1996  Peter Lindberg  <peter@skom.skom.se>
+
+	* Bunch of stuff added for surveys. Released as 1.26.
+
+Sun Dec  8 17:35:54 1996  S|derKOM administration  <sklaff@skom.skom.se>
+
+	* commands.c (cmd_read_last_text): Added this function which
+	simply displays the 'last' read new text.
+
+	* msg.c (display_msg): If the Presbeep flag is set, 'I' messages
+	doesn't beep. This is due to a request from the impossible man,
+	although the semantics for the flag is freaked out.
+	Also made the list interruptible.
+
+	* commands.c (cmd_answermsg): Fixed so that it answers to the
+	right user, i.e. the one from which the LAST RECEIVED 'SAY' was
+	from, not the last message regardless of type.
+
+Sat Dec  7 21:20:37 1996  S|derKOM administration  <sklaff@skom.skom.se>
+
+	* msg.c: Added a guard in list_mlist() so that max never is too
+	high, which can cause enormous swapping.
+
+	* Released versions 1.23 and 1.24. Added commands for displaying
+	the last received and sent say/shout/I messages. Also extended
+	the buffer so that it can 'remember' an unlimited number of
+	messages. It makes the users happy.
+
+Sun Nov 24 19:50:50 1996  S|derKOM administration  <sklaff@skom.skom.se>
+
+	* Time to start all over. The old ChangeLog hadn't been updated
+	for years. Anyway, I have now fixed the bug that made sklaff
+	crash when requesting help for certain commands. Then I added
+	the URL field in the user information and finally added the toy
+	command "from". I also made some commands silent when used in
+	the "login scripts".

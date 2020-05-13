@@ -1,0 +1,27 @@
+SklaffKOMs hj{lpsystem inneh}ller hj{lp om varje kommando som finns
+och f|r att f} hj{lp om ett s{rskilt kommando, till exempel '(Skriv)
+brev', skriver du:
+
+  (Se) tiden - hj{lp brev
+
+varp} en hj{lptext om kommandot visas.  Hj{lptexterna {r indelade i
+de olika sektionerna: 
+
+  (1) Kommando:  Denna sektion inneh}ller kommandot du vill ha hj{lp
+      med, och alla synonymer till kommandot.
+
+  (2) Argument:  I denna sektion st}r eventuella argument som
+      kommandot tar eller kr{ver.
+
+      Ett argument {r n}gonting du 'skickar med' kommandot, dvs
+      skriver efter kommandonamnet. (Ibland brukar det kallas
+      parametrar.)
+
+  (3) Beskrivning:  H{r beskrivs kommandot, hur det fungerar, etc.
+
+  (4) Observera:  Denna sektion inneh}ller eventuell viktig
+      information som kr{vs f|r att anv{nda kommandot.
+
+  (5) Bakgrund:  F|r vissa kommandon beskrivs {ven den historiska
+      bakgrunden till det.  Detta {r ingenting som kr{vs f|r att
+      f|rst} hur man anv{nder kommandot, utan mer f|r n|jes skull.

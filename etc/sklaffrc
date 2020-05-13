@@ -1,0 +1,23 @@
+![flags]
+shout = 1
+say = 1
+present = 1
+ibm = 0
+iso8859 = 0
+mac = 0
+subject_change = 1
+end_default = 0
+space = 0
+copy = 1
+author = 0
+date = 0
+beep = 1
+header = 0
+strip = 0
+presbeep = 0
+![timeout]
+0
+![paid]
+yes
+![paydate]
+0

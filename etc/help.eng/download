@@ -1,0 +1,6 @@
+Parameter:
+  <File name>
+
+Description:
+  Download file(s) from the current conference, the Zmodem protocol is used.
+  Wildcards is accepted.

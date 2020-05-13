@@ -1,0 +1,9 @@
+Argument:
+  <Kommando>, <Alias>
+
+Beskrivning:
+  Skapar ett "alias" till ett kommando, det vill s{ga ett nytt namn
+  p} kommandot.
+
+  Skriver du "alias vilka, *" s} kan du skriva "*" f|r att f} en
+  aktuell vilkalista.

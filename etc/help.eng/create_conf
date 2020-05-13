@@ -1,0 +1,21 @@
+Parameter:
+  (<Conference name>)
+
+Description:
+  Creates a new conference with the given name. You are also asked
+  for the type of conference, open, closed, secret or news.
+
+  An open conference is open for everyone to subscribe to.
+
+  A closed or secret conference is only open to those tho have had
+  permissions added by the conference-creator.
+
+  A secret conference is invisible to all others except those who
+  have permissions to it.
+
+  A news conference is linked to the usenet-conference by the same
+  name. All texts written here is posted as news.
+
+Observe:
+  Always make a conference secret if you create it for a special
+  group of people and not for a special subject.

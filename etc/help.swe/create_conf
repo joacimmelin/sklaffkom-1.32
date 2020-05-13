@@ -1,0 +1,22 @@
+Argument:
+  (<M|tesnamn>)
+
+Beskrivning:
+  Skapar ett nytt m|te med det angivna namnet.  Du fr}gas dessutom om
+  m|tet ska vara |ppet, slutet, hemligt eller news.
+
+  Ett |ppet m|te f}r alla bli medlem, l{sa samt skriva i.
+
+  Ett slutet eller ett hemligt m|te f}r endast de som m|tets skapare
+  ger r{ttigheter bli medlem, l{sa samt skriva i.
+
+  Ett hemligt m|te {r dessutom osynligt f|r alla utom de med
+  r{ttigheter i det, dvs att det inte visas i m|teslistor, etc.
+
+  News-m|ten {r kopplade till usenet-m|ten med samma namn, men
+  fungerar i |vrigt som |ppna m|ten.  Alla texter och kommentarer som
+  skrivs h{r skickas iv{g av inews eller liknande.
+
+Observera:
+  T{nk p} att g|ra m|tet hemligt om du skapar ett utom intresse f|r
+  andra {n m|tets tillt{nkta medlemmar.

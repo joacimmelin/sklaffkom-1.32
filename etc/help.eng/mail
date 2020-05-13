@@ -1,0 +1,9 @@
+Parameter:
+  <User name>
+
+Description:
+  This command in used to send mail to another user. Mail is always
+  personal and can only be read by the person being mailed to.
+
+  If you enter a email-adress (eg 'calle@skom.se') instead of a
+  username, a email is sent instead.

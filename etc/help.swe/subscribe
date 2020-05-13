@@ -1,0 +1,6 @@
+Argument:
+  <M|tesnamn>
+
+Beskrivning:
+  Kommandot g|r dig medlem i det angivna m|tet, f|rutsatt att du har
+  r{ttigheter i m|tet.

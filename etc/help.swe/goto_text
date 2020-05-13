@@ -1,0 +1,18 @@
+Argument:
+  <Textnummer/'kommenterade'/'senaste'>
+
+Beskrivning:
+  Kommandot ol{smarkerar texten med det angivna textnumret, och alla
+  dess kommentarer, och dess kommentarers kommentarer och s} vidare.
+
+  Anges 'kommenterade' ol{smarkeras den text som den senast l{sta
+  texten var kommentar till, samt alla dess kommentarer.
+
+  Anges 'senaste' ol{smarkeras den text som senast l{sts med '(L{sa)
+  n{sta text' eller '(L{sa) n{sta kommentar', samt alla dess
+  kommentarer.
+
+Exempel:
+  Antag att text 4 har kommentarerna 5 och 7 samt att text fem har
+  kommentarerna 6 och 8.  Anger du d} 4 som textnummer kommer texterna
+  4, 5, 6, 7 och 8 att ol{smarkeras.

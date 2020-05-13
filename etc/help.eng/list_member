@@ -1,0 +1,6 @@
+Parameter:
+  (<Conference name>)
+
+Description:
+  Lists all subscribers to the given conference, or current conference if
+  no conference is supplied.

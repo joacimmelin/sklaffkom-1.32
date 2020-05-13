@@ -1,0 +1,6 @@
+Argument:
+  (<Kommandonamn>)
+
+Beskrivning:
+  Visar hj{lp om det angivna kommandot.  Anges inget kommandonamn
+  visas en fil som f|rklarar hur hj{lpsystemet fungerar.
