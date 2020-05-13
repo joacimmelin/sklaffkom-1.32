@@ -27,12 +27,16 @@
 
 #include "sklaff.h"
 #include "ext_globals.h"
-#ifdef SOLARIS
+#include <stdlib.h>
+#if defined(SOLARIS) || defined(FREEBSD)
 #include <utmpx.h>
 #else
 #include <utmp.h>
 #endif
 #include <fcntl.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <sys/socket.h>
@@ -42,9 +46,51 @@
  * ret: pointer to hostname string or NULL
  */
 
-char	*get_hostname()
+#ifdef FREEBSD
+
+#define KOM_MAX_HOST 256
+
+char *get_hostname()
 {
-#ifdef SOLARIS
+    static char myhost[KOM_MAX_HOST + 1];
+    struct utmpx ul, *u;
+    char *tty;
+    struct hostent *h;
+
+    strncpy(myhost, "N/A", sizeof(KOM_MAX_HOST));
+    tty = ttyname(STDIN_FILENO);
+    if (tty == NULL)
+        return myhost;
+    memset(&ul, 0, sizeof(ul));
+    strlcpy(ul.ut_line, tty + strlen("/dev/"), sizeof(ul.ut_line));
+    u = getutxline(&ul);
+    if (u == NULL)
+        return myhost;
+    strncpy(myhost, u->ut_host, KOM_MAX_HOST);
+
+    h = gethostbyname(myhost);
+    if (h == NULL) {
+        int family = AF_INET;
+        socklen_t len = sizeof(struct sockaddr_in);
+        unsigned char addr[sizeof(struct in6_addr)];
+        if (inet_pton(family, myhost, addr) < 0) {
+            family = AF_INET6;
+            len = sizeof(struct sockaddr_in6);
+            if (inet_pton(family, myhost, addr) < 0)
+                return myhost;
+        }
+        h = gethostbyaddr(addr, len, family);
+    }
+    if (h == NULL)
+        return myhost;
+    strlcpy(myhost, h->h_name, sizeof(myhost));
+
+    return myhost;
+}
+#else
+char *get_hostname()
+{
+#if defined(SOLARIS)
     struct utmpx ut;
 #else
     struct utmp ut;
@@ -89,5 +135,4 @@ char	*get_hostname()
     strcpy(my_host, ptr);
     return my_host;
 }
-
-
+#endif

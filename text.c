@@ -2175,11 +2175,9 @@ char *rec, *subject, *inbuf;
  * cnvcat - convert characters in string - by Daniel Gr|njord
  */
 
-void cnvnat(str, ch)
-char *str;
-int ch;
+void cnvnat(char *str, int ch)
 {
-  unsigned char *c;
+  char *c;
 
   if (!Ibm && !Iso8859 && !Mac)
     return;
@@ -2188,32 +2186,32 @@ int ch;
   while (*c) {
       if (Ibm) {
 	  switch (*c) {
-	  case '}':  *c = 134; break;
-	  case '{':  *c = 132; break;
-	  case '|':  *c = 148; break;
-	  case ']':  *c = 143; break;
-	  case '[':  *c = 142; break;
-	  case '\\': *c = 153; break;
+	  case '}':  *c = (char)134; break;
+	  case '{':  *c = (char)132; break;
+	  case '|':  *c = (char)148; break;
+	  case ']':  *c = (char)143; break;
+	  case '[':  *c = (char)142; break;
+	  case '\\': *c = (char)153; break;
 	  }
       }
       else if (Iso8859) {
 	  switch (*c) {
-	  case '}':  *c = 229; break;
-	  case '{':  *c = 228; break;
-	  case '|':  *c = 246; break;
-	  case ']':  *c = 197; break;
-	  case '[':  *c = 196; break;
-	  case '\\': *c = 214; break;
+	  case '}':  *c = (char)229; break;
+	  case '{':  *c = (char)228; break;
+	  case '|':  *c = (char)246; break;
+	  case ']':  *c = (char)197; break;
+	  case '[':  *c = (char)196; break;
+	  case '\\': *c = (char)214; break;
 	  }
       }
       else if (Mac) {
 	  switch (*c) {
-	  case '}':  *c = 140; break;
-	  case '{':  *c = 138; break;
-	  case '|':  *c = 154; break;
-	  case ']':  *c = 129; break;
-	  case '[':  *c = 128; break;
-	  case '\\': *c = 133; break;
+	  case '}':  *c = (char)140; break;
+	  case '{':  *c = (char)138; break;
+	  case '|':  *c = (char)154; break;
+	  case ']':  *c = (char)129; break;
+	  case '[':  *c = (char)128; break;
+	  case '\\': *c = (char)133; break;
 	  }
       }
       c++;

@@ -120,14 +120,15 @@ int wrap;
 int hist;
 {
     int len, hptr, ltop;
-    unsigned char c, outc, *p, *i, *space, *ptr;
+    char *p, *i, *space, *ptr;
+    unsigned char c, outc;
     
     Lines = 1;
     hptr = Comtop;
     ltop = Comtop;
     if (strlen(in_str) >= max_len) {
 	strncpy(out_str, in_str, (max_len - 1));
-	p = (unsigned char *)out_str;
+	p = out_str;
 	p += (max_len - 1);
 	*p = '\0';
     }
@@ -197,9 +198,9 @@ int hist;
 		if (wrap) {
 		    out_str[len++] = (char)c;
 		    out_str[len] = '\0';
-		    space = (unsigned char *)strrchr(out_str, ' ');
+		    space = strrchr(out_str, ' ');
 		    if (!space) {
-		        space = (unsigned char *)out_str + max_len - 5;
+		        space = out_str + max_len - 5;
 			strcpy(Overflow, space);
 			*space = '\0';
 			ptr = space;
@@ -229,8 +230,8 @@ int hist;
 	    output("\b \b");
 	}
 	else if ((c == 23) && (len > 0)) {
-	    p = (unsigned char *)out_str + len;
-	    i = (unsigned char *)out_str;
+	    p = out_str + len;
+	    i = out_str;
 	    while ((*(p - 1) == ' ') && (len > 0)) {
 		p--;
 		len--;
@@ -302,14 +303,15 @@ int hist;
 int low, hi;
 {
     int len, hptr, ltop;
-    unsigned char c, outc, *p, *i, *space, *ptr;
+    unsigned char c, outc;
+    char *p, *i, *space, *ptr;
     
     Lines = 1;
     hptr = Comtop;
     ltop = Comtop;
     if (strlen(in_str) >= max_len) {
 	strncpy(out_str, in_str, (max_len - 1));
-	p = (unsigned char *)out_str;
+	p = out_str;
 	p += (max_len - 1);
 	*p = '\0';
     }
@@ -379,8 +381,8 @@ int low, hi;
 		if (wrap) {
 		    out_str[len++] = (char)c;
 		    out_str[len] = '\0';
-		    space = (unsigned char *)strrchr(out_str, ' ');
-		    if (!space) space = (unsigned char *)out_str + max_len - 5;
+		    space = strrchr(out_str, ' ');
+		    if (!space) space = out_str + max_len - 5;
 		    *space = '\0';
 		    ptr = space;
 		    space++;
@@ -404,8 +406,8 @@ int low, hi;
 	    output("\b \b");
 	}
 	else if ((c == 23) && (len > 0)) {
-	    p = (unsigned char *)out_str + len;
-	    i = (unsigned char *)out_str;
+	    p = out_str + len;
+	    i = out_str;
 	    while ((*(p - 1) == ' ') && (len > 0)) {
 		p--;
 		len--;

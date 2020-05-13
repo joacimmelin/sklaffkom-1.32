@@ -47,12 +47,14 @@ int output(char * fmt,...)
     return 0;
 }
 */
-int output(char * fmt,...)
+int output(char *fmt,...)
 {
     va_list args;
-    unsigned char *tmp, *tmp2, c, *p1, *p2;
-    unsigned char fmt2[HUGE_LINE_LEN], outline[HUGE_LINE_LEN];
-    unsigned char tmpline[LONG_LINE_LEN];
+    unsigned char c;
+    char *tmp, *tmp2;
+    char *p1, *p2;
+    char fmt2[HUGE_LINE_LEN], outline[HUGE_LINE_LEN];
+    char tmpline[LONG_LINE_LEN];
     
     va_start( args, fmt );
     vsprintf( fmt2, fmt, args );
@@ -69,28 +71,28 @@ int output(char * fmt,...)
                 *tmp2 = '\n';
             }
             if (Ibm) {
-                if (*tmp2 == '}') *tmp2 = 134;
-                else if (*tmp2 == '{') *tmp2 = 132;
-                else if (*tmp2 == '|') *tmp2 = 148;
-                else if (*tmp2 == ']') *tmp2 = 143;
-                else if (*tmp2 == '[') *tmp2 = 142;
-                else if (*tmp2 == 0x5c) *tmp2 = 153;
+                if (*tmp2 == '}') *tmp2 = (char)134;
+                else if (*tmp2 == '{') *tmp2 = (char)132;
+                else if (*tmp2 == '|') *tmp2 = (char)148;
+                else if (*tmp2 == ']') *tmp2 = (char)143;
+                else if (*tmp2 == '[') *tmp2 = (char)142;
+                else if (*tmp2 == 0x5c) *tmp2 = (char)153;
             }
             else if (Iso8859) {
-                if (*tmp2 == '}') *tmp2 = 229;
-                else if (*tmp2 == '{') *tmp2 = 228;
-                else if (*tmp2 == '|') *tmp2 = 246;
-                else if (*tmp2 == ']') *tmp2 = 197;
-                else if (*tmp2 == '[') *tmp2 = 196;
-                else if (*tmp2 == 0x5c) *tmp2 = 214;
+                if (*tmp2 == '}') *tmp2 = (char)229;
+                else if (*tmp2 == '{') *tmp2 = (char)228;
+                else if (*tmp2 == '|') *tmp2 = (char)246;
+                else if (*tmp2 == ']') *tmp2 = (char)197;
+                else if (*tmp2 == '[') *tmp2 = (char)196;
+                else if (*tmp2 == 0x5c) *tmp2 = (char)214;
             }
             else if (Mac) {
-                if (*tmp2 == '}') *tmp2 = 140;
-                else if (*tmp2 == '{') *tmp2 = 138;
-                else if (*tmp2 == '|') *tmp2 = 154;
-                else if (*tmp2 == ']') *tmp2 = 129;
-                else if (*tmp2 == '[') *tmp2 = 128;
-                else if (*tmp2 == 0x5c) *tmp2 = 133;
+                if (*tmp2 == '}') *tmp2 = (char)140;
+                else if (*tmp2 == '{') *tmp2 = (char)138;
+                else if (*tmp2 == '|') *tmp2 = (char)154;
+                else if (*tmp2 == ']') *tmp2 = (char)129;
+                else if (*tmp2 == '[') *tmp2 = (char)128;
+                else if (*tmp2 == 0x5c) *tmp2 = (char)133;
             }
             tmp2++;
         }
@@ -161,7 +163,7 @@ int output(char * fmt,...)
 
 /* Output for external applications */
 
-int outputex(char * fmt,...)
+int outputex(char *fmt,...)
 {
     va_list args;
     

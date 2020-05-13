@@ -48,7 +48,8 @@ int allow_abort;
 int *nc;
 char *mailrec;
 {
-    unsigned char c, *space, *cptr, *j, *p, outc, lastchar, *confname, c2;
+    unsigned char c, c2;
+    char *space, *cptr, *j, *p, outc, lastchar, *confname;
     char *buf, *oldbuf;
     LINE waste, cmd, arg, newname, upcasearg;
     int fd, len, count, edit_line, buflen, i, newconf, origconf, marcel, qt;
@@ -82,9 +83,9 @@ char *mailrec;
     if ((fd = open(fname, O_RDONLY)) != -1) {
 	close(fd);
 	fd = open_file(fname, 0);
-	if ((cptr = (unsigned char *)read_file(fd)) == NULL) return NULL;
+	if ((cptr = read_file(fd)) == NULL) return NULL;
 	buflen = file_size(fd);
-	space = (unsigned char *)ptr->line;
+	space = ptr->line;
 	while(buflen) {
 	    if (*cptr == '\n') {
 		*space = '\0';
@@ -100,7 +101,7 @@ char *mailrec;
 		ptr->previous = tmpptr;
 		ptr->next = NULL;
 		ptr->line[0] = '\0';
-		space = (unsigned char *)ptr->line;
+		space = ptr->line;
 		cptr++;
 	    }
 	    else {
@@ -163,8 +164,8 @@ char *mailrec;
 		else {
 		    ptr->line[len++] = (char)c;
 		    ptr->line[len] = '\0';
-		    space = (unsigned char *)strrchr(ptr->line, ' ');
-		    if (!space) space = (unsigned char *)ptr->line + 65;
+		    space = strrchr(ptr->line, ' ');
+		    if (!space) space = ptr->line + 65;
 		    *space = '\0';
 		    space++;
 		    strcpy(waste, space);
@@ -214,8 +215,8 @@ char *mailrec;
 		}
 	    }
 	    else if ((c == 23) && (len > 0)) {
-		p = (unsigned char *)ptr->line + len;
-		j = (unsigned char *)ptr->line;
+		p = ptr->line + len;
+		j = ptr->line;
 		while ((*(p - 1) == ' ') && (len > 0)) {
 		    p--;
 		    len--;
@@ -324,7 +325,7 @@ char *mailrec;
 	}
 	
 	if (ptr->line[0] == '!') {
-	    space = (unsigned char *)strchr(ptr->line, ' ');
+	    space = strchr(ptr->line, ' ');
 	    arg[0] = '\0';
 	    upcasearg[0] = '\0';
 	    if (space) {
@@ -374,9 +375,9 @@ char *mailrec;
 			    output("%s\n\n", MSG_BADFNAME);
 			}
 			else {
-			    cptr = (unsigned char *)read_file(fd);
+			    cptr = read_file(fd);
 			    buflen = file_size(fd);
-			    space = (unsigned char *)ptr->line;
+			    space = ptr->line;
 			    ll = 0;
 			    while(buflen) {
 				if (*cptr == '\n') {
@@ -395,7 +396,7 @@ char *mailrec;
 				    ptr->previous = tmpptr;
 				    ptr->next = NULL;
 				    ptr->line[0] = '\0';
-				    space = (unsigned char *)ptr->line;
+				    space = ptr->line;
 				    cptr++;
 				}
 				else {
