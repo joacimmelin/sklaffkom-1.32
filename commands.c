@@ -30,6 +30,7 @@
 #include <pwd.h>
 #include <signal.h>
 #include <sys/stat.h>
+#include <sys/wait.h>
 
 /*
  * cmd_sendbatch - send all texts in database format, zipped
@@ -94,7 +95,7 @@ char *args;
     struct {
 	long number;
 	int uid;
-	long wtime;
+	time_t wtime;
 	long comnum;
 	int comcnf;
 	int comuid;
@@ -183,7 +184,7 @@ char *args;
     nbuf = (char *)malloc(100000);
     bzero(nbuf, 100000);
     
-    while (buf = get_confs_entry(buf, &cse)) {
+    while ((buf = get_confs_entry(buf, &cse)) != NULL) {
 	free_confs_entry(&cse);
 	conf_name(cse.num, cname);
 	sprintf(tmpline, "%d:%s\n", cse.num, cname);
@@ -205,7 +206,7 @@ char *args;
 
     start = NULL;
     buf = oldbuf;
-    while (buf = get_confs_entry(buf, &cse)) {
+    while ((buf = get_confs_entry(buf, &cse)) != NULL) {
 	free_confs_entry(&cse);
 	if (next_text(cse.num)) {
 	    output(".");
@@ -216,7 +217,7 @@ char *args;
 		return -1;
 	    }
 	    lseek(fd, 0L, 0);
-	    while (num = next_text(cse.num)) {
+	    while ((num = next_text(cse.num)) != 0) {
 		if (cse.num > 0) 
 		    sprintf(cname, "%s/%d/%ld", SKLAFF_DB, cse.num, num);
 		else 
@@ -393,9 +394,9 @@ char *args;
 		fwrite(msint, 4, 1, nep);               /* Rec pointer */
 		filler[0] = 0;
 		fwrite(&filler, 1, 1, nep);             /* Unused */
-		ssc = sscanf(sbuf, "%ld:%d:%ld:%ld:%d:%d:%d",
+		ssc = sscanf(sbuf, "%ld:%d:%lld:%ld:%d:%d:%d",
 			     &txt.number, &txt.uid,
-			     &txt.wtime, &txt.comnum, &txt.comcnf, &txt.comuid,
+			     (long long *)&txt.wtime, &txt.comnum, &txt.comcnf, &txt.comuid,
 			     &txt.lines);
 		if (ssc != 7 || ssc == EOF) {
 		    output("Error while parsing %s\n", sbuf);
@@ -477,7 +478,7 @@ char *args;
 		for (l = 0; l < txt.lines; l++) {
 		    fgets(sbuf, 127, msf); /* Get text */
 		    cnvnat(sbuf, ch);
-		    sbuf[strlen(sbuf) - 1] = 227; /* Replace nl */
+		    sbuf[strlen(sbuf) - 1] = (char)227; /* Replace nl */
 		    msg_size += fprintf(mep, "%s", sbuf); /* Write text */
 		}
 		blocks = (int) (msg_size / 128L + (msg_size % 128L > 0)) + 1;
@@ -2137,9 +2138,9 @@ char *args;
     if (!commentuid) {
 	tb = te.body;
 	while (tb) {
-	    if (ptr2 = strstr(tb->line, MSG_EMFROM)) break;
-	    else if (ptr2 = strstr(tb->line, MSG_EMFROM2)) break;
-	    else if (ptr2 = strstr(tb->line, MSG_EMFROM3)) break;
+	    if ((ptr2 = strstr(tb->line, MSG_EMFROM)) != NULL) break;
+	    else if ((ptr2 = strstr(tb->line, MSG_EMFROM2)) != NULL) break;
+	    else if ((ptr2 = strstr(tb->line, MSG_EMFROM3)) != NULL) break;
 	    tb = tb->next;
 	}
 	ptr2 = ptr2 + strlen(MSG_EMFROM);
@@ -2502,9 +2503,9 @@ char *args;
     if (!commentuid) {
 	tb = te.body;
 	while (tb) {
-	    if (ptr2 = strstr(tb->line, MSG_EMFROM)) break;
-	    else if (ptr2 = strstr(tb->line, MSG_EMFROM2)) break;
-	    else if (ptr2 = strstr(tb->line, MSG_EMFROM3)) break;
+	    if ((ptr2 = strstr(tb->line, MSG_EMFROM)) != NULL) break;
+	    else if ((ptr2 = strstr(tb->line, MSG_EMFROM2)) != NULL) break;
+	    else if ((ptr2 = strstr(tb->line, MSG_EMFROM3)) != NULL) break;
 	    tb = tb->next;
 	}
 	ptr2 = ptr2 + strlen(MSG_EMFROM);
@@ -3232,7 +3233,7 @@ char *args;
 	sprintf(subba, "%d", intime);
 	output("\n%s %d %s\n\n", MSG_TIMESET, intime, MSG_MINUTES);
 	strcpy(rc->timeout, subba);
-	if (rc->timeout) {
+	if (rc->timeout[0] != '\0') {
 	    Timeout = atoi(rc->timeout);
 	    if (Timeout) {
 		alarm(60 * Timeout);
@@ -3624,7 +3625,7 @@ char *args;
     }
     origbuf = buf;
     ce.num = 0;
-    while (buf = get_conf_entry(buf, &ce)) {
+    while ((buf = get_conf_entry(buf, &ce)) != NULL) {
 	if (ce.num == c_num) {
 	    break;
 	}
@@ -3726,7 +3727,7 @@ char *args;
 
     origbuf = buf;
     ce.num = 0;
-    while (buf = get_conf_entry(buf, &ce)) {
+    while ((buf = get_conf_entry(buf, &ce)) != NULL) {
 	if (ce.num == c_num) {
 	    break;
 	}
@@ -3803,7 +3804,7 @@ char *args;
 	return -1;
     }
 
-    while (mbuf = get_conf_entry(mbuf, &ce)) {
+    while ((mbuf = get_conf_entry(mbuf, &ce)) != NULL) {
         if (ce.comconf == c_num) break;
     }
 
@@ -3828,7 +3829,7 @@ char *args;
 	}
 	origbuf = buf;
 	ce.num = 0;
-	while ((buf = get_conf_entry(buf, &ce))) {
+	while ((buf = get_conf_entry(buf, &ce)) != NULL) {
 	    if (ce.num == c_num) {
 		break;
 	    }
@@ -4207,12 +4208,12 @@ char *args;
     length = 0;
     foundany = 0;
     output("\n");
-    while ((buf = get_confs_entry(buf, &cse))) {
+    while ((buf = get_confs_entry(buf, &cse)) != NULL) {
       conf_name(cse.num, confname);
       cnum = cse.num; /* Added. OR 12/8/99 */
       free_confs_entry(&cse);
       if (buf) {
-	while (length) {
+	while (length != 0) {
 	  output("\b \b");
 	  length--;
 	}
@@ -4236,14 +4237,14 @@ char *args;
 
     if (foundany) {
       if (res == 0) {
-	while (length) {
+	while (length != 0) {
 	  output("\b \b");
 	  length--;
 	}
       }
     }
     else {
-	while (length) {
+	while (length != 0) {
 	  output("\b \b"); 
 	    length--;
 	}
@@ -4454,7 +4455,7 @@ char *args;
 
     output("\n%s\n%s\n", MSG_FILEHEAD, MSG_LINEROW);
 
-    while (buf) {
+    while (buf != NULL) {
 	buf = get_file_entry(buf, &fe);
 	if (buf) {
 	    sprintf(fn, "%s/%d/%s", FILE_DB, Current_conf, fe.name);
@@ -4529,7 +4530,7 @@ char *args;
 
     close_file(fd);
 
-    while (buf) {
+    while (buf != 0) {
 	buf = get_file_entry(buf, &fe);
 	if (buf) {
 	    if (!strcmp(fname, fe.name)) {
@@ -5034,7 +5035,7 @@ char *args;
 
     max = 1000000;
     down_string(sub);
-    if (ptr = strchr(sub, ',')) {
+    if ((ptr = strchr(sub, ',')) != NULL) {
 	save = ptr;
 	ptr--;
 	while (*ptr == ' ') ptr--;
@@ -5114,7 +5115,7 @@ char *args;
     down_string(sub);
     count = 0;
     start = NULL;
-    while (num = next_text(Current_conf)) {
+    while ((num = next_text(Current_conf)) != 0) {
 	if (Current_conf > 0) 
 	    sprintf(cname, "%s/%d/%ld", SKLAFF_DB, Current_conf, num);
 	else 
@@ -5146,7 +5147,7 @@ char *args;
     /* unread all texts again */
 
     ptr = start;
-    while (ptr) {
+    while (ptr != NULL) {
 	mark_as_unread(ptr->num, ptr->conf);
 	ptr = ptr->next;
     }
@@ -5204,7 +5205,7 @@ char *args;
 
     count = 0;
     start = NULL;
-    while (num = next_text(Current_conf)) {
+    while ((num = next_text(Current_conf)) != 0) {
 	if (Current_conf > 0) 
 	    sprintf(cname, "%s/%d/%ld", SKLAFF_DB, Current_conf, num);
 	else 
@@ -5235,7 +5236,7 @@ char *args;
     /* unread all texts again */
 
     ptr = start;
-    while (ptr) {
+    while (ptr != NULL) {
 	mark_as_unread(ptr->num, ptr->conf);
 	ptr = ptr->next;
     }
@@ -5423,6 +5424,8 @@ char *args;
 	       strlen(args) ? args : MSG_NOWHERE); */
       output("\n%s%s.\n\n", MSG_YOUAREFROM, newfrom+1);
     }
+
+    return 0;
 }
 
 int cmd_list_says(args)

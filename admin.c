@@ -139,7 +139,7 @@ void display_welcome()
     rc = read_sklaffrc(Uid);
 
     set_flags(rc->flags);
-    if (rc->timeout) {
+    if (rc->timeout[0] != '\0') {
 	Timeout = atoi(rc->timeout);
 	if (Timeout) {
 	    alarm(60 * Timeout);
@@ -594,7 +594,7 @@ void exec_login()
 		*run = '\0';
 		if (*buf) buf++;
 		if (strlen(cmdline) && ((fcn = parse(cmdline, args))
-					> (int(*)()) 0)) {
+					!= (int(*)()) 0)) {
 		    if ((*fcn)(args) == -1) {
 			break;
 		    }

@@ -174,7 +174,7 @@ installdb:
 
 clean:
 	(cd lib; make clean)
-	-rm *.o *.a \#* *~ core sklaffkom sklaffadm sklaffacct mailtoss newstoss survreport sklaffwho
+	-rm -f *.o *.a \#* *~ core sklaffkom sklaffadm sklaffacct mailtoss newstoss survreport sklaffwho
 
 distrib:
 	echo 0 > .compile

@@ -27,6 +27,7 @@
 
 #include "sklaff.h"
 #include "globals.h" 
+#include <sys/wait.h>
 #include <pwd.h>
 #include <fcntl.h>
 

@@ -56,8 +56,8 @@ char *mailrec;
     }
     if (strlen(username) > 33) {
 	strcpy(filename, username);
-	if (ptr = strchr(filename, '(')) {
-	    if (tmp = strchr(ptr, ')')) {
+	if ((ptr = strchr(filename, '(')) != NULL) {
+	    if ((tmp = strchr(ptr, ')')) != NULL) {
 		*tmp = '\0';
 		strcpy(username, (ptr + 1));
 	    }
@@ -69,8 +69,8 @@ char *mailrec;
 		}
 	    }
 	}
-	else if (ptr = strchr(filename, '<')) {
-	    if (tmp = strchr(ptr, '>')) {
+	else if ((ptr = strchr(filename, '<')) != NULL) {
+	    if ((tmp = strchr(ptr, '>')) != NULL) {
 		*tmp = '\0';
 		strcpy(username, (ptr + 1));
 	    }
@@ -1127,9 +1127,9 @@ int dtype;
     else {
 	tb = te.body;
 	while (tb) {
-	    if (ptr = strstr(tb->line, MSG_EMFROM)) break;
-	    else if (ptr = strstr(tb->line, MSG_EMFROM2)) break;
-	    else if (ptr = strstr(tb->line, MSG_EMFROM3)) break;
+	    if ((ptr = strstr(tb->line, MSG_EMFROM)) != NULL) break;
+	    else if ((ptr = strstr(tb->line, MSG_EMFROM2)) != NULL) break;
+	    else if ((ptr = strstr(tb->line, MSG_EMFROM3)) != NULL) break;
 	    tb = tb->next;
 	}
 	ptr = ptr + strlen(MSG_EMFROM);
@@ -1233,9 +1233,9 @@ int dtype;
 		free(oldbuf);
 		tb = te2.body;
 		while (tb) {
-		    if (ptr = strstr(tb->line, MSG_EMFROM)) break;
-		    else if (ptr = strstr(tb->line, MSG_EMFROM2)) break;
-		    else if (ptr = strstr(tb->line, MSG_EMFROM3)) break;
+		    if ((ptr = strstr(tb->line, MSG_EMFROM)) != NULL) break;
+		    else if ((ptr = strstr(tb->line, MSG_EMFROM2)) != NULL) break;
+		    else if ((ptr = strstr(tb->line, MSG_EMFROM3)) != NULL) break;
 		    tb = tb->next;
 		}
 		ptr = ptr + strlen(MSG_EMFROM);
@@ -1612,7 +1612,7 @@ char
 		from = 1;
 	    }
 	    else if ((th->author == Uid) && !Current_conf) {
-		if (te.body->line &&
+		if (te.body != NULL &&
 		    (ptr2 = strstr(te.body->line, MSG_COPYTO))) {
 		    strcpy(author, (ptr2 + 1 + strlen(MSG_COPYTO)));
 		    author[strlen(author) - 1] = 0;
@@ -1624,9 +1624,9 @@ char
 	    else {
 		tb = te.body;
 		while (tb) {
-		    if (ptr2 = strstr(tb->line, MSG_EMFROM)) break;
-		    else if (ptr2 = strstr(tb->line, MSG_EMFROM2)) break;
-		    else if (ptr2 = strstr(tb->line, MSG_EMFROM3)) break;
+		    if ((ptr2 = strstr(tb->line, MSG_EMFROM)) != NULL) break;
+		    else if ((ptr2 = strstr(tb->line, MSG_EMFROM2)) != NULL) break;
+		    else if ((ptr2 = strstr(tb->line, MSG_EMFROM3)) != NULL) break;
 		    tb = tb->next;
 		}
 		ptr2 = ptr2 + strlen(MSG_EMFROM);
@@ -1881,14 +1881,14 @@ int conf;
     }
     bzero(fbuf, strlen(inbuf) + sizeof(LONG_LINE));
     if (th->type == TYPE_TEXT)
-      sprintf(fbuf, "%ld:%d:%ld:%ld:%d:%d:%d:%d\n", ce.last_text, th->author,
-	      th->time, th->comment_num, th->comment_conf,
+      sprintf(fbuf, "%ld:%d:%lld:%ld:%d:%d:%d:%d\n", ce.last_text, th->author,
+	      (long long)th->time, th->comment_num, th->comment_conf,
 	      th->comment_author, th->size, th->type);
     else
-      sprintf(fbuf, "%ld:%d:%ld:%ld:%d:%d:%d:%d:%d:%ld\n", ce.last_text, th->author,
-	      th->time, th->comment_num, th->comment_conf,
+      sprintf(fbuf, "%ld:%d:%lld:%ld:%d:%d:%d:%d:%d:%lld\n", ce.last_text, th->author,
+	      (long long)th->time, th->comment_num, th->comment_conf,
 	      th->comment_author, th->size, th->type,
-	      th->sh.n_questions, th->sh.time);
+	      th->sh.n_questions, (long long)th->sh.time);
     strcat(fbuf, th->subject);
     strcat(fbuf, "\n");
     strcat(fbuf, inbuf);
@@ -1981,8 +1981,8 @@ int conf;
 
 	/* Note, mail copy is never a survey */
 
-	sprintf(fbuf, "%ld:%d:%ld:%ld:%d:%d:%d:%d\n", ce.last_text, th->author,
-		th->time, th->comment_num, th->comment_conf,
+	sprintf(fbuf, "%ld:%d:%lld:%ld:%d:%d:%d:%d\n", ce.last_text, th->author,
+		(long long)th->time, th->comment_num, th->comment_conf,
 		th->comment_author, th->size, th->type);
 	strcat(fbuf, th->subject);
 	strcat(fbuf, "\n");
@@ -2147,8 +2147,8 @@ char *rec, *subject, *inbuf;
 
     /* Note, don't worry about saving survey info */
 
-    sprintf(fbuf, "%ld:%d:%ld:%ld:%d:%d:%d:%d\n", ce.last_text, th.author,
-	    th.time, th.comment_num, th.comment_conf,
+    sprintf(fbuf, "%ld:%d:%lld:%ld:%d:%d:%d:%d\n", ce.last_text, th.author,
+	    (long long)th.time, th.comment_num, th.comment_conf,
 	    th.comment_author, th.size, th.type);
     strcat(fbuf, subject);
     strcat(fbuf, "\n");

@@ -174,7 +174,7 @@
 #define MSG_NORECIP	"Du m}ste ange en mottagare."
 #define MSG_NOPERMBOX	"Du kan inte g|ra personliga kommentarer i din brevl}da."
 #define MSG_NOPOSTMBOX	"Du kan inte skriva inl{gg i din brevl}da."
-#define MSG_NOSURVEYMBOX "Du kan inte göra enk{ter i din brevl}da."
+#define MSG_NOSURVEYMBOX "Du kan inte g\xf6ra enk{ter i din brevl}da."
 #define MSG_NOQUESTFOUND "Inga enk{tfr}gor funna. Konverterar till vanlig text."
 #define MSG_NOREPPTR	"Kan inte spara kommentarspekaren."
 #define MSG_NAMECOL	"Namn:"

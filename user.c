@@ -308,8 +308,8 @@ char *buf;
 	if (tbuf > obuf) tbuf++;
 	*tbuf = '\0';	/* Set 'length' of obuf */
 	
-	sprintf(tmp, "%d:%d:%ld:%d:%s:%s:dum:dum:dum\n", ae->user, ae->pid, 
-		ae->login_time, ae->avail, ae->from, ae->tty);
+	sprintf(tmp, "%d:%d:%lld:%d:%s:%s:dum:dum:dum\n", ae->user, ae->pid,
+		(long long)ae->login_time, ae->avail, ae->from, ae->tty);
 	strcpy(nbuf, obuf);
 	strcat(nbuf, tmp);
 	strcat(nbuf, buf);
@@ -550,8 +550,8 @@ char	*stringify_user_struct(user_entry, buf)
 struct USER_ENTRY *user_entry;
 char *buf;
 {
-    sprintf(buf, "%d:%ld:%s\n", user_entry->num,
-	    user_entry->last_session, user_entry->name);
+    sprintf(buf, "%d:%lld:%s\n", user_entry->num,
+	    (long long)user_entry->last_session, user_entry->name);
     return buf;
 }
 
@@ -658,8 +658,8 @@ int add_active()
     hname[0]='*';
     strncpy(hname+1, get_hostname(), FROM_FIELD_LEN-1);
     hname[FROM_FIELD_LEN-1]=0;
-    sprintf(tmp, "%d:%d:%ld:0:%s:%s:dum:dum:dum\n", Uid, getpid(), time(0),
-	    hname, ttyname(0));
+    sprintf(tmp, "%d:%d:%lld:0:%s:%s:dum:dum:dum\n", Uid, getpid(),
+            (long long)time(0), hname, ttyname(0));
     
     nbuf = (char *)malloc(strlen(buf) + strlen(tmp) + 1);
     bzero(nbuf, strlen(buf) + strlen(tmp) + 1);
@@ -1085,8 +1085,8 @@ int pdate;
 	toptime = timelist;
 	ue_list = top;
 	for (x = 0; x < count; x++) {
-	    sprintf(timelist->last_session, "%ld",
-		    ue_list->ue.last_session);
+	    sprintf(timelist->last_session, "%lld",
+		    (long long)ue_list->ue.last_session);
 	    strcpy(timelist->name, ue_list->ue.name);
 	    saved = ue_list;
 	    ue_list = ue_list->next;

@@ -35,6 +35,8 @@ struct	hitlist {
     int	matched_found;
 };
 
+int find_max_match(struct hitlist *hl);
+
 /*
  * parse - parse user input and return pointer to function
  * args: pointer to user input (buf), pointer to argument returned (args)
@@ -205,8 +207,7 @@ char *buf, *args;
  * ret: number of words matched
  */
 
-int	find_max_match(hl)
-struct hitlist *hl;
+int find_max_match(struct hitlist *hl)
 {
     int	i = 0;
     static int max_words;

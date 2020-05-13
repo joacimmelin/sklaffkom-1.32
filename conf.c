@@ -422,8 +422,8 @@ char
 	
 	*tbuf = '\0';	/* Set 'length' of obuf */
 	
-	sprintf(newline, "%d:%ld:%d:%ld:%d:%d:%d:%s\n", ce->num, ce->last_text,
-		ce->creator, ce->time, ce->type, ce->life, ce->comconf, 
+	sprintf(newline, "%d:%ld:%d:%lld:%d:%d:%d:%s\n", ce->num, ce->last_text,
+		ce->creator, (long long)ce->time, ce->type, ce->life, ce->comconf,
 		ce->name);
 	strcpy(nbuf, obuf);
 	strcat(nbuf, newline);
@@ -444,9 +444,9 @@ char	*stringify_conf_struct(conf_entry, buf)
 struct CONF_ENTRY *conf_entry;
 char *buf;
 {
-    sprintf(buf, "%d:%ld:%d:%ld:%d:%d:%d:%s\n", conf_entry->num,
+    sprintf(buf, "%d:%ld:%d:%lld:%d:%d:%d:%s\n", conf_entry->num,
 	    conf_entry->last_text, conf_entry->creator,
-	    conf_entry->time, conf_entry->type, conf_entry->life,
+	    (long long)conf_entry->time, conf_entry->type, conf_entry->life,
 	    conf_entry->comconf, conf_entry->name);
     return buf;
 }
@@ -1410,7 +1410,7 @@ struct CONF_ENTRY *get_all_confs(void)
 }
 
 /*
-/*  * list_news - list new texts for user
+ * list_news - list new texts for user
  * args: user (uid)
  * ret:	ok (0) or error (-1)
  */

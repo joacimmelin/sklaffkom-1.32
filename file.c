@@ -28,6 +28,7 @@
 #include "sklaff.h"
 #include "ext_globals.h"
 #include <fcntl.h>
+#include <sys/wait.h>
 
 /*
  * rebuild_index_file - rebuild file index in current conference

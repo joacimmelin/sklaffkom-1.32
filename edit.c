@@ -53,7 +53,8 @@ char *mailrec;
     LINE waste, cmd, arg, newname, upcasearg;
     int fd, len, count, edit_line, buflen, i, newconf, origconf, marcel, qt;
     int ll;
-    long save_time, tn, numlines;
+    long tn, numlines;
+    time_t save_time;
     struct EDIT_BUF *ptr, *tmpptr, *tmpptr2, *tmpptr3;
     struct TEXT_ENTRY te;
     struct TEXT_BODY *tb;
@@ -355,15 +356,14 @@ char *mailrec;
 		}
 		else if ((strstr(MSG_EDINCL, cmd))
 			 && (strlen(cmd) > EDINCLN)) {
-		    if ((*arg == '\0') || !arg) {
+		    if (*arg == '\0') {
 			output("\n%s", MSG_FNPROMPT);
 			input("", newname, 40, 0, 0, 0);
 		    }
 		    else {
 			strcpy(newname, arg);
 		    }
-		    if (!newname || (*newname == '\0')
-			|| (strstr(newname, ".."))) {
+		    if (*newname == '\0' || strstr(newname, "..") != NULL) {
 			output("\n%s\n\n", MSG_BADFNAME);
 		    }
 		    else {

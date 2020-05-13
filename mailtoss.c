@@ -30,6 +30,8 @@
 #include <fcntl.h>
 #include <signal.h>
 
+int send_mail(int uid, char *mbuf, int ouid, int ogrp);
+
 int main(int argc, char *argv[])
 {
     LINE username, mbox;
@@ -173,8 +175,8 @@ int send_mail(int uid, char *mbuf, int ouid, int ogrp)
     th.time = time(0);
 
     bzero(fbuf, strlen(mbuf) + sizeof(LONG_LINE));
-    sprintf(fbuf, "%ld:%d:%ld:%ld:%d:%d:%d\n", ce.last_text, 0,
-	    th.time, 0L, 0,
+    sprintf(fbuf, "%ld:%d:%lld:%ld:%d:%d:%d\n", ce.last_text, 0,
+	    (long long)th.time, 0L, 0,
 	    0, th.size);
     strcat(fbuf, th.subject);
     strcat(fbuf, "\n");
