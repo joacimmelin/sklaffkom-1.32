@@ -34,7 +34,7 @@
  */
 
 char *
-mbox_dir (int uid, char *dir)
+mbox_dir(int uid, char *dir)
 {
     sprintf(dir, "%s/%d", MBOX_DB, uid);
     return dir;

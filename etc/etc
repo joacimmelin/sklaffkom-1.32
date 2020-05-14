@@ -1,9 +1,9 @@
 #
 # etc/parse.swe
-# 
+#
 # <command>:<function name>:<short help string>
 #
-Addera r{ttigheter:cmd_add_rights:Addera r{ttigheter f|r en anv{ndare i aktuellt m|te 
+Addera r{ttigheter:cmd_add_rights:Addera r{ttigheter f|r en anv{ndare i aktuellt m|te
 (Definera) alias:cmd_alias:Definierar ett alias f|r ett kommando
 (L{sa) alla (texter):cmd_readall:Visar alla dina ol{sta texter
 Beskriv (fil):cmd_describe:Beskriv en fil i m|tets filarea

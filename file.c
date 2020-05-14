@@ -37,7 +37,7 @@
  */
 
 int
-rebuild_index_file (void)
+rebuild_index_file(void)
 {
     LINE cwd, currfile, filed;
     LONG_LINE outrec, fn, fn2, fn3;
@@ -52,74 +52,67 @@ rebuild_index_file (void)
     critical();
 
     if ((fd = open_file(fn, OPEN_CREATE)) == -1) {
-	return -1;
+        return -1;
     }
-
     if ((fd3 = open_file(fn3, OPEN_CREATE)) == -1) {
-	return -1;
+        return -1;
     }
-
     getcwd(cwd, LINE_LEN);
 
     sprintf(filed, "%s/%d", FILE_DB, Current_conf);
     chdir(filed);
     sprintf(fn2, "/tmp/%d", getpid());
     if (fork()) {
-	(void)wait(&subba);
-    }
-    else {
-	close(0);
-	close(1);
-	close(2);
-	(void)open("/dev/null", O_RDONLY);
-	(void)open(fn2, O_WRONLY | O_CREAT, 0777);
-	(void)open("/dev/null", O_WRONLY);
-	execl(LSPRGM, LSPRGM, LSOPT, (char *)0);
+        (void) wait(&subba);
+    } else {
+        close(0);
+        close(1);
+        close(2);
+        (void) open("/dev/null", O_RDONLY);
+        (void) open(fn2, O_WRONLY | O_CREAT, 0777);
+        (void) open("/dev/null", O_WRONLY);
+        execl(LSPRGM, LSPRGM, LSOPT, (char *) 0);
     }
 
     chdir(cwd);
 
     if ((oldbuf = read_file(fd)) == NULL) {
-	return -1;
+        return -1;
     }
-
     if ((fd2 = open_file(fn2, 0)) == -1) {
-	return -1;
+        return -1;
     }
-
     if ((buf2 = read_file(fd2)) == NULL) {
-	return -1;
+        return -1;
     }
-
     oldbuf2 = buf2;
 
     while (*buf2) {
-	ptr = strchr(buf2, '\n');
-	if (ptr) {
-	    remo = 0;
-	    *ptr = '\0';
-	    strcpy(currfile, buf2);
-	    *ptr = '\n';
-	    buf2 = ptr + 1;
-	    buf = oldbuf;
-	    while (buf) {
-		buf = get_file_entry(buf, &fe);
-		if (buf) {
-		    if (!strcmp(currfile, fe.name)) {
-			sprintf(outrec, "%s:%s\n", currfile, fe.desc);
-			write(fd3, outrec, strlen(outrec));
-			break;
-		    }
-		}
-	    }
-	    if (!buf) {
-		sprintf(outrec, "%s:%s\n", currfile, "");
-		write(fd3, outrec, strlen(outrec));
-	    }
-	}
-	else {
-	    *buf2 = '\0';
-	}
+        ptr = strchr(buf2, '\n');
+        if (ptr) {
+            remo = 0;
+            *ptr = '\0';
+            strcpy(currfile, buf2);
+            *ptr = '\n';
+            buf2 = ptr + 1;
+            buf = oldbuf;
+            while (buf) {
+                buf = get_file_entry(buf, &fe);
+                if (buf) {
+                    if (!strcmp(currfile, fe.name)) {
+                        sprintf(outrec, "%s:%s\n", currfile, fe.desc);
+                        write(fd3, outrec, strlen(outrec));
+                        break;
+                    }
+                }
+            }
+            if (!buf) {
+                sprintf(outrec, "%s:%s\n", currfile, "");
+                write(fd3, outrec, strlen(outrec));
+            }
+        } else {
+            *buf2 = '\0';
+        }
     }
 
     close_file(fd3);
@@ -133,7 +126,8 @@ rebuild_index_file (void)
     unlink(fn3);
 
     unlink(fn2);
-    if (remo) unlink(fn);
+    if (remo)
+        unlink(fn);
     non_critical();
 
     return 0;

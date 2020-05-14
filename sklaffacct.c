@@ -31,7 +31,8 @@
 #include <pwd.h>
 #include <fcntl.h>
 
-int main(int argc, char *argv[])
+int
+main(int argc, char *argv[])
 {
     LINE name, login, passwd, inet, tele, cmdline, fname;
     HUGE_LINE outbuf;
@@ -42,24 +43,24 @@ int main(int argc, char *argv[])
     tty_raw();
 
     if ((fd = open_file(ACCT_FILE, OPEN_QUIET)) == -1) {
-	goto cont;
+        goto cont;
     }
     if ((buf = read_file(fd)) == NULL) {
-	goto cont;
+        goto cont;
     }
     close_file(fd);
     output("\n%s\n", buf);
     free(buf);
- cont:
+cont:
     output(MSG_INNAME);
     input("", name, LINE_LEN, 0, 0, 0);
- errlogin:
+errlogin:
     output(MSG_INLOGIN);
     input("", login, 11, 0, 0, 0);
     pw = getpwnam(login);
     if (pw != NULL) {
-	output("\n%s\n\n", MSG_UIDINUSE);
-	goto errlogin;
+        output("\n%s\n\n", MSG_UIDINUSE);
+        goto errlogin;
     }
     output(MSG_INPASSWD);
     input("", passwd, 13, 0, 0, 0);
@@ -90,16 +91,15 @@ int main(int argc, char *argv[])
     write(fd, outbuf, strlen(outbuf));
     close_file(fd);
     if (fork()) {
-	(void)wait(&fd);
-    }
-    else {
-	close(0);
-	close(1);
-	close(2);
-	(void)open(fname, O_RDONLY);
-	(void)open("/dev/null", O_WRONLY);
-	(void)dup(1);
-	execl(MAILPRGM, MAILPRGM, SKLAFF_ACCT, (char *)0);
+        (void) wait(&fd);
+    } else {
+        close(0);
+        close(1);
+        close(2);
+        (void) open(fname, O_RDONLY);
+        (void) open("/dev/null", O_WRONLY);
+        (void) dup(1);
+        execl(MAILPRGM, MAILPRGM, SKLAFF_ACCT, (char *) 0);
     }
     unlink(fname);
     fd = open_file(ACCT_LOG, OPEN_QUIET | OPEN_CREATE);

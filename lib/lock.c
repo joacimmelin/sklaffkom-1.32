@@ -34,10 +34,11 @@
  * lock - locks file
  * args: file descriptor (fd)
  */
-void lock(int fd)
+void
+lock(int fd)
 {
     lseek(fd, 0L, 0);
     if (flock(fd, LOCK_EX)) {
-      output("\nFel %d vid flock(). Notera detta felmeddelande och meddela info@skom.se.\n", errno);
+        output("\nFel %d vid flock(). Notera detta felmeddelande och meddela info@skom.se.\n", errno);
     }
 }

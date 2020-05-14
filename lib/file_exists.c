@@ -36,10 +36,9 @@
  */
 
 int
-file_exists (char *fname)
+file_exists(char *fname)
 {
     struct stat buf;
 
     return stat(fname, &buf);
 }
-

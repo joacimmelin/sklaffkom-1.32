@@ -51,7 +51,7 @@
 #define KOM_MAX_HOST 256
 
 char *
-get_hostname (void)
+get_hostname(void)
 {
     static char myhost[KOM_MAX_HOST + 1];
     struct utmpx ul, *u;
@@ -74,6 +74,7 @@ get_hostname (void)
         int family = AF_INET;
         socklen_t len = sizeof(struct sockaddr_in);
         unsigned char addr[sizeof(struct in6_addr)];
+
         if (inet_pton(family, myhost, addr) < 0) {
             family = AF_INET6;
             len = sizeof(struct sockaddr_in6);
@@ -88,53 +89,57 @@ get_hostname (void)
 
     return myhost;
 }
+
 #else
 char *
-get_hostname (void)
+get_hostname(void)
 {
 #if defined(SOLARIS)
     struct utmpx ut;
+
 #else
     struct utmp ut;
+
 #endif
-    int	uf;
+    int uf;
     static char my_host[150];
-    char uhost[UT_HOSTSIZE+1];
+    char uhost[UT_HOSTSIZE + 1];
     LINE tmp;
     char *ptr;
     unsigned long l;
     struct hostent *hp;
 
-    ptr = (char *)ttyname(0);
+    ptr = (char *) ttyname(0);
     if (!ptr) {
-	strcpy(my_host, "N/A");
-	return my_host;
+        strcpy(my_host, "N/A");
+        return my_host;
     }
     strcpy(tmp, ptr);
     ptr = strchr(tmp + 1, '/');
     ptr++;
     uf = open(UTMP_REC, O_RDONLY);
     while (read(uf, &ut, sizeof(ut)) == sizeof(ut)) {
-      if (!strncmp(ptr, ut.ut_line, 8)) {
-	if (strstr(ptr, "pt") || strstr(ptr, "yp")) {
-	  strncpy(uhost, ut.ut_host, UT_HOSTSIZE);
-	  uhost[UT_HOSTSIZE]=0;
-	  l = inet_addr(uhost);
-	  hp = gethostbyaddr((char *) &l, sizeof(l), AF_INET);
-	  if (hp)
-	    strncpy(my_host, hp->h_name, 149);
-	  else
-	    strncpy(my_host, uhost, 149);
-	} else {
-	  strncpy(my_host, ut.ut_line, UT_LINESIZE);
-	  my_host[UT_LINESIZE]=0;
-	}
-	close(uf);
-	return my_host;
-      }
+        if (!strncmp(ptr, ut.ut_line, 8)) {
+            if (strstr(ptr, "pt") || strstr(ptr, "yp")) {
+                strncpy(uhost, ut.ut_host, UT_HOSTSIZE);
+                uhost[UT_HOSTSIZE] = 0;
+                l = inet_addr(uhost);
+                hp = gethostbyaddr((char *) &l, sizeof(l), AF_INET);
+                if (hp)
+                    strncpy(my_host, hp->h_name, 149);
+                else
+                    strncpy(my_host, uhost, 149);
+            } else {
+                strncpy(my_host, ut.ut_line, UT_LINESIZE);
+                my_host[UT_LINESIZE] = 0;
+            }
+            close(uf);
+            return my_host;
+        }
     }
     close(uf);
     strcpy(my_host, ptr);
     return my_host;
 }
+
 #endif

@@ -34,15 +34,15 @@
  */
 
 char *
-down_string (char *str)
+down_string(char *str)
 {
     char *tmp;
 
     tmp = str;
-    while(*tmp) {
-	if ((*tmp > 0x40) && (*tmp < 0x5e)) *tmp += 0x20;
-	tmp++;
+    while (*tmp) {
+        if ((*tmp > 0x40) && (*tmp < 0x5e))
+            *tmp += 0x20;
+        tmp++;
     }
     return str;
 }
-

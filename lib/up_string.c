@@ -34,15 +34,15 @@
  */
 
 char *
-up_string (char *str)
+up_string(char *str)
 {
     char *tmp;
 
     tmp = str;
-    while(*tmp) {
-	if ((*tmp > 0x60) && (*tmp < 0x7e)) *tmp -= 32;
-	tmp++;
+    while (*tmp) {
+        if ((*tmp > 0x60) && (*tmp < 0x7e))
+            *tmp -= 32;
+        tmp++;
     }
     return str;
 }
-

@@ -34,7 +34,7 @@
  */
 
 void
-tty_reset (void)
+tty_reset(void)
 {
     tcsetattr(0, TCSANOW, &Tty_mode);
 }

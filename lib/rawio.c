@@ -35,30 +35,28 @@
  * ret: failure (-1), ok (0, 1)
  */
 
-int write_file(int fildes, char *buf)
+int
+write_file(int fildes, char *buf)
 {
     char *func_name = "write_file";
     long length;
 
     if (fildes == -1)
-	    return -1;
+        return -1;
 
-    if ((off_t)lseek(fildes, 0L, 0) == -1) {
-	sys_error(func_name,1,"lseek");
-	return -1;
+    if ((off_t) lseek(fildes, 0L, 0) == -1) {
+        sys_error(func_name, 1, "lseek");
+        return -1;
     }
-
     length = strlen(buf);
-    if (write(fildes,buf,length) == -1) {
-	sys_error(func_name,2,"write");
-	return -1;
+    if (write(fildes, buf, length) == -1) {
+        sys_error(func_name, 2, "write");
+        return -1;
     }
-
-    if (ftruncate(fildes,(off_t)length) == -1) {
-	sys_error(func_name,3,"ftruncate");
-	return 1;
+    if (ftruncate(fildes, (off_t) length) == -1) {
+        sys_error(func_name, 3, "ftruncate");
+        return 1;
     }
-
     free(buf);
 
     return 0;
@@ -71,20 +69,20 @@ int write_file(int fildes, char *buf)
  */
 
 char *
-read_file (int fildes)
+read_file(int fildes)
 {
     struct stat s;
     char *buf;
 
     fstat(fildes, &s);
-    buf = (char *) malloc (s.st_size + 1);
+    buf = (char *) malloc(s.st_size + 1);
     bzero(buf, s.st_size + 1);
     lseek(fildes, 0L, 0);
     if (read(fildes, buf, s.st_size) == s.st_size) {
-	return buf;
+        return buf;
     } else {
-	sys_error("read_file", 1, "read");
-	return NULL;
+        sys_error("read_file", 1, "read");
+        return NULL;
     }
 }
 
@@ -97,42 +95,41 @@ read_file (int fildes)
  */
 
 int
-open_file (char *filename, int flag)
+open_file(char *filename, int flag)
 {
-    int	mode;
-    int	tmp_filedesc;
-    char	*function_name = "open_file";
+    int mode;
+    int tmp_filedesc;
+    char *function_name = "open_file";
     char dentry[180];
     int count;
 
     mode = O_RDWR;
     if ((flag & OPEN_CREATE) == OPEN_CREATE) {
-	mode |= O_CREAT;
+        mode |= O_CREAT;
     }
-
-    if ((tmp_filedesc = open(filename, mode, NEW_FILE_MODE))  == -1) {
-	if ((flag & OPEN_QUIET) != OPEN_QUIET) {
-	    sys_error(function_name, 1, "open");
-	    return -1;
-	}
+    if ((tmp_filedesc = open(filename, mode, NEW_FILE_MODE)) == -1) {
+        if ((flag & OPEN_QUIET) != OPEN_QUIET) {
+            sys_error(function_name, 1, "open");
+            return -1;
+        }
     } else {
-      lseek(tmp_filedesc, 0L, 0);
-      if (flock(tmp_filedesc, LOCK_EX | LOCK_NB) == -1) {
-	sprintf(dentry, "file lock on [%s]", filename);
-	debuglog(dentry, 10);
-	count=0;
-	while(flock(tmp_filedesc, LOCK_EX | LOCK_NB) == -1 && count < 30) {
-	  sleep(1);
-	  count++;
-	}
-	if (count >= 30) {
-	  sprintf(dentry, "file [%s] reach lock limit", filename);
-	  debuglog(dentry, 10);
-	  return -1;
-	}
-	sprintf(dentry, "file [%s] released (%d)", filename, count);
-	debuglog(dentry, 10);
-      }
+        lseek(tmp_filedesc, 0L, 0);
+        if (flock(tmp_filedesc, LOCK_EX | LOCK_NB) == -1) {
+            sprintf(dentry, "file lock on [%s]", filename);
+            debuglog(dentry, 10);
+            count = 0;
+            while (flock(tmp_filedesc, LOCK_EX | LOCK_NB) == -1 && count < 30) {
+                sleep(1);
+                count++;
+            }
+            if (count >= 30) {
+                sprintf(dentry, "file [%s] reach lock limit", filename);
+                debuglog(dentry, 10);
+                return -1;
+            }
+            sprintf(dentry, "file [%s] released (%d)", filename, count);
+            debuglog(dentry, 10);
+        }
     }
 
     return tmp_filedesc;
@@ -156,14 +153,14 @@ int	flag;
 
     mode = O_RDWR;
     if ((flag & OPEN_CREATE) == OPEN_CREATE) {
-	mode |= O_CREAT;
+        mode |= O_CREAT;
     }
 
     if ((tmp_filedesc = open(filename, mode, NEW_FILE_MODE))  == -1) {
-	if ((flag & OPEN_QUIET) != OPEN_QUIET) {
-	    sys_error(function_name, 1, "open");
-	    return -1;
-	}
+        if ((flag & OPEN_QUIET) != OPEN_QUIET) {
+            sys_error(function_name, 1, "open");
+            return -1;
+        }
     } else {
       lock(tmp_filedesc);
     }
@@ -181,13 +178,12 @@ int	flag;
  */
 
 int
-close_file (int filedesc)
-
+close_file(int filedesc)
 {
 
-    unlock(filedesc); /** Error checking ! **/
+    unlock(filedesc);           /** Error checking ! **/
 
-    return(close(filedesc));
+    return (close(filedesc));
 
 }
 
@@ -198,18 +194,17 @@ close_file (int filedesc)
  */
 
 int
-create_file (char *filename)
-
+create_file(char *filename)
 {
 
-    int	tmp_filedesc;
-    char	*function_name = "open_file";
+    int tmp_filedesc;
+    char *function_name = "open_file";
 
     /** O_SYNC might be used for some files?**/
-    if ((tmp_filedesc = open(filename,O_RDWR|O_CREAT|O_TRUNC,NEW_FILE_MODE)) == -1)
-	    sys_error(function_name,1,"open");
+    if ((tmp_filedesc = open(filename, O_RDWR | O_CREAT | O_TRUNC, NEW_FILE_MODE)) == -1)
+        sys_error(function_name, 1, "open");
     else
-	    lock(tmp_filedesc); /** Error checking ! **/
+        lock(tmp_filedesc);     /** Error checking ! **/
 
     return tmp_filedesc;
 

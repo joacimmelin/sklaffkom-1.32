@@ -32,16 +32,18 @@
  * args: input string (s), position in string (index)
  */
 
-static void skip_beyond_rpar (s, index)
-LINE s;
-int *index;
+static void
+skip_beyond_rpar(s, index)
+    LINE s;
+    int *index;
 {
     int i;
+
     i = *index;
     while ((s[i] != ')') && (s[i] != '\0')) {
-	i++;
-	if (s[i] == '(')
-	    skip_beyond_rpar (s, &i);
+        i++;
+        if (s[i] == '(')
+            skip_beyond_rpar(s, &i);
     }
     *index = i + 1;
 }
@@ -51,14 +53,16 @@ int *index;
  * args: input string (s), position in string (index)
  */
 
-static void skip_beyond_space (s, index)
-LINE s;
-int *index;
+static void
+skip_beyond_space(s, index)
+    LINE s;
+    int *index;
 {
     int i;
+
     i = *index;
-    while (isspace (s[i]) || (s[i] == '.'))
-	i++;
+    while (isspace(s[i]) || (s[i] == '.'))
+        i++;
     *index = i;
 }
 
@@ -69,21 +73,22 @@ int *index;
  */
 
 int
-wc (char *s)
+wc(char *s)
 {
     int words = 0, p = 0;
+
     while (s[p] != '\0') {
-	if (isspace (s[p]) || (s[p] == '.')) {
-	    skip_beyond_space (s, &p);
-	    if (s[p] != '\0')
-		words++;
-	} else if ((s[p] == '('&& ((p && (isspace (s[p - 1]) ||
-					  (s[p-1] == '.'))) || !p))) {
-	    skip_beyond_rpar (s, &p);
-	    words--;
-	} else {
-	    p++;
-	}
+        if (isspace(s[p]) || (s[p] == '.')) {
+            skip_beyond_space(s, &p);
+            if (s[p] != '\0')
+                words++;
+        } else if ((s[p] == '(' && ((p && (isspace(s[p - 1]) ||
+                            (s[p - 1] == '.'))) || !p))) {
+            skip_beyond_rpar(s, &p);
+            words--;
+        } else {
+            p++;
+        }
     }
     return words + 1;
 }

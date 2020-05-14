@@ -34,28 +34,26 @@
  */
 
 char *
-order_name (char *instr, char *outstr)
+order_name(char *instr, char *outstr)
 {
     char *ptr, *tmp;
 
     ptr = strchr(instr, ' ');
     if (ptr) {
-	if (*(ptr + 1) == '(') {
-	    tmp = ptr;
-	    *ptr = '\0';
-	    ptr = strchr((tmp + 1), ' ');
-	    *tmp = ' ';
-	}
-	if (ptr) {
-	    *ptr = '\0';
-	    sprintf(outstr, "%s %s", (ptr + 1), instr);
-	}
-	else {
-	    strcpy(outstr, instr);
-	}
-    }
-    else {
-	strcpy(outstr, instr);
+        if (*(ptr + 1) == '(') {
+            tmp = ptr;
+            *ptr = '\0';
+            ptr = strchr((tmp + 1), ' ');
+            *tmp = ' ';
+        }
+        if (ptr) {
+            *ptr = '\0';
+            sprintf(outstr, "%s %s", (ptr + 1), instr);
+        } else {
+            strcpy(outstr, instr);
+        }
+    } else {
+        strcpy(outstr, instr);
     }
     return outstr;
 }
@@ -67,28 +65,26 @@ order_name (char *instr, char *outstr)
  */
 
 char *
-reorder_name (char *instr, char *outstr)
+reorder_name(char *instr, char *outstr)
 {
     char *ptr, *tmp;
 
     ptr = strrchr(instr, ' ');
     if (ptr) {
-	if (*(ptr + 1) == '(') {
-	    tmp = ptr;
-	    *ptr = '\0';
-	    ptr = strrchr(instr, ' ');
-	    *tmp = ' ';
-	}
-	if (ptr) {
-	    *ptr = '\0';
-	    sprintf(outstr, "%s %s", (ptr + 1), instr);
-	}
-	else {
-	    strcpy(outstr, instr);
-	}
-    }
-    else {
-	strcpy(outstr, instr);
+        if (*(ptr + 1) == '(') {
+            tmp = ptr;
+            *ptr = '\0';
+            ptr = strrchr(instr, ' ');
+            *tmp = ' ';
+        }
+        if (ptr) {
+            *ptr = '\0';
+            sprintf(outstr, "%s %s", (ptr + 1), instr);
+        } else {
+            strcpy(outstr, instr);
+        }
+    } else {
+        strcpy(outstr, instr);
     }
     return outstr;
 }
@@ -100,19 +96,25 @@ reorder_name (char *instr, char *outstr)
  */
 
 char *
-fake_string (char *string)
+fake_string(char *string)
 {
     char *ptr;
 
     ptr = string;
     while (ptr && *ptr) {
-	if (*ptr == '}') *ptr = '{';
-	else if (*ptr == '{') *ptr = '|';
-	else if (*ptr == '|') *ptr = '}';
-	else if (*ptr == ']') *ptr = '[';
-	else if (*ptr == '[') *ptr = 0x5c;
-	else if (*ptr == 0x5c) *ptr = ']';
-	ptr++;
+        if (*ptr == '}')
+            *ptr = '{';
+        else if (*ptr == '{')
+            *ptr = '|';
+        else if (*ptr == '|')
+            *ptr = '}';
+        else if (*ptr == ']')
+            *ptr = '[';
+        else if (*ptr == '[')
+            *ptr = 0x5c;
+        else if (*ptr == 0x5c)
+            *ptr = ']';
+        ptr++;
     }
     return string;
 }
@@ -124,19 +126,25 @@ fake_string (char *string)
  */
 
 char *
-real_string (char *string)
+real_string(char *string)
 {
     char *ptr;
 
     ptr = string;
     while (ptr && *ptr) {
-	if (*ptr == '{') *ptr = '}';
-	else if (*ptr == '|') *ptr = '{';
-	else if (*ptr == '}') *ptr = '|';
-	else if (*ptr == '[') *ptr = ']';
-	else if (*ptr == 0x5c) *ptr = '[';
-	else if (*ptr == ']') *ptr = 0x5c;
-	ptr++;
+        if (*ptr == '{')
+            *ptr = '}';
+        else if (*ptr == '|')
+            *ptr = '{';
+        else if (*ptr == '}')
+            *ptr = '|';
+        else if (*ptr == '[')
+            *ptr = ']';
+        else if (*ptr == 0x5c)
+            *ptr = '[';
+        else if (*ptr == ']')
+            *ptr = 0x5c;
+        ptr++;
     }
     return string;
 }

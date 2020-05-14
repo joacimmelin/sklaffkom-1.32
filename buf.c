@@ -34,14 +34,14 @@
  */
 
 char *
-get_user_entry (char *buf, struct USER_ENTRY *ue)
+get_user_entry(char *buf, struct USER_ENTRY * ue)
 {
     char *ptr, *str;
 
-    bzero (ue->name, LINE_LEN);
-    ue->num = (int)strtol(buf, &str, 10);
+    bzero(ue->name, LINE_LEN);
+    ue->num = (int) strtol(buf, &str, 10);
     if (str == buf) {
-	return NULL;
+        return NULL;
     }
     ptr = strchr(buf, ':') + 1;
     ue->last_session = atol(ptr);
@@ -50,7 +50,7 @@ get_user_entry (char *buf, struct USER_ENTRY *ue)
     *str = 0;
     strcpy(ue->name, ptr);
     *str = '\n';
-    rtrim (ue->name);
+    rtrim(ue->name);
     buf = str;
     buf++;
     return buf;
@@ -63,12 +63,13 @@ get_user_entry (char *buf, struct USER_ENTRY *ue)
  */
 
 char *
-get_file_entry (char *buf, struct FILE_ENTRY *fe)
+get_file_entry(char *buf, struct FILE_ENTRY * fe)
 {
     char *tmpbuf, *ptr;
 
-    tmpbuf = strchr (buf, ':');
-    if (!tmpbuf) return NULL;
+    tmpbuf = strchr(buf, ':');
+    if (!tmpbuf)
+        return NULL;
     *tmpbuf = 0;
     strcpy(fe->name, buf);
     *tmpbuf = ':';
@@ -78,7 +79,7 @@ get_file_entry (char *buf, struct FILE_ENTRY *fe)
     *ptr = '\n';
     buf = ptr;
     while (*buf && (*buf == '\n'))
-	buf++;
+        buf++;
     return buf;
 }
 
@@ -89,13 +90,13 @@ get_file_entry (char *buf, struct FILE_ENTRY *fe)
  */
 
 char *
-get_conf_entry (char *buf, struct CONF_ENTRY *ce)
+get_conf_entry(char *buf, struct CONF_ENTRY * ce)
 {
     char *ptr, *str;
 
     ce->num = strtol(buf, &str, 10);
     if (str == buf) {
-	return NULL;
+        return NULL;
     }
     ptr = strchr(buf, ':') + 1;
     ce->last_text = atol(ptr);
@@ -123,32 +124,33 @@ get_conf_entry (char *buf, struct CONF_ENTRY *ce)
  * args: buffer (buf), pointer to PARSE_ENTRY (pe)
  * ret: next position in buffer or NULL
  */
-char *get_parse_entry(char *buf, struct PARSE_ENTRY *pe)
+char *
+get_parse_entry(char *buf, struct PARSE_ENTRY * pe)
 {
     int res;
     LINE tmpline;
 
-    bzero (pe->cmd, LINE_LEN);
-    bzero (pe->func, LINE_LEN);
-    bzero (pe->help, LINE_LEN);
+    bzero(pe->cmd, LINE_LEN);
+    bzero(pe->func, LINE_LEN);
+    bzero(pe->help, LINE_LEN);
     for (;;) {
-	res = sscanf (buf, "%[^:#\n]:%[^#:\n]:%[^#:\n]'", pe->cmd,
-		      pe->func, pe->help);
-	rtrim (pe->cmd);
-	rtrim (pe->func);
-	strcpy(tmpline, pe->func);
-	strcpy(pe->func, "_");
-	strcat(pe->func, tmpline);
-	rtrim (pe->help);
-	if (res == -1)
-		return NULL;
-	else {
-	    buf = strchr (buf, '\n');
-	    while (buf && (*buf == '\n'))
-		    buf++;
-	    if (res || (buf == NULL))
-		    return buf;
-	}
+        res = sscanf(buf, "%[^:#\n]:%[^#:\n]:%[^#:\n]'", pe->cmd,
+            pe->func, pe->help);
+        rtrim(pe->cmd);
+        rtrim(pe->func);
+        strcpy(tmpline, pe->func);
+        strcpy(pe->func, "_");
+        strcat(pe->func, tmpline);
+        rtrim(pe->help);
+        if (res == -1)
+            return NULL;
+        else {
+            buf = strchr(buf, '\n');
+            while (buf && (*buf == '\n'))
+                buf++;
+            if (res || (buf == NULL))
+                return buf;
+        }
     }
 }
 
@@ -159,7 +161,7 @@ char *get_parse_entry(char *buf, struct PARSE_ENTRY *pe)
  */
 
 struct USER_LIST *
-get_confrc_users (char *buf)
+get_confrc_users(char *buf)
 {
     int itmp;
     struct USER_LIST *tmp, *top;
@@ -168,32 +170,32 @@ get_confrc_users (char *buf)
     tmp = NULL;
     top = NULL;
     for (;;) {
-	ptr = strchr(buf, '\n');
-	if (ptr == NULL) {
-	    break;
-	}
-	itmp = atoi(buf);
-	if (tmp == NULL) {
-	    tmp = (struct USER_LIST *) malloc (sizeof (struct USER_LIST));
-	    if (tmp == NULL) {
-		sys_error ("get_confrc_entry", 1, "malloc");
-		return NULL;
-	    }
-	    tmp->num = itmp;
-	    tmp->next = NULL;
-	    top = tmp;
-	} else {
-	    tmp->next = (struct USER_LIST *)
-		malloc	(sizeof (struct USER_LIST));
-	    if (tmp->next == NULL) {
-		sys_error ("get_confrc_entry", 2, "malloc");
-		return NULL;
-	    }
-	    tmp = tmp->next;
-	    tmp->num = itmp;
-	    tmp->next = NULL;
-	}
-	buf = ptr + 1;
+        ptr = strchr(buf, '\n');
+        if (ptr == NULL) {
+            break;
+        }
+        itmp = atoi(buf);
+        if (tmp == NULL) {
+            tmp = (struct USER_LIST *) malloc(sizeof(struct USER_LIST));
+            if (tmp == NULL) {
+                sys_error("get_confrc_entry", 1, "malloc");
+                return NULL;
+            }
+            tmp->num = itmp;
+            tmp->next = NULL;
+            top = tmp;
+        } else {
+            tmp->next = (struct USER_LIST *)
+                malloc(sizeof(struct USER_LIST));
+            if (tmp->next == NULL) {
+                sys_error("get_confrc_entry", 2, "malloc");
+                return NULL;
+            }
+            tmp = tmp->next;
+            tmp->num = itmp;
+            tmp->next = NULL;
+        }
+        buf = ptr + 1;
     }
     return top;
 }
@@ -205,7 +207,7 @@ get_confrc_users (char *buf)
  */
 
 char *
-get_text_entry (char *buf, struct TEXT_ENTRY *te)
+get_text_entry(char *buf, struct TEXT_ENTRY * te)
 {
     int i, itmp2, c;
     long itmp1;
@@ -227,191 +229,227 @@ get_text_entry (char *buf, struct TEXT_ENTRY *te)
     ptr = strchr(ptr, ':') + 1;
     te->th.size = atoi(ptr);
     eol1 = strchr(ptr, '\n');
-    ptr  = strchr(ptr, ':');    /* Be compatible with old text format */
+    ptr = strchr(ptr, ':');     /* Be compatible with old text format */
     te->th.type = TYPE_TEXT;
     if (ptr && ptr < eol1 && te->th.author != 0) {
-      te->th.type = atoi(ptr+1);
-      if (te->th.type == TYPE_SURVEY) {
-	ptr = strchr(ptr+1, ':') + 1;
-	te->th.sh.n_questions = atoi(ptr);
-	ptr = strchr(ptr, ':') + 1;
-	te->th.sh.time = atol(ptr);
-      }
+        te->th.type = atoi(ptr + 1);
+        if (te->th.type == TYPE_SURVEY) {
+            ptr = strchr(ptr + 1, ':') + 1;
+            te->th.sh.n_questions = atoi(ptr);
+            ptr = strchr(ptr, ':') + 1;
+            te->th.sh.time = atol(ptr);
+        }
     }
     te->body = NULL;
     tmp_body = NULL;
     te->cl = NULL;
     tmp_cl = NULL;
-    buf = strchr (buf, '\n');
+    buf = strchr(buf, '\n');
     if (!buf)
-	return buf;
+        return buf;
     buf++;
-    bzero (te->th.subject, LINE_LEN);
+    bzero(te->th.subject, LINE_LEN);
     run = te->th.subject;
     c = 1;
     while (*buf != '\n') {
-	if (c < SUBJECT_LEN) {
-	    if (*buf == '=') {
-		triplet[0] = *buf;
-		buf++;
-		if (*buf != '\n') {
-		    triplet[1] = *buf;
-		    buf++;
-		    if (*buf != '\n') {
-			triplet[2] = *buf;
-			triplet[3] = '\0';
-			if (!strcmp(triplet, "=C5")) *buf = ']';
-			else if (!strcmp(triplet, "=C4")) *buf = '[';
-			else if (!strcmp(triplet, "=D6")) *buf = '\\';
-			else if (!strcmp(triplet, "=E5")) *buf = '}';
-			else if (!strcmp(triplet, "=E4")) *buf = '{';
-			else if (!strcmp(triplet, "=F6")) *buf = '|';
-			else if (!strcmp(triplet, "=3D")) *buf = '=';
-			else if (!strcmp(triplet, "=8F")) *buf = ']';
-			else if (!strcmp(triplet, "=8E")) *buf = '[';
-			else if (!strcmp(triplet, "=99")) *buf = '\\';
-			else if (!strcmp(triplet, "=86")) *buf = '}';
-			else if (!strcmp(triplet, "=85")) *buf = '{';
-			else if (!strcmp(triplet, "=94")) *buf = '|';
-			else if (!strcmp(triplet, "=FC")) *buf = 'u';
-			else if (!strcmp(triplet, "=DF")) *buf = 's';
-			else if (!strcmp(triplet, "=91")) *buf = '`';
-			else if (!strcmp(triplet, "=92")) *buf = '\'';
-			else if (!strcmp(triplet, "=E9")) *buf = 'e';
-			else if (!strcmp(triplet, "=20")) *buf = ' ';
-			else {
-			    buf--;
-			    buf--;
-			}
-		    }
-		    else {
-			buf--;
-			buf--;
-		    }
-		}
-		else buf--;
-	    }
-	    *run = *buf;
-	    run++;
-	}
-	buf++;
-	c++;
+        if (c < SUBJECT_LEN) {
+            if (*buf == '=') {
+                triplet[0] = *buf;
+                buf++;
+                if (*buf != '\n') {
+                    triplet[1] = *buf;
+                    buf++;
+                    if (*buf != '\n') {
+                        triplet[2] = *buf;
+                        triplet[3] = '\0';
+                        if (!strcmp(triplet, "=C5"))
+                            *buf = ']';
+                        else if (!strcmp(triplet, "=C4"))
+                            *buf = '[';
+                        else if (!strcmp(triplet, "=D6"))
+                            *buf = '\\';
+                        else if (!strcmp(triplet, "=E5"))
+                            *buf = '}';
+                        else if (!strcmp(triplet, "=E4"))
+                            *buf = '{';
+                        else if (!strcmp(triplet, "=F6"))
+                            *buf = '|';
+                        else if (!strcmp(triplet, "=3D"))
+                            *buf = '=';
+                        else if (!strcmp(triplet, "=8F"))
+                            *buf = ']';
+                        else if (!strcmp(triplet, "=8E"))
+                            *buf = '[';
+                        else if (!strcmp(triplet, "=99"))
+                            *buf = '\\';
+                        else if (!strcmp(triplet, "=86"))
+                            *buf = '}';
+                        else if (!strcmp(triplet, "=85"))
+                            *buf = '{';
+                        else if (!strcmp(triplet, "=94"))
+                            *buf = '|';
+                        else if (!strcmp(triplet, "=FC"))
+                            *buf = 'u';
+                        else if (!strcmp(triplet, "=DF"))
+                            *buf = 's';
+                        else if (!strcmp(triplet, "=91"))
+                            *buf = '`';
+                        else if (!strcmp(triplet, "=92"))
+                            *buf = '\'';
+                        else if (!strcmp(triplet, "=E9"))
+                            *buf = 'e';
+                        else if (!strcmp(triplet, "=20"))
+                            *buf = ' ';
+                        else {
+                            buf--;
+                            buf--;
+                        }
+                    } else {
+                        buf--;
+                        buf--;
+                    }
+                } else
+                    buf--;
+            }
+            *run = *buf;
+            run++;
+        }
+        buf++;
+        c++;
     }
     *run = '\0';
     buf++;
-    rtrim (te->th.subject);
+    rtrim(te->th.subject);
     if (te->th.size > 0) {
-	te->body = (struct TEXT_BODY *) malloc (sizeof (struct TEXT_BODY));
-	if (te->body == NULL) {
-	    sys_error ("get_text_entry", 1, "malloc");
-	    return NULL;
-	}
-	tmp_body = te->body;
-	te->body->next = NULL;
+        te->body = (struct TEXT_BODY *) malloc(sizeof(struct TEXT_BODY));
+        if (te->body == NULL) {
+            sys_error("get_text_entry", 1, "malloc");
+            return NULL;
+        }
+        tmp_body = te->body;
+        te->body->next = NULL;
     }
     for (i = 1; i <= te->th.size; i++) {
-      run = te->body->line;
-      c = 1;
-      while (*buf != '\n') {
-	if (c < LINE_LEN) {
-	  if (*buf == '=') {
-	    triplet[0] = *buf;
-	    buf++;
-	    if (*buf != '\n') {
-	      triplet[1] = *buf;
-	      buf++;
-	      if (*buf != '\n') {
-		triplet[2] = *buf;
-		triplet[3] = '\0';
-		if (!strcmp(triplet, "=C5")) *buf = ']';
-		else if (!strcmp(triplet, "=C4")) *buf = '[';
-		else if (!strcmp(triplet, "=D6")) *buf = '\\';
-		else if (!strcmp(triplet, "=E5")) *buf = '}';
-		else if (!strcmp(triplet, "=E4")) *buf = '{';
-		else if (!strcmp(triplet, "=F6")) *buf = '|';
-		else if (!strcmp(triplet, "=3D")) *buf = '=';
-		else if (!strcmp(triplet, "=8F")) *buf = ']';
-		else if (!strcmp(triplet, "=8E")) *buf = '[';
-		else if (!strcmp(triplet, "=99")) *buf = '\\';
-		else if (!strcmp(triplet, "=86")) *buf = '}';
-		else if (!strcmp(triplet, "=85")) *buf = '{';
-		else if (!strcmp(triplet, "=94")) *buf = '|';
-		else if (!strcmp(triplet, "=FC")) *buf = '^';
-		else if (!strcmp(triplet, "=DF")) *buf = 's';
-		else if (!strcmp(triplet, "=91")) *buf = '`';
-		else if (!strcmp(triplet, "=92")) *buf = '\'';
-		else if (!strcmp(triplet, "=E9")) *buf = 'e';
-		else if (!strcmp(triplet, "=20")) *buf = ' ';
-		else {
-		  buf--;
-		  buf--;
-		}
-	      }
-	      else {
-		buf--;
-		buf--;
-	      }
-	    }
-	    else buf--;
-	  }
-	  *run = *buf;
-	  run++;
-	} /* if c < LINE_LEN */
-	buf++;
-	c++;
-      }
-      *run = '\0';
-      buf++;
-      if (i < te->th.size) {
-	te->body->next = (struct TEXT_BODY *)
-	  malloc (sizeof (struct TEXT_BODY));
-	if (te->body->next == NULL) {
-	  sys_error ("get_text_entry", 2, "malloc");
-	  return NULL;
-	}
-	te->body = te->body->next;
-	te->body->next = NULL;
-      }
+        run = te->body->line;
+        c = 1;
+        while (*buf != '\n') {
+            if (c < LINE_LEN) {
+                if (*buf == '=') {
+                    triplet[0] = *buf;
+                    buf++;
+                    if (*buf != '\n') {
+                        triplet[1] = *buf;
+                        buf++;
+                        if (*buf != '\n') {
+                            triplet[2] = *buf;
+                            triplet[3] = '\0';
+                            if (!strcmp(triplet, "=C5"))
+                                *buf = ']';
+                            else if (!strcmp(triplet, "=C4"))
+                                *buf = '[';
+                            else if (!strcmp(triplet, "=D6"))
+                                *buf = '\\';
+                            else if (!strcmp(triplet, "=E5"))
+                                *buf = '}';
+                            else if (!strcmp(triplet, "=E4"))
+                                *buf = '{';
+                            else if (!strcmp(triplet, "=F6"))
+                                *buf = '|';
+                            else if (!strcmp(triplet, "=3D"))
+                                *buf = '=';
+                            else if (!strcmp(triplet, "=8F"))
+                                *buf = ']';
+                            else if (!strcmp(triplet, "=8E"))
+                                *buf = '[';
+                            else if (!strcmp(triplet, "=99"))
+                                *buf = '\\';
+                            else if (!strcmp(triplet, "=86"))
+                                *buf = '}';
+                            else if (!strcmp(triplet, "=85"))
+                                *buf = '{';
+                            else if (!strcmp(triplet, "=94"))
+                                *buf = '|';
+                            else if (!strcmp(triplet, "=FC"))
+                                *buf = '^';
+                            else if (!strcmp(triplet, "=DF"))
+                                *buf = 's';
+                            else if (!strcmp(triplet, "=91"))
+                                *buf = '`';
+                            else if (!strcmp(triplet, "=92"))
+                                *buf = '\'';
+                            else if (!strcmp(triplet, "=E9"))
+                                *buf = 'e';
+                            else if (!strcmp(triplet, "=20"))
+                                *buf = ' ';
+                            else {
+                                buf--;
+                                buf--;
+                            }
+                        } else {
+                            buf--;
+                            buf--;
+                        }
+                    } else
+                        buf--;
+                }
+                *run = *buf;
+                run++;
+            }                   /* if c < LINE_LEN */
+            buf++;
+            c++;
+        }
+        *run = '\0';
+        buf++;
+        if (i < te->th.size) {
+            te->body->next = (struct TEXT_BODY *)
+                malloc(sizeof(struct TEXT_BODY));
+            if (te->body->next == NULL) {
+                sys_error("get_text_entry", 2, "malloc");
+                return NULL;
+            }
+            te->body = te->body->next;
+            te->body->next = NULL;
+        }
     }
     te->body = tmp_body;
     if (*buf == '\0')
-	return buf;
+        return buf;
     te->cl = NULL;
     for (;;) {
-	itmp1 = strtol(buf, &str, 10);
-	if (str == buf) {
-	    break;
-	}
-	ptr = strchr(buf, ':') + 1;
-	itmp2 = atoi(ptr);
-	if (te->cl == NULL) {
-	    te->cl = (struct COMMENT_LIST *)
-		malloc (sizeof (struct COMMENT_LIST));
-	    if (te->cl == NULL) {
-		sys_error ("get_text_entry", 3, "malloc");
-		return NULL;
-	    }
-	    tmp_cl = te->cl;
-	    te->cl->comment_num = itmp1;
-	    te->cl->comment_author = itmp2;
-	    te->cl->next = NULL;
-	} else {
-	    te->cl->next = (struct COMMENT_LIST *)
-		malloc (sizeof (struct COMMENT_LIST));
-	    if (te->cl->next == NULL) {
-		sys_error ("get_text_entry", 4, "malloc");
-		return NULL;
-	    }
-	    te->cl = te->cl->next;
-	    te->cl->comment_num = itmp1;
-	    te->cl->comment_author = itmp2;
-	    te->cl->next = NULL;
-	}
-	buf = strchr (buf, '\n');
-	if (!buf)
-	    break;
-	while (*buf == '\n')
-	    buf++;
+        itmp1 = strtol(buf, &str, 10);
+        if (str == buf) {
+            break;
+        }
+        ptr = strchr(buf, ':') + 1;
+        itmp2 = atoi(ptr);
+        if (te->cl == NULL) {
+            te->cl = (struct COMMENT_LIST *)
+                malloc(sizeof(struct COMMENT_LIST));
+            if (te->cl == NULL) {
+                sys_error("get_text_entry", 3, "malloc");
+                return NULL;
+            }
+            tmp_cl = te->cl;
+            te->cl->comment_num = itmp1;
+            te->cl->comment_author = itmp2;
+            te->cl->next = NULL;
+        } else {
+            te->cl->next = (struct COMMENT_LIST *)
+                malloc(sizeof(struct COMMENT_LIST));
+            if (te->cl->next == NULL) {
+                sys_error("get_text_entry", 4, "malloc");
+                return NULL;
+            }
+            te->cl = te->cl->next;
+            te->cl->comment_num = itmp1;
+            te->cl->comment_author = itmp2;
+            te->cl->next = NULL;
+        }
+        buf = strchr(buf, '\n');
+        if (!buf)
+            break;
+        while (*buf == '\n')
+            buf++;
     }
     te->cl = tmp_cl;
     return buf;
@@ -424,43 +462,43 @@ get_text_entry (char *buf, struct TEXT_ENTRY *te)
  */
 
 char *
-get_active_entry (char *buf, struct ACTIVE_ENTRY *ae)
+get_active_entry(char *buf, struct ACTIVE_ENTRY * ae)
 {
     char *ptr, *str;
 
     for (;;) {
-	bzero(ae->from, 17); /* Ugly! But it works... */
-	ae->user = (int)strtol(buf, &str, 10);
-	if (buf == str) {
-	    return NULL;
-	}
-	ptr = strchr(buf, ':') + 1;
-	ae->pid = atoi(ptr);
-	ptr = strchr(ptr, ':') + 1;
-	ae->login_time = atol(ptr);
-	ptr = strchr(ptr, ':') + 1;
-	ae->avail = atoi(ptr);
-	ptr = strchr(ptr, ':') + 1;
+        bzero(ae->from, 17);    /* Ugly! But it works... */
+        ae->user = (int) strtol(buf, &str, 10);
+        if (buf == str) {
+            return NULL;
+        }
+        ptr = strchr(buf, ':') + 1;
+        ae->pid = atoi(ptr);
+        ptr = strchr(ptr, ':') + 1;
+        ae->login_time = atol(ptr);
+        ptr = strchr(ptr, ':') + 1;
+        ae->avail = atoi(ptr);
+        ptr = strchr(ptr, ':') + 1;
 /*
-	str = strchr(ptr, '\n');
-	*str = 0;
-	strcpy(ae->from, ptr);
-	*str = '\n';
+        str = strchr(ptr, '\n');
+        *str = 0;
+        strcpy(ae->from, ptr);
+        *str = '\n';
 */
-	str = strchr(ptr, ':');
-	*str = 0;
-	strcpy(ae->from, ptr);
-	*str = ':';
+        str = strchr(ptr, ':');
+        *str = 0;
+        strcpy(ae->from, ptr);
+        *str = ':';
 
-	ptr = str+1;
-	str = strchr(ptr, ':');
-	*str = 0;
-	strcpy(ae->tty, ptr);
-	*str = ':';
+        ptr = str + 1;
+        str = strchr(ptr, ':');
+        *str = 0;
+        strcpy(ae->tty, ptr);
+        *str = ':';
 
-	buf = strchr (buf, '\n');
-	buf++;
-	return buf;
+        buf = strchr(buf, '\n');
+        buf++;
+        return buf;
     }
 }
 
@@ -471,64 +509,69 @@ get_active_entry (char *buf, struct ACTIVE_ENTRY *ae)
  */
 
 char *
-get_confs_entry (char *buf, struct CONFS_ENTRY *ce)
-
+get_confs_entry(char *buf, struct CONFS_ENTRY * ce)
 {
     char *oldbuf, *t1, *t2;
-    long  tmpfrom, tmpto;
+    long tmpfrom, tmpto;
     struct INT_LIST *int_list_sav;
 
     ce->il = NULL;
-    if (!buf) return NULL;
+    if (!buf)
+        return NULL;
     int_list_sav = NULL;
     oldbuf = buf;
     buf = strchr(buf, ':');
-    if (!buf || (*buf == 0)) return NULL;
-    while((buf > oldbuf) && (*buf != '\n')) buf--;
-    if (buf != oldbuf) buf++;
+    if (!buf || (*buf == 0))
+        return NULL;
+    while ((buf > oldbuf) && (*buf != '\n'))
+        buf--;
+    if (buf != oldbuf)
+        buf++;
     oldbuf = buf;
     ce->num = atol(buf);
     buf = strchr(buf, ':');
 
     buf++;
     for (;;) {
-	if (*buf == '\n') break;
+        if (*buf == '\n')
+            break;
         t1 = strchr(buf, '-');
         *t1 = ' ';
         tmpfrom = atol(buf);
         tmpto = atol(t1);
         *t1 = '-';
-	if (ce->il == NULL) {
-	    ce->il = (struct INT_LIST *) malloc (sizeof (struct INT_LIST));
-	    if (ce->il == NULL) {
-		sys_error("get_confs_entry", 1, "malloc");
-		return NULL;
-	    }
-	    int_list_sav = ce->il;
-	    ce->il->from = tmpfrom;
-	    ce->il->to = tmpto;
-	    ce->il->next = NULL;
-	} else {
-	    ce->il->next = (struct INT_LIST *)malloc(sizeof (struct INT_LIST));
-	    if (ce->il->next == NULL) {
-		sys_error("get_confs_entry", 2, "malloc");
-		return NULL;
-	    }
-	    ce->il = ce->il->next;
-	    ce->il->from = tmpfrom;
-	    ce->il->to = tmpto;
-	    ce->il->next = NULL;
-	}
-	t1 = strchr(buf, '\n');
-	t2 = strchr(buf, ',');
-	if (t2 && (t2 < t1))
-		buf = ++t2;
-	else
-		break;
+        if (ce->il == NULL) {
+            ce->il = (struct INT_LIST *) malloc(sizeof(struct INT_LIST));
+            if (ce->il == NULL) {
+                sys_error("get_confs_entry", 1, "malloc");
+                return NULL;
+            }
+            int_list_sav = ce->il;
+            ce->il->from = tmpfrom;
+            ce->il->to = tmpto;
+            ce->il->next = NULL;
+        } else {
+            ce->il->next = (struct INT_LIST *) malloc(sizeof(struct INT_LIST));
+            if (ce->il->next == NULL) {
+                sys_error("get_confs_entry", 2, "malloc");
+                return NULL;
+            }
+            ce->il = ce->il->next;
+            ce->il->from = tmpfrom;
+            ce->il->to = tmpto;
+            ce->il->next = NULL;
+        }
+        t1 = strchr(buf, '\n');
+        t2 = strchr(buf, ',');
+        if (t2 && (t2 < t1))
+            buf = ++t2;
+        else
+            break;
     }
     ce->il = int_list_sav;
     buf = strchr(oldbuf, '\n');
-    if (buf) buf++;
+    if (buf)
+        buf++;
     return buf;
 }
 
@@ -539,51 +582,50 @@ get_confs_entry (char *buf, struct CONFS_ENTRY *ce)
  */
 
 char *
-get_msg_entry (char *buf, struct MSG_ENTRY *me)
-
+get_msg_entry(char *buf, struct MSG_ENTRY * me)
 {
     char *ptr, *ptr2;
 
     bzero(me->msg, LINE_LEN);
 
-    me->direct = 0;  /* Default is always uid=sender */
+    me->direct = 0;             /* Default is always uid=sender */
 
     for (;;) {
 
-	ptr2 = buf;
+        ptr2 = buf;
 
 
-	ptr = strchr(ptr2, ':');
-	if (ptr == NULL) {
-	    return NULL;
-	}
-	*ptr = 0;
-	me->num = atoi(ptr2);
-	*ptr = ':';
+        ptr = strchr(ptr2, ':');
+        if (ptr == NULL) {
+            return NULL;
+        }
+        *ptr = 0;
+        me->num = atoi(ptr2);
+        *ptr = ':';
 
-	ptr2 = ptr + 1;
-	ptr = strchr(ptr2, ':');
-	if (ptr == NULL) {
-	    return NULL;
-	}
-	*ptr = 0;
-	me->type = atoi(ptr2);
-	*ptr = ':';
+        ptr2 = ptr + 1;
+        ptr = strchr(ptr2, ':');
+        if (ptr == NULL) {
+            return NULL;
+        }
+        *ptr = 0;
+        me->type = atoi(ptr2);
+        *ptr = ':';
 
-	ptr2 = ptr + 1;
-	ptr = strchr(ptr2, '\n');
-	if (ptr == NULL) {
-	    return NULL;
-	}
-	*ptr = 0;
-	strcpy(me->msg, ptr2);
-	*ptr = '\n';
+        ptr2 = ptr + 1;
+        ptr = strchr(ptr2, '\n');
+        if (ptr == NULL) {
+            return NULL;
+        }
+        *ptr = 0;
+        strcpy(me->msg, ptr2);
+        *ptr = '\n';
 
-	rtrim(me->msg);
-	buf = strchr(buf, '\n');
-	while (buf && (*buf == '\n')) {
-	    buf++;
-	}
-	return buf;
+        rtrim(me->msg);
+        buf = strchr(buf, '\n');
+        while (buf && (*buf == '\n')) {
+            buf++;
+        }
+        return buf;
     }
 }

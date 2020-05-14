@@ -51,92 +51,93 @@ struct EDIT_BUF {
 };
 
 struct USER_ENTRY {
-    int num;			/* user's UID */
-    time_t last_session;	/* time of last session (logout) */
-    LINE name;			/* user's name */
+    int num;                    /* user's UID */
+    time_t last_session;        /* time of last session (logout) */
+    LINE name;                  /* user's name */
 };
 
 struct FILE_ENTRY {
-    LINE name;			/* filename */
-    LINE desc;			/* file description */
+    LINE name;                  /* filename */
+    LINE desc;                  /* file description */
 };
 
 struct CONF_ENTRY {
-    int num;			/* number of conf. */
-    long last_text;		/* number of last text in conf. */
-    int creator;		/* creator of conference */
-    time_t time;		/* time conf. was created */
-    int type;			/* type of conf. */
-    int life;			/* Number of days before texts expire */
+    int num;                    /* number of conf. */
+    long last_text;             /* number of last text in conf. */
+    int creator;                /* creator of conference */
+    time_t time;                /* time conf. was created */
+    int type;                   /* type of conf. */
+    int life;                   /* Number of days before texts expire */
     int comconf;                /* Move comments here */
-    LINE name;			/* name of conf. */
+    LINE name;                  /* name of conf. */
 };
 
 struct PARSE_ENTRY {
-    LINE func;			/* name of function to call */
-    LINE cmd;			/* specification of the command */
-    LINE help;			/* a short description of what it does */
-    int (*addr)();		/* address of the function to call */
+    LINE func;                  /* name of function to call */
+    LINE cmd;                   /* specification of the command */
+    LINE help;                  /* a short description of what it does */
+    int (*addr) ();             /* address of the function to call */
 };
 
 struct USER_LIST {
-    int num;			/* number of user */
-    struct USER_LIST *next;	/* link to next entry in the list */
+    int num;                    /* number of user */
+    struct USER_LIST *next;     /* link to next entry in the list */
 };
 
 struct TEXT_BODY {
-    LINE line;			/* a row of text */
-    struct TEXT_BODY *next;	/* link to next entry in the list */
+    LINE line;                  /* a row of text */
+    struct TEXT_BODY *next;     /* link to next entry in the list */
 };
 
 struct COMMENT_LIST {
-    long comment_num;		/* number of comment */
-    int comment_author;		/* number of comment's author */
-    struct COMMENT_LIST *next; 	/* link to next entry in the list */
+    long comment_num;           /* number of comment */
+    int comment_author;         /* number of comment's author */
+    struct COMMENT_LIST *next;  /* link to next entry in the list */
 };
 
 struct TEXT_ENTRY {
-    struct TEXT_HEADER th;	/* the text header */
-    struct TEXT_BODY *body;	/* the text body */
-    struct COMMENT_LIST *cl; 	/* the list of comments */
+    struct TEXT_HEADER th;      /* the text header */
+    struct TEXT_BODY *body;     /* the text body */
+    struct COMMENT_LIST *cl;    /* the list of comments */
 };
 
 struct ACTIVE_ENTRY {
-    int user;			/* uid of user */
-    int pid;       		/* process identification */
-    time_t login_time;		/* time of login */
-    int avail;			/* available or busy */
+    int user;                   /* uid of user */
+    int pid;                    /* process identification */
+    time_t login_time;          /* time of login */
+    int avail;                  /* available or busy */
     char from[FROM_FIELD_LEN];  /* logged in from */
-    char tty[50];		/* terminal */
+    char tty[50];               /* terminal */
 };
 
-struct INT_LIST {		/* Confs-interval-list */
+struct INT_LIST {               /* Confs-interval-list */
     long from;
     long to;
-    struct INT_LIST	*next;	/* Next entry */
+    struct INT_LIST *next;      /* Next entry */
 };
 
 struct CONFS_ENTRY {
-    int num;			/* Number of conf. */
-    struct INT_LIST	*il;	/* List with confs-intervals */
+    int num;                    /* Number of conf. */
+    struct INT_LIST *il;        /* List with confs-intervals */
 };
 
 struct COM_STACK {
-    long	num;
+    long num;
     struct COM_STACK *next;
 };
 
 struct UR_STACK {
-    int	conf;
-    long	num;
+    int conf;
+    long num;
     struct UR_STACK *next;
 };
 
 struct MSG_ENTRY {
-    int type;	/* What kind of message is this? */
-    int num;	/* Users uid */
-    int direct; /* direct=0 -> uid=sender, direct=1 -> uid=receiver */
-    LINE msg;	/* Message */
+    int type;                   /* What kind of message is this? */
+    int num;                    /* Users uid */
+    int direct;                 /* direct=0 -> uid=sender, direct=1 ->
+                                 * uid=receiver */
+    LINE msg;                   /* Message */
 };
 
 struct MSG_LIST {
@@ -177,16 +178,16 @@ struct CEN {
 
 struct SKLAFFRC {
     struct {
-	char adress[80];
-	char postnr[80];
-	char ort[80];
-	char tele1[80];
-	char tele2[80];
-	char tele3[80];
-	char email1[80];
-	char email2[80];
-	char url[80];
-	char org[80];
+        char adress[80];
+        char postnr[80];
+        char ort[80];
+        char tele1[80];
+        char tele2[80];
+        char tele3[80];
+        char email1[80];
+        char email2[80];
+        char url[80];
+        char org[80];
     } user;
     char note[4096];
     char sig[4096];
@@ -197,4 +198,3 @@ struct SKLAFFRC {
     char login[4096];
     char paydate[80];
 };
-

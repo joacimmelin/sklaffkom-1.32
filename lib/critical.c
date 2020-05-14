@@ -33,9 +33,11 @@
  * critical - enter critical section
  */
 
-void critical(void)
+void
+critical(void)
 {
     sigset_t set;
+
     sigemptyset(&set);
     sigaddset(&set, SIGHUP);
     sigaddset(&set, SIGTERM);

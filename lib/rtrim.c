@@ -34,16 +34,18 @@
  */
 
 char *
-rtrim (char *s)
+rtrim(char *s)
 {
     char *ptr;
 
-    if (!s) return NULL;
+    if (!s)
+        return NULL;
     ptr = s;
-    while (*ptr) ptr++;
+    while (*ptr)
+        ptr++;
     ptr--;
     while ((*ptr == 0x20) && (ptr > s)) {
-	ptr--;
+        ptr--;
     }
     ptr++;
     *ptr = '\0';

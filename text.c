@@ -35,12 +35,8 @@
  *       conf/uid (type), absolute date? (dtype)
  */
 
-void display_header (th, edit_subject, type, dtype, mailrec)
-struct TEXT_HEADER *th;
-int edit_subject;
-int type;
-int dtype;
-char *mailrec;
+void
+display_header(struct TEXT_HEADER * th, int edit_subject, int type, int dtype, char *mailrec)
 {
     LINE time_val, c, filename, fname, username;
     int i, uid, right, nc, fd;
@@ -48,162 +44,146 @@ char *mailrec;
     struct CONF_ENTRY *ce;
 
     if (mailrec && type && (th->author == 0)) {
-	strcpy(username, mailrec);
-    }
-    else {
-	user_name(th->author, username);
-	Current_author = th->author;
+        strcpy(username, mailrec);
+    } else {
+        user_name(th->author, username);
+        Current_author = th->author;
     }
     if (strlen(username) > 33) {
-	strcpy(filename, username);
-	if ((ptr = strchr(filename, '(')) != NULL) {
-	    if ((tmp = strchr(ptr, ')')) != NULL) {
-		*tmp = '\0';
-		strcpy(username, (ptr + 1));
-	    }
-	    else {
-		ptr--;
-		if (ptr > filename) {
-		    *ptr = '\0';
-		    strcpy(username, filename);
-		}
-	    }
-	}
-	else if ((ptr = strchr(filename, '<')) != NULL) {
-	    if ((tmp = strchr(ptr, '>')) != NULL) {
-		*tmp = '\0';
-		strcpy(username, (ptr + 1));
-	    }
-	    else {
-		ptr--;
-		if (ptr > filename) {
-		    *ptr = '\0';
-		    strcpy(username, filename);
-		}
-	    }
-	}
+        strcpy(filename, username);
+        if ((ptr = strchr(filename, '(')) != NULL) {
+            if ((tmp = strchr(ptr, ')')) != NULL) {
+                *tmp = '\0';
+                strcpy(username, (ptr + 1));
+            } else {
+                ptr--;
+                if (ptr > filename) {
+                    *ptr = '\0';
+                    strcpy(username, filename);
+                }
+            }
+        } else if ((ptr = strchr(filename, '<')) != NULL) {
+            if ((tmp = strchr(ptr, '>')) != NULL) {
+                *tmp = '\0';
+                strcpy(username, (ptr + 1));
+            } else {
+                ptr--;
+                if (ptr > filename) {
+                    *ptr = '\0';
+                    strcpy(username, filename);
+                }
+            }
+        }
     }
     if (th->num == 0) {
-	output ("%s %s\n", MSG_WRITTENBY, username);
-    }
-    else {
-	time_string (th->time, time_val, (dtype | Date));
-           output ("%s %d; %s %s; %s;",
-                   (th->type == TYPE_TEXT) ? MSG_TEXTNAME : MSG_SURVEYNAME,
-                   th->num, MSG_WRITTENBY, username, time_val);
+        output("%s %s\n", MSG_WRITTENBY, username);
+    } else {
+        time_string(th->time, time_val, (dtype | Date));
+        output("%s %d; %s %s; %s;",
+            (th->type == TYPE_TEXT) ? MSG_TEXTNAME : MSG_SURVEYNAME,
+            th->num, MSG_WRITTENBY, username, time_val);
     }
     switch (th->size) {
     case 0:
-	if (th->num)
-		output (" %s\n",
-                   (th->type == TYPE_TEXT) ? MSG_EMPTYTEXT : MSG_EMPTYSURVEY);
-	break;
+        if (th->num)
+            output(" %s\n",
+                (th->type == TYPE_TEXT) ? MSG_EMPTYTEXT : MSG_EMPTYSURVEY);
+        break;
     case 1:
-	output (" %s\n", MSG_ONELINE);
-	break;
+        output(" %s\n", MSG_ONELINE);
+        break;
     default:
-	output (" %d %s\n", th->size, MSG_LINES);
-	break;
+        output(" %d %s\n", th->size, MSG_LINES);
+        break;
     }
     if (th->type == TYPE_SURVEY && (th->num != 0)) {
-	time_string (th->sh.time, time_val, (dtype | Date));
-	output("%s: %d; %s: %s\n", MSG_NQUESTIONS, th->sh.n_questions,
-	       MSG_REPORTRESULT, time_val);
+        time_string(th->sh.time, time_val, (dtype | Date));
+        output("%s: %d; %s: %s\n", MSG_NQUESTIONS, th->sh.n_questions,
+            MSG_REPORTRESULT, time_val);
     }
-
-
     if (th->comment_num) {
-	if (th->comment_conf) {
-	    ce = get_conf_struct(th->comment_conf);
-	    right = can_see_conf(Uid, th->comment_conf, ce->type, ce->creator);
-	}
-	else {
-	    right = 1;
-	}
-	if (right) {
-	    output("%s %d ", MSG_REPLYTO, th->comment_num);
+        if (th->comment_conf) {
+            ce = get_conf_struct(th->comment_conf);
+            right = can_see_conf(Uid, th->comment_conf, ce->type, ce->creator);
+        } else {
+            right = 1;
+        }
+        if (right) {
+            output("%s %d ", MSG_REPLYTO, th->comment_num);
 
-	    nc = th->comment_conf;
-	    if (!nc) nc = Current_conf;
-	    /* I put this chunk last instead to allow
-	       for display of author also for text commented
-	       from other conferences. /OR 98-07-29
-	      if (th->comment_conf) {
-		if (!nc) nc = Current_conf;
-		conf_name(nc, username);
-		output ("%s %s\n", MSG_IN, username);
-	    }
-	    else */
- {
-		if (!th->comment_author) {
-		    strcpy(username, MSG_UNKNOWNU);
-		    if (nc) {
-			sprintf(fname, "%s/%d/%ld", SKLAFF_DB,
-			    nc, th->comment_num);
-		    }
-		    else {
-			sprintf(fname, "%s/%ld", Mbox, th->comment_num);
-		    }
-		    if ((fd = open_file(fname, OPEN_QUIET)) != -1) {
-			if ((buf = read_file(fd)) == NULL) {
-			    output("\n%s\n\n", MSG_NOREAD);
-			    return;
-			}
-    			oldbuf = buf;
-    			if (close_file(fd) == -1) {
-			    return;
-			}
-			ptr = strstr(buf, MSG_EMFROM);
-			if (ptr) {
-			    tmp = strchr(ptr, '\n');
-			    *tmp = '\0';
-			    strcpy(username, (ptr + strlen(MSG_EMFROM)));
-			    *tmp = '\n';
-			}
-			free(oldbuf);
-		    }
-		}
-		else {
-		    user_name(th->comment_author, username);
-		}
-		output("%s %s", MSG_BY, username);
-		if (th->comment_conf) {
-		  conf_name(nc, username);
-		  output (" %s %s\n", MSG_IN, username);
-		} else
-		  output ("\n");
+            nc = th->comment_conf;
+            if (!nc)
+                nc = Current_conf;
+            /* I put this chunk last instead to allow for display of author
+             * also for text commented from other conferences. /OR 98-07-29 if
+             * (th->comment_conf) { if (!nc) nc = Current_conf; conf_name(nc,
+             * username); output ("%s %s\n", MSG_IN, username); } else */
+            {
+                if (!th->comment_author) {
+                    strcpy(username, MSG_UNKNOWNU);
+                    if (nc) {
+                        sprintf(fname, "%s/%d/%ld", SKLAFF_DB,
+                            nc, th->comment_num);
+                    } else {
+                        sprintf(fname, "%s/%ld", Mbox, th->comment_num);
+                    }
+                    if ((fd = open_file(fname, OPEN_QUIET)) != -1) {
+                        if ((buf = read_file(fd)) == NULL) {
+                            output("\n%s\n\n", MSG_NOREAD);
+                            return;
+                        }
+                        oldbuf = buf;
+                        if (close_file(fd) == -1) {
+                            return;
+                        }
+                        ptr = strstr(buf, MSG_EMFROM);
+                        if (ptr) {
+                            tmp = strchr(ptr, '\n');
+                            *tmp = '\0';
+                            strcpy(username, (ptr + strlen(MSG_EMFROM)));
+                            *tmp = '\n';
+                        }
+                        free(oldbuf);
+                    }
+                } else {
+                    user_name(th->comment_author, username);
+                }
+                output("%s %s", MSG_BY, username);
+                if (th->comment_conf) {
+                    conf_name(nc, username);
+                    output(" %s %s\n", MSG_IN, username);
+                } else
+                    output("\n");
 
-	    }
-	}
+            }
+        }
     }
     if (!Current_conf && (th->author == Uid) &&
-	(th->time > 0) && th->comment_author &&
-	(th->comment_author != Uid) && (!Last_conf)) {
-	user_name(th->comment_author, username);
-	output("%s %s\n", MSG_COPYTO, username);
+        (th->time > 0) && th->comment_author &&
+        (th->comment_author != Uid) && (!Last_conf)) {
+        user_name(th->comment_author, username);
+        output("%s %s\n", MSG_COPYTO, username);
     }
     if (mailrec && !type) {
-	output("%s %s\n", MSG_RECIPIENT, mailrec);
-    }
-    else {
-	if (type < 0) {
-	    uid = type - (type * 2);
-	    user_name(uid, username);
-	}
-	else {
-	    conf_name(type, username);
-	}
-	output("%s %s\n", MSG_RECIPIENT, username);
+        output("%s %s\n", MSG_RECIPIENT, mailrec);
+    } else {
+        if (type < 0) {
+            uid = type - (type * 2);
+            user_name(uid, username);
+        } else {
+            conf_name(type, username);
+        }
+        output("%s %s\n", MSG_RECIPIENT, username);
     }
     if (edit_subject) {
-	output (MSG_SUBJECT);
-	input (th->subject, th->subject, SUBJECT_LEN, 0, 0, 0);
+        output(MSG_SUBJECT);
+        input(th->subject, th->subject, SUBJECT_LEN, 0, 0, 0);
     } else
-	    output ("%s%s\n", MSG_SUBJECT, th->subject);
+        output("%s%s\n", MSG_SUBJECT, th->subject);
     for (i = 0; i < (strlen(th->subject) + 8); i++)
-	    c[i] = '-';
+        c[i] = '-';
     c[i] = '\0';
-    output ("%s\n", c);
+    output("%s\n", c);
 }
 
 /*
@@ -212,9 +192,8 @@ char *mailrec;
  * ret: ok (0) or failure (-1)
  */
 
-int push_unread(conf, num)
-int conf;
-long num;
+int
+push_unread(int conf, long num)
 {
     struct UR_STACK *tmp, *saved;
 
@@ -222,22 +201,23 @@ long num;
     saved = NULL;
 
     while (tmp) {
-	saved = tmp;
-	tmp = tmp->next;
+        saved = tmp;
+        tmp = tmp->next;
     }
 
     if ((tmp = (struct UR_STACK *)
-	 malloc(sizeof(struct UR_STACK))) == NULL) {
-	sys_error("push_unread", 1, "malloc");
-	return -1;
+            malloc(sizeof(struct UR_STACK))) == NULL) {
+        sys_error("push_unread", 1, "malloc");
+        return -1;
     }
-
     tmp->num = num;
     tmp->conf = conf;
     tmp->next = NULL;
 
-    if (!saved) ustack = tmp;
-    else saved->next = tmp;
+    if (!saved)
+        ustack = tmp;
+    else
+        saved->next = tmp;
 
     return 0;
 }
@@ -248,8 +228,8 @@ long num;
  * ret: updated conf and text number or -1 if no more texts
  */
 
-long pop_unread(conf)
-int *conf;
+long
+pop_unread(int *conf)
 {
     struct UR_STACK *tmp, *saved, *tmp2;
     long num;
@@ -258,26 +238,28 @@ int *conf;
     saved = NULL;
 
     while (tmp) {
-	saved = tmp;
-	tmp = tmp->next;
+        saved = tmp;
+        tmp = tmp->next;
     }
 
-    if (!saved) return -1;
+    if (!saved)
+        return -1;
     else {
-	num = saved->num;
-	*conf = saved->conf;
-	if (ustack == saved) ustack = NULL;
-	else {
-	    tmp = ustack;
-	    tmp2 = NULL;
-	    while (tmp != saved) {
-		tmp2 = tmp;
-		tmp = tmp->next;
-	    }
-	    tmp2->next = NULL;
-	}
-	free(saved);
-	return num;
+        num = saved->num;
+        *conf = saved->conf;
+        if (ustack == saved)
+            ustack = NULL;
+        else {
+            tmp = ustack;
+            tmp2 = NULL;
+            while (tmp != saved) {
+                tmp2 = tmp;
+                tmp = tmp->next;
+            }
+            tmp2->next = NULL;
+        }
+        free(saved);
+        return num;
     }
 }
 
@@ -287,9 +269,8 @@ int *conf;
  * ret: ok (0) or failure (-1)
  */
 
-int push_unread2(conf, num)
-int conf;
-long num;
+int
+push_unread2(int conf, long num)
 {
     struct UR_STACK *tmp, *saved;
 
@@ -297,22 +278,23 @@ long num;
     saved = NULL;
 
     while (tmp) {
-	saved = tmp;
-	tmp = tmp->next;
+        saved = tmp;
+        tmp = tmp->next;
     }
 
     if ((tmp = (struct UR_STACK *)
-	 malloc(sizeof(struct UR_STACK))) == NULL) {
-	sys_error("push_unread", 1, "malloc");
-	return -1;
+            malloc(sizeof(struct UR_STACK))) == NULL) {
+        sys_error("push_unread", 1, "malloc");
+        return -1;
     }
-
     tmp->num = num;
     tmp->conf = conf;
     tmp->next = NULL;
 
-    if (!saved) ustack2 = tmp;
-    else saved->next = tmp;
+    if (!saved)
+        ustack2 = tmp;
+    else
+        saved->next = tmp;
 
     return 0;
 }
@@ -323,8 +305,8 @@ long num;
  * ret: updated conf and text number or -1 if no more texts
  */
 
-long pop_unread2(conf)
-int *conf;
+long
+pop_unread2(int *conf)
 {
     struct UR_STACK *tmp, *saved, *tmp2;
     long num;
@@ -333,26 +315,28 @@ int *conf;
     saved = NULL;
 
     while (tmp) {
-	saved = tmp;
-	tmp = tmp->next;
+        saved = tmp;
+        tmp = tmp->next;
     }
 
-    if (!saved) return -1;
+    if (!saved)
+        return -1;
     else {
-	num = saved->num;
-	*conf = saved->conf;
-	if (ustack2 == saved) ustack2 = NULL;
-	else {
-	    tmp = ustack2;
-	    tmp2 = NULL;
-	    while (tmp != saved) {
-		tmp2 = tmp;
-		tmp = tmp->next;
-	    }
-	    tmp2->next = NULL;
-	}
-	free(saved);
-	return num;
+        num = saved->num;
+        *conf = saved->conf;
+        if (ustack2 == saved)
+            ustack2 = NULL;
+        else {
+            tmp = ustack2;
+            tmp2 = NULL;
+            while (tmp != saved) {
+                tmp2 = tmp;
+                tmp = tmp->next;
+            }
+            tmp2->next = NULL;
+        }
+        free(saved);
+        return num;
     }
 }
 
@@ -362,8 +346,8 @@ int *conf;
  * ret: ok (0) or failure (-1)
  */
 
-int push_comment(num)
-long num;
+int
+push_comment(long num)
 {
     struct COM_STACK *tmp, *saved;
 
@@ -371,21 +355,22 @@ long num;
     saved = NULL;
 
     while (tmp) {
-	saved = tmp;
-	tmp = tmp->next;
+        saved = tmp;
+        tmp = tmp->next;
     }
 
     if ((tmp = (struct COM_STACK *)
-	 malloc(sizeof(struct COM_STACK))) == NULL) {
-	sys_error("push_comment", 1, "malloc");
-	return -1;
+            malloc(sizeof(struct COM_STACK))) == NULL) {
+        sys_error("push_comment", 1, "malloc");
+        return -1;
     }
-
     tmp->num = num;
     tmp->next = NULL;
 
-    if (!saved) cstack = tmp;
-    else saved->next = tmp;
+    if (!saved)
+        cstack = tmp;
+    else
+        saved->next = tmp;
 
     return 0;
 }
@@ -395,7 +380,8 @@ long num;
  * ret: textnumber or -1 if no more texts
  */
 
-long pop_comment()
+long
+pop_comment(void)
 {
     struct COM_STACK *tmp, *saved, *tmp2;
     long num;
@@ -404,25 +390,27 @@ long pop_comment()
     saved = NULL;
 
     while (tmp) {
-	saved = tmp;
-	tmp = tmp->next;
+        saved = tmp;
+        tmp = tmp->next;
     }
 
-    if (!saved) return -1;
+    if (!saved)
+        return -1;
     else {
-	num = saved->num;
-	if (cstack == saved) cstack = NULL;
-	else {
-	    tmp = cstack;
-	    tmp2 = NULL;
-	    while (tmp != saved) {
-		tmp2 = tmp;
-		tmp = tmp->next;
-	    }
-	    tmp2->next = NULL;
-	}
-	free(saved);
-	return num;
+        num = saved->num;
+        if (cstack == saved)
+            cstack = NULL;
+        else {
+            tmp = cstack;
+            tmp2 = NULL;
+            while (tmp != saved) {
+                tmp2 = tmp;
+                tmp = tmp->next;
+            }
+            tmp2->next = NULL;
+        }
+        free(saved);
+        return num;
     }
 }
 
@@ -430,13 +418,14 @@ long pop_comment()
  * clear_comment - empty comment stack
  */
 
-void clear_comment()
+void
+clear_comment(void)
 {
     long textnum;
 
     textnum = pop_comment();
     while (textnum != -1) {
-	textnum = pop_comment();
+        textnum = pop_comment();
     }
 }
 
@@ -446,9 +435,8 @@ void clear_comment()
  * ret: ok (0) or failure (-1)
  */
 
-int push_read(conf, num)
-int conf;
-long num;
+int
+push_read(int conf, long num)
 {
     struct UR_STACK *tmp, *saved;
 
@@ -456,22 +444,23 @@ long num;
     saved = NULL;
 
     while (tmp) {
-	saved = tmp;
-	tmp = tmp->next;
+        saved = tmp;
+        tmp = tmp->next;
     }
 
     if ((tmp = (struct UR_STACK *)
-	 malloc(sizeof(struct UR_STACK))) == NULL) {
-	sys_error("push_unread", 1, "malloc");
-	return -1;
+            malloc(sizeof(struct UR_STACK))) == NULL) {
+        sys_error("push_unread", 1, "malloc");
+        return -1;
     }
-
     tmp->num = num;
     tmp->conf = conf;
     tmp->next = NULL;
 
-    if (!saved) rstack = tmp;
-    else saved->next = tmp;
+    if (!saved)
+        rstack = tmp;
+    else
+        saved->next = tmp;
 
     return 0;
 }
@@ -482,8 +471,8 @@ long num;
  * ret: updated conf and text number or -1 if no more texts
  */
 
-long pop_read(conf)
-int *conf;
+long
+pop_read(int *conf)
 {
     struct UR_STACK *tmp, *saved, *tmp2;
     long num;
@@ -492,26 +481,28 @@ int *conf;
     saved = NULL;
 
     while (tmp) {
-	saved = tmp;
-	tmp = tmp->next;
+        saved = tmp;
+        tmp = tmp->next;
     }
 
-    if (!saved) return -1;
+    if (!saved)
+        return -1;
     else {
-	num = saved->num;
-	*conf = saved->conf;
-	if (rstack == saved) rstack = NULL;
-	else {
-	    tmp = rstack;
-	    tmp2 = NULL;
-	    while (tmp != saved) {
-		tmp2 = tmp;
-		tmp = tmp->next;
-	    }
-	    tmp2->next = NULL;
-	}
-	free(saved);
-	return num;
+        num = saved->num;
+        *conf = saved->conf;
+        if (rstack == saved)
+            rstack = NULL;
+        else {
+            tmp = rstack;
+            tmp2 = NULL;
+            while (tmp != saved) {
+                tmp2 = tmp;
+                tmp = tmp->next;
+            }
+            tmp2->next = NULL;
+        }
+        free(saved);
+        return num;
     }
 }
 
@@ -521,9 +512,8 @@ int *conf;
  * ret: ok (1) or already marked (0) or failure (-1)
  */
 
-int mark_as_read(text, conf)
-long text;
-int conf;
+int
+mark_as_read(long text, int conf)
 {
     int bound, found, fd;
     struct CONFS_ENTRY cse;
@@ -535,186 +525,177 @@ int conf;
     strcat(fname, CONFS_FILE);
 
     if ((fd = open_file(fname, 0)) == -1) {
-	sys_error("mark_as_read", 1, "open_file");
-	return -1;
+        sys_error("mark_as_read", 1, "open_file");
+        return -1;
     }
-
     if ((buf = read_file(fd)) == NULL) {
-	sys_error("mark_as_read", 2, "read_file");
-	return -1;
+        sys_error("mark_as_read", 2, "read_file");
+        return -1;
     }
-
     oldbuf = buf;
 
     /* find confs-entry */
 
     while (buf) {
-	buf = get_confs_entry(buf, &cse);
-	if (cse.num == conf) break;
-	free_confs_entry(&cse);
+        buf = get_confs_entry(buf, &cse);
+        if (cse.num == conf)
+            break;
+        free_confs_entry(&cse);
     }
 
     buf = oldbuf;
     if (cse.num == conf) {
-	int_list_sav = cse.il;
-	found = 0;
-	while (cse.il) {
-	    if ((cse.il->from <= text) && (cse.il->to >= text)) {
-		found = 1;
-		break;
-	    }
-	    cse.il = cse.il->next;
-	}
-	cse.il = int_list_sav;
+        int_list_sav = cse.il;
+        found = 0;
+        while (cse.il) {
+            if ((cse.il->from <= text) && (cse.il->to >= text)) {
+                found = 1;
+                break;
+            }
+            cse.il = cse.il->next;
+        }
+        cse.il = int_list_sav;
 
-	if (found) {
-	    free_confs_entry(&cse);
-	    if (close_file(fd) == -1) {
-		sys_error("mark_as_read", 5, "close_file");
-		return -1;
-	    }
-	    free(oldbuf);
-	    return 0;
-	}
+        if (found) {
+            free_confs_entry(&cse);
+            if (close_file(fd) == -1) {
+                sys_error("mark_as_read", 5, "close_file");
+                return -1;
+            }
+            free(oldbuf);
+            return 0;
+        }
+        bound = 0;
 
-	bound = 0;
+        /* kolla hur m}nga intervall som h{nger ihop med den aktuella texten
+         * (text) */
 
-	/* kolla hur m}nga intervall som h{nger ihop med den aktuella
-	   texten (text) */
+        while (cse.il) {
+            if ((cse.il->from == (text + 1L)) || (cse.il->to == (text - 1L))) {
+                bound++;
+            }
+            cse.il = cse.il->next;
+        }
+        cse.il = int_list_sav;
 
-	while (cse.il) {
-	    if ((cse.il->from == (text+1L)) || (cse.il->to == (text-1L))) {
-		bound++;
-	    }
-	    cse.il = cse.il->next;
-	}
-	cse.il = int_list_sav;
+        /* om inget intervall h{nger ihop s} allokerar vi ett nytt intervall */
 
-	/* om inget intervall h{nger ihop s} allokerar vi ett nytt
-	   intervall */
+        if (bound == 0) {
+            if (cse.il) {
+                if (cse.il->from > text) {
+                    tmpsav = (struct INT_LIST *)
+                        malloc(sizeof(struct INT_LIST));
+                    if (tmpsav == NULL) {
+                        sys_error("mark_as_read", 5, "malloc");
+                        return -1;
+                    }
+                    tmpsav->next = cse.il;
+                    tmpsav->from = text;
+                    tmpsav->to = text;
+                    cse.il = tmpsav;
+                    int_list_sav = tmpsav;
+                } else {
+                    while (cse.il) {
+                        saved = cse.il;
+                        cse.il = cse.il->next;
+                        if (cse.il && (saved->to < text) &&
+                            (cse.il->from > text))
+                            break;
+                    }
+                    if (cse.il) {
+                        tmpsav = (struct INT_LIST *)
+                            malloc(sizeof(struct INT_LIST));
+                        if (tmpsav == NULL) {
+                            sys_error("mark_as_read", 5, "malloc");
+                            return -1;
+                        }
+                        saved->next = tmpsav;
+                        tmpsav->next = cse.il;
+                        tmpsav->from = text;
+                        tmpsav->to = text;
+                    } else {
+                        cse.il = saved;
+                        cse.il->next = (struct INT_LIST *)
+                            malloc(sizeof(struct INT_LIST));
+                        if (cse.il->next == NULL) {
+                            sys_error("mark_as_read", 3, "malloc");
+                            return -1;
+                        }
+                        cse.il = cse.il->next;
+                        cse.il->from = text;
+                        cse.il->to = text;
+                        cse.il->next = NULL;
+                    }
+                }
+            } else {
+                cse.il = (struct INT_LIST *)
+                    malloc(sizeof(struct INT_LIST));
+                if (cse.il == NULL) {
+                    sys_error("mark_as_read", 3, "malloc");
+                    return -1;
+                }
+                cse.il->from = text;
+                cse.il->to = text;
+                cse.il->next = NULL;
+                int_list_sav = cse.il;
+            }
+        }
+        /* om ett intervall h{nger ihop s} {ndrar vi p} det intervallet */
 
-	if (bound == 0) {
-	    if (cse.il) {
-		if (cse.il->from > text) {
-		    tmpsav = (struct INT_LIST *)
-			    malloc(sizeof(struct INT_LIST));
-		    if (tmpsav == NULL) {
-			sys_error("mark_as_read", 5, "malloc");
-			return -1;
-		    }
-		    tmpsav->next = cse.il;
-		    tmpsav->from = text;
-		    tmpsav->to = text;
-		    cse.il = tmpsav;
-		    int_list_sav = tmpsav;
-		}
-		else {
-		    while (cse.il) {
-			saved = cse.il;
-			cse.il = cse.il->next;
-			if (cse.il && (saved->to < text) &&
-			    (cse.il->from > text)) break;
-		    }
-		    if (cse.il) {
-			tmpsav = (struct INT_LIST *)
-				malloc(sizeof(struct INT_LIST));
-			if (tmpsav == NULL) {
-			    sys_error("mark_as_read", 5, "malloc");
-			    return -1;
-			}
-			saved->next = tmpsav;
-			tmpsav->next = cse.il;
-			tmpsav->from = text;
-			tmpsav->to = text;
-		    }
-		    else {
-			cse.il = saved;
-			cse.il->next = (struct INT_LIST *)
-				malloc(sizeof(struct INT_LIST));
-			if (cse.il->next == NULL) {
-			    sys_error ("mark_as_read", 3, "malloc");
-			    return -1;
-			}
-			cse.il = cse.il->next;
-			cse.il->from = text;
-			cse.il->to = text;
-			cse.il->next = NULL;
-		    }
-		}
-	    }
-	    else {
-		cse.il = (struct INT_LIST *)
-			malloc(sizeof(struct INT_LIST));
-		if (cse.il == NULL) {
-		    sys_error ("mark_as_read", 3, "malloc");
-		    return -1;
-		}
-		cse.il->from = text;
-		cse.il->to = text;
-		cse.il->next = NULL;
-		int_list_sav = cse.il;
-	    }
-	}
+        else if (bound == 1) {
 
-	/* om ett intervall h{nger ihop s} {ndrar vi p} det intervallet */
+            /* find and modify interval */
 
-	else if (bound == 1) {
+            while (cse.il) {
+                if (cse.il->from == text + 1L) {
+                    cse.il->from = text;
+                    break;
+                }
+                if (cse.il->to == text - 1L) {
+                    cse.il->to = text;
+                    break;
+                }
+                cse.il = cse.il->next;
+            }
+            cse.il = int_list_sav;
+        }
+        /* om tv} intervall h{nger ihop, sl} ihop dem till ett */
 
-	    /* find and modify interval */
+        else if (bound == 2) {
 
-	    while (cse.il) {
-		if (cse.il->from == text+1L) {
-		    cse.il->from = text;
-		    break;
-		}
-		if (cse.il->to == text-1L) {
-		    cse.il->to = text;
-		    break;
-		}
-		cse.il = cse.il->next;
-	    }
-	    cse.il = int_list_sav;
-	}
+            /* find and remove higher interval */
 
-	/* om tv} intervall h{nger ihop, sl} ihop dem till ett */
+            while (cse.il) {
+                if (cse.il->to == (text - 1L)) {
+                    int_list_next = cse.il->next;
+                    cse.il->to = int_list_next->to;
+                    cse.il->next = int_list_next->next;
+                    free(int_list_next);
+                    break;
+                }
+                cse.il = cse.il->next;
+            }
+        }
+        cse.il = int_list_sav;
 
-	else if (bound == 2) {
+        nbuf = replace_confs(&cse, buf);
 
-	    /* find and remove higher interval */
-
-	    while (cse.il) {
-		if (cse.il->to == (text-1L)) {
-		    int_list_next = cse.il->next;
-		    cse.il->to = int_list_next->to;
-		    cse.il->next = int_list_next->next;
-		    free(int_list_next);
-		    break;
-		}
-		cse.il = cse.il->next;
-	    }
-	}
-
-	cse.il = int_list_sav;
-
-	nbuf = replace_confs(&cse, buf);
-
-	critical();
-	if (write_file(fd, nbuf) == -1) {
-	    sys_error("mark_as_read", 4, "write_file");
-	    return -1;
-	}
-
-	if (close_file(fd) == -1) {
-	    sys_error("mark_as_read", 5, "close_file");
-	    return -1;
-	}
-	non_critical();
-	free_confs_entry(&cse);
-	return 1;
+        critical();
+        if (write_file(fd, nbuf) == -1) {
+            sys_error("mark_as_read", 4, "write_file");
+            return -1;
+        }
+        if (close_file(fd) == -1) {
+            sys_error("mark_as_read", 5, "close_file");
+            return -1;
+        }
+        non_critical();
+        free_confs_entry(&cse);
+        return 1;
     }
     if (close_file(fd) == -1) {
-	sys_error("mark_as_read", 6, "close_file");
-	return -1;
+        sys_error("mark_as_read", 6, "close_file");
+        return -1;
     }
     return 0;
 }
@@ -725,9 +706,8 @@ int conf;
  * ret: yes (1) or no (0) or error (-1)
  */
 
-int check_if_read(text, conf)
-long text;
-int conf;
+int
+check_if_read(long text, int conf)
 {
     int found, fd;
     struct CONFS_ENTRY cse;
@@ -738,43 +718,40 @@ int conf;
     strcat(fname, CONFS_FILE);
 
     if ((fd = open_file(fname, 0)) == -1) {
-	sys_error("check_if_read", 1, "open_file");
-	return -1;
+        sys_error("check_if_read", 1, "open_file");
+        return -1;
     }
-
     if ((buf = read_file(fd)) == NULL) {
-	sys_error("check_if_read", 2, "read_file");
-	return -1;
+        sys_error("check_if_read", 2, "read_file");
+        return -1;
     }
-
     oldbuf = buf;
 
     if (close_file(fd) == -1) {
-	sys_error("check_if_read", 3, "close_file");
-	return -1;
+        sys_error("check_if_read", 3, "close_file");
+        return -1;
     }
-
     /* find confs-entry */
 
     while (buf) {
-	buf = get_confs_entry(buf, &cse);
-	if (cse.num == conf)
-		break;
-	free_confs_entry(&cse);
+        buf = get_confs_entry(buf, &cse);
+        if (cse.num == conf)
+            break;
+        free_confs_entry(&cse);
     }
     free(oldbuf);
 
     if (cse.num == conf) {
-	found = 0;
-	while (cse.il) {
-	    if ((cse.il->from <= text) && (cse.il->to >= text)) {
-		found = 1;
-		break;
-	    }
-	    cse.il = cse.il->next;
-	}
-	free_confs_entry(&cse);
-	return found;
+        found = 0;
+        while (cse.il) {
+            if ((cse.il->from <= text) && (cse.il->to >= text)) {
+                found = 1;
+                break;
+            }
+            cse.il = cse.il->next;
+        }
+        free_confs_entry(&cse);
+        return found;
     }
     free_confs_entry(&cse);
     return 0;
@@ -786,8 +763,8 @@ int conf;
  * ret: textnumber or no texts (0) or error (-1)
  */
 
-long next_text(conf)
-int conf;
+long
+next_text(int conf)
 {
     int fd, deleted, flag, i;
     long text, last, first, high;
@@ -805,98 +782,97 @@ int conf;
     high = 0L;
 
     while (deleted) {
-	if ((fd = open_file(fname, 0)) == -1) {
-	    sys_error("next_text", 1, "open_file");
-	    return -1L;
-	}
+        if ((fd = open_file(fname, 0)) == -1) {
+            sys_error("next_text", 1, "open_file");
+            return -1L;
+        }
+        if ((buf = read_file(fd)) == NULL) {
+            sys_error("next_text", 2, "read_file");
+            return -1L;
+        }
+        oldbuf = buf;
 
-	if ((buf = read_file(fd)) == NULL) {
-	    sys_error("next_text", 2, "read_file");
-	    return -1L;
-	}
+        if (close_file(fd) == -1) {
+            sys_error("next_text", 3, "close_file");
+            return -1L;
+        }
+        while (buf) {
+            buf = get_confs_entry(buf, &cse);
+            if (cse.num == conf)
+                break;
+            free_confs_entry(&cse);
+        }
 
-	oldbuf = buf;
+        if (cse.num == conf) {
+            if (cse.il == NULL) {
+                text = 1L;
+                high = text;
+            } else if (cse.il->from > 1L) {
+                text = 1L;
+                high = 0L;
+            } else {
+                text = (cse.il->to + 1L);
+                if (cse.il->next)
+                    high = 0L;
+                else
+                    high = text;
+            }
+            if (text > last)
+                text = 0L;
+        } else {
+            return -1L;
+        }
 
-	if (close_file(fd) == -1) {
-	    sys_error("next_text", 3, "close_file");
-	    return -1L;
-	}
+        free_confs_entry(&cse);
 
-	while (buf) {
-	    buf = get_confs_entry(buf, &cse);
-	    if (cse.num == conf)
-		break;
-	    free_confs_entry(&cse);
-	}
-
-	if (cse.num == conf) {
-	    if (cse.il == NULL) {
-		text = 1L;
-		high = text;
-	    }
-	    else if (cse.il->from > 1L) {
-		text = 1L;
-		high = 0L;
-	    }
-	    else {
-		text = (cse.il->to + 1L);
-		if (cse.il->next) high = 0L;
-		else high = text;
-	    }
-	    if (text > last) text = 0L;
-	}
-	else {
-	    return -1L;
-	}
-
-	free_confs_entry(&cse);
-
-	if ((text == 0L) || (conf == 0)) {
-	    deleted = 0;
-	}
-	else {
-	    sprintf(textname, "%s/%d/%ld", SKLAFF_DB, conf, text);
-	    if (file_exists(textname) == -1) {
-		if (!flag && high) {
-		    flag = 1;
-		    first = first_text(conf, Uid);
-		}
-		if (high && (first > text)) {
-		    i = strlen(oldbuf) + 10;
-		    nbuf = (char *)malloc(i);
-		    if (!nbuf) {
-			sys_error("next_text", 1, "malloc");
-			return -1;
-		    }
-		    bzero(nbuf, i);
-		    tmpbuf = buf;
-		    tmpbuf--;
-		    while ((tmpbuf > oldbuf) && (*tmpbuf == '\n'))
-			tmpbuf--;
-		    while ((tmpbuf > oldbuf) && (*tmpbuf != '\n'))
-			tmpbuf--;
-		    if (tmpbuf > oldbuf) tmpbuf++;
-		    saved = *tmpbuf;
-		    *tmpbuf = 0;
-		    strcpy(nbuf, oldbuf);
-		    *tmpbuf = saved;
-		    sprintf(confsname, "%d:1-%ld\n", cse.num, (first - 1));
-		    strcat(nbuf, confsname);
-		    strcat(nbuf, buf);
-		    critical();
-		    if ((fd = open_file(fname, 0)) == -1) return -1L;
-		    if (write_file(fd, nbuf) == -1) return -1L;
-		    if (close_file(fd) == -1) return -1L;
-		    non_critical();
-		    high = 0L;
-		}
-		else mark_as_read(text, conf);
-	    }
-	    else {
-		deleted = 0;
-	    }
-	}
-	free(oldbuf);
+        if ((text == 0L) || (conf == 0)) {
+            deleted = 0;
+        } else {
+            sprintf(textname, "%s/%d/%ld", SKLAFF_DB, conf, text);
+            if (file_exists(textname) == -1) {
+                if (!flag && high) {
+                    flag = 1;
+                    first = first_text(conf, Uid);
+                }
+                if (high && (first > text)) {
+                    i = strlen(oldbuf) + 10;
+                    nbuf = (char *) malloc(i);
+                    if (!nbuf) {
+                        sys_error("next_text", 1, "malloc");
+                        return -1;
+                    }
+                    bzero(nbuf, i);
+                    tmpbuf = buf;
+                    tmpbuf--;
+                    while ((tmpbuf > oldbuf) && (*tmpbuf == '\n'))
+                        tmpbuf--;
+                    while ((tmpbuf > oldbuf) && (*tmpbuf != '\n'))
+                        tmpbuf--;
+                    if (tmpbuf > oldbuf)
+                        tmpbuf++;
+                    saved = *tmpbuf;
+                    *tmpbuf = 0;
+                    strcpy(nbuf, oldbuf);
+                    *tmpbuf = saved;
+                    sprintf(confsname, "%d:1-%ld\n", cse.num, (first - 1));
+                    strcat(nbuf, confsname);
+                    strcat(nbuf, buf);
+                    critical();
+                    if ((fd = open_file(fname, 0)) == -1)
+                        return -1L;
+                    if (write_file(fd, nbuf) == -1)
+                        return -1L;
+                    if (close_file(fd) == -1)
+                        return -1L;
+                    non_critical();
+                    high = 0L;
+                } else
+                    mark_as_read(text, conf);
+            } else {
+                deleted = 0;
+            }
+        }
+        free(oldbuf);
     }
     Nexttext = text;
     return text;
@@ -908,9 +884,8 @@ int conf;
  * ret: yes (1) or already marked (0) or error (-1)
  */
 
-int mark_as_unread(text, conf)
-long text;
-int conf;
+int
+mark_as_unread(long text, int conf)
 {
     int found, fd;
     struct CONFS_ENTRY cse;
@@ -918,126 +893,116 @@ int conf;
     LINE fname;
 
     struct INT_LIST
-	    *int_list_sav,
-	    *saved,
-	    *tmpsav;
+    *int_list_sav, *saved, *tmpsav;
 
     strcpy(fname, Home);
     strcat(fname, CONFS_FILE);
 
     if ((fd = open_file(fname, 0)) == -1) {
-	sys_error("mark_as_unread", 1, "open_file");
-	return -1;
+        sys_error("mark_as_unread", 1, "open_file");
+        return -1;
     }
-
     if ((buf = read_file(fd)) == NULL) {
-	sys_error("mark_as_unread", 2, "read_file");
-	return -1;
+        sys_error("mark_as_unread", 2, "read_file");
+        return -1;
     }
-
     oldbuf = buf;
 
     /* find confs-entry */
 
     while (buf) {
-	buf = get_confs_entry(buf, &cse);
-	if (cse.num == conf)
-		break;
-	free_confs_entry(&cse);
+        buf = get_confs_entry(buf, &cse);
+        if (cse.num == conf)
+            break;
+        free_confs_entry(&cse);
     }
 
     buf = oldbuf;
 
     if (cse.num == conf) {
 
-	/* look if already marked as unread */
+        /* look if already marked as unread */
 
-	int_list_sav = cse.il;
-	found = 0;
-	while (cse.il) {
-	    if ((cse.il->from <= text) && (cse.il->to >= text)) {
-		found = 1;
-		break;
-	    }
-	    cse.il = cse.il->next;
-	}
+        int_list_sav = cse.il;
+        found = 0;
+        while (cse.il) {
+            if ((cse.il->from <= text) && (cse.il->to >= text)) {
+                found = 1;
+                break;
+            }
+            cse.il = cse.il->next;
+        }
 
-	cse.il = int_list_sav;
+        cse.il = int_list_sav;
 
-	if (!found) {
-	    free_confs_entry(&cse);
-	    if (close_file(fd) == -1) {
-		sys_error("mark_as_unread", 3, "close_file");
-		return -1;
-	    }
-	    free(oldbuf);
-	    return 0;
-	}
+        if (!found) {
+            free_confs_entry(&cse);
+            if (close_file(fd) == -1) {
+                sys_error("mark_as_unread", 3, "close_file");
+                return -1;
+            }
+            free(oldbuf);
+            return 0;
+        }
+        saved = cse.il;
+        while (cse.il) {
+            if ((cse.il->from <= text) && (cse.il->to >= text)) {
+                if (cse.il->from == cse.il->to) {
+                    if (cse.il == int_list_sav) {
+                        tmpsav = cse.il;
+                        cse.il = cse.il->next;
+                        int_list_sav = cse.il;
+                        free(tmpsav);
+                    } else {
+                        saved->next = cse.il->next;
+                        free(cse.il);
+                    }
+                    break;
+                } else if (cse.il->from == text) {
+                    cse.il->from += 1;
+                    break;
+                } else if (cse.il->to == text) {
+                    cse.il->to -= 1;
+                    break;
+                } else {
+                    tmpsav = (struct INT_LIST *) malloc
+                        (sizeof(struct INT_LIST));
+                    if (tmpsav == NULL) {
+                        sys_error("mark_as_unread", 4, "malloc");
+                        return -1;
+                    }
+                    tmpsav->from = (text + 1);
+                    tmpsav->to = cse.il->to;
+                    tmpsav->next = cse.il->next;
+                    cse.il->to = (text - 1);
+                    cse.il->next = tmpsav;
+                    break;
+                }
+            }
+            saved = cse.il;
+            cse.il = cse.il->next;
+        }
 
-	saved = cse.il;
-	while (cse.il) {
-	    if ((cse.il->from <= text) && (cse.il->to >= text)) {
-		if (cse.il->from == cse.il->to) {
-		    if (cse.il == int_list_sav) {
-			tmpsav = cse.il;
-			cse.il = cse.il->next;
-			int_list_sav = cse.il;
-			free(tmpsav);
-		    }
-		    else {
-			saved->next = cse.il->next;
-			free(cse.il);
-		    }
-		    break;
-		}
-		else if (cse.il->from == text) {
-		    cse.il->from += 1;
-		    break;
-		}
-		else if (cse.il->to == text) {
-		    cse.il->to -= 1;
-		    break;
-		}
-		else {
-		    tmpsav = (struct INT_LIST *)malloc
-			    (sizeof(struct INT_LIST));
-		    if (tmpsav == NULL) {
-			sys_error("mark_as_unread", 4, "malloc");
-			return -1;
-		    }
-		    tmpsav->from = (text + 1);
-		    tmpsav->to = cse.il->to;
-		    tmpsav->next = cse.il->next;
-		    cse.il->to = (text - 1);
-		    cse.il->next = tmpsav;
-		    break;
-		}
-	    }
-	    saved = cse.il;
-	    cse.il = cse.il->next;
-	}
+        cse.il = int_list_sav;
+        nbuf = replace_confs(&cse, buf);
 
-	cse.il = int_list_sav;
-	nbuf = replace_confs(&cse, buf);
+        critical();
+        if (write_file(fd, nbuf) == -1) {
+            sys_error("mark_as_unread", 5, "write_file");
+            return -1;
+        }
+        free_confs_entry(&cse);
 
-	critical();
-	if (write_file(fd, nbuf) == -1) {
-	    sys_error("mark_as_unread", 5, "write_file");
-	    return -1;
-	}
-
-	free_confs_entry(&cse);
-
-	if (close_file(fd) == -1) {
-	    sys_error("mark_as_unread", 6, "close_file");
-	    return -1;
-	}
-	non_critical();
-	return 1;
+        if (close_file(fd) == -1) {
+            sys_error("mark_as_unread", 6, "close_file");
+            return -1;
+        }
+        non_critical();
+        return 1;
     }
     if (close_file(fd) == -1) {
-	sys_error("mark_as_unread", 7, "close_file");
-	return -1;
+        sys_error("mark_as_unread", 7, "close_file");
+        return -1;
     }
     return 0;
 }
@@ -1049,11 +1014,8 @@ int conf;
  * ret: ok (0) or failure (-1)
  */
 
-int display_text(conf, num, stack, dtype)
-int conf;
-long num;
-int stack;
-int dtype;
+int
+display_text(int conf, long num, int stack, int dtype)
 {
     LINE fname, username, home, emau, aname;
     int fd, uid, type, endwritten, bypass, rot, survey_flag;
@@ -1068,42 +1030,36 @@ int dtype;
     rot = Rot13;
     Rot13 = 0;
     if (num == 0) {
-	output("\n%s\n\n", MSG_NOTEXTNUM);
-	return -1;
+        output("\n%s\n\n", MSG_NOTEXTNUM);
+        return -1;
     }
-
     if (conf > 0) {
-	sprintf(fname, "%s/%d/%ld", SKLAFF_DB, conf, num);
-    }
-    else {
-	if (conf) {
-	    uid = conf - (conf * 2);
-	    mbox_dir(uid, home);
-	}
-	else {
-	    uid = Uid;
-	    strcpy(home, Mbox);
-	}
-	sprintf(fname, "%s/%ld", home, num);
+        sprintf(fname, "%s/%d/%ld", SKLAFF_DB, conf, num);
+    } else {
+        if (conf) {
+            uid = conf - (conf * 2);
+            mbox_dir(uid, home);
+        } else {
+            uid = Uid;
+            strcpy(home, Mbox);
+        }
+        sprintf(fname, "%s/%ld", home, num);
     }
 
 
     if ((fd = open_file(fname, OPEN_QUIET)) == -1) {
-	output("\n%s\n\n", MSG_NOTEXT);
-	return -1;
+        output("\n%s\n\n", MSG_NOTEXT);
+        return -1;
     }
-
     if ((buf = read_file(fd)) == NULL) {
-	output("\n%s\n\n", MSG_NOREAD);
-	return -1;
+        output("\n%s\n\n", MSG_NOREAD);
+        return -1;
     }
-
     oldbuf = buf;
 
     if (close_file(fd) == -1) {
-	return -1;
+        return -1;
     }
-
     buf = get_text_entry(buf, &te);
     free(oldbuf);
     output("\n");
@@ -1113,177 +1069,185 @@ int dtype;
     strcpy(Sub, th->subject);
     th->num = num;
     if (Last_conf) {
-	type = Last_conf;
+        type = Last_conf;
+    } else {
+        type = Uid - (Uid * 2);
     }
-    else {
-	type = Uid - (Uid * 2);
-    }
-    if (Clear) cmd_cls(home);
+    if (Clear)
+        cmd_cls(home);
 
     bypass = 0;
     if (th->author) {
-	display_header(th, 0, type, dtype, NULL);
-    }
-    else {
-	tb = te.body;
-	while (tb) {
-	    if ((ptr = strstr(tb->line, MSG_EMFROM)) != NULL) break;
-	    else if ((ptr = strstr(tb->line, MSG_EMFROM2)) != NULL) break;
-	    else if ((ptr = strstr(tb->line, MSG_EMFROM3)) != NULL) break;
-	    tb = tb->next;
-	}
-	ptr = ptr + strlen(MSG_EMFROM);
-	strcpy(emau, ptr);
-	if (!Header) {
-	    tb = te.body;
-	    while (1) {
-		if (!strlen(tb->line)) break;
-		else {
-		    bypass++;
-		    tb = tb->next;
-		}
-	    }
-	    bypass++;
-	}
-	th->size -= bypass;
-	display_header(th, 0, type, dtype, emau);
-	strcpy(aname, emau);
+        display_header(th, 0, type, dtype, NULL);
+    } else {
+        tb = te.body;
+        while (tb) {
+            if ((ptr = strstr(tb->line, MSG_EMFROM)) != NULL)
+                break;
+            else if ((ptr = strstr(tb->line, MSG_EMFROM2)) != NULL)
+                break;
+            else if ((ptr = strstr(tb->line, MSG_EMFROM3)) != NULL)
+                break;
+            tb = tb->next;
+        }
+        ptr = ptr + strlen(MSG_EMFROM);
+        strcpy(emau, ptr);
+        if (!Header) {
+            tb = te.body;
+            while (1) {
+                if (!strlen(tb->line))
+                    break;
+                else {
+                    bypass++;
+                    tb = tb->next;
+                }
+            }
+            bypass++;
+        }
+        th->size -= bypass;
+        display_header(th, 0, type, dtype, emau);
+        strcpy(aname, emau);
     }
     tb = te.body;
-    if (rot) Rot13 = 1;
+    if (rot)
+        Rot13 = 1;
 
     /* Set up variables if this is a survey text */
 
     if (th->type == TYPE_SURVEY) {
-      survey_flag = 0;
-      if(!check_if_survey_taken(num, conf) && Numlines > 0 && time(0) < th->sh.time) {
-	survey_flag = TAKE_SURVEY;
-	survey_valid=1;
-	survey_reply = (char *) malloc(LINE_LEN * th->sh.n_questions);
-	if (survey_reply == NULL) {
-	  sys_error("display_text", 1, "malloc");
-	  return -1;
-	}
-	bzero(survey_reply, LINE_LEN*th->sh.n_questions);
-	quest = 0;
-      }
+        survey_flag = 0;
+        if (!check_if_survey_taken(num, conf) && Numlines > 0 && time(0) < th->sh.time) {
+            survey_flag = TAKE_SURVEY;
+            survey_valid = 1;
+            survey_reply = (char *) malloc(LINE_LEN * th->sh.n_questions);
+            if (survey_reply == NULL) {
+                sys_error("display_text", 1, "malloc");
+                return -1;
+            }
+            bzero(survey_reply, LINE_LEN * th->sh.n_questions);
+            quest = 0;
+        }
     }
     while (tb) {
-	if (!bypass) {
-	  if (tb->line[0] == '\f')  {
-	    tb->line[0] = '\0';
-	    Lines = Numlines;
-	  }
-	  if (th->type == TYPE_SURVEY) {
-	    if (make_survey(survey_reply + quest*LINE_LEN, &quest,
-			    tb->line, survey_flag) == -1) {
-	      survey_valid=0;
-	      break;
-	    }
-	  } else {
-	    if (output("%s\n", tb->line) == -1) {
-	      survey_valid=0;
-	      break;
-	    }
-	  }
-	}
-	else bypass--;
-	tb = tb->next;
-      }
+        if (!bypass) {
+            if (tb->line[0] == '\f') {
+                tb->line[0] = '\0';
+                Lines = Numlines;
+            }
+            if (th->type == TYPE_SURVEY) {
+                if (make_survey(survey_reply + quest * LINE_LEN, &quest,
+                        tb->line, survey_flag) == -1) {
+                    survey_valid = 0;
+                    break;
+                }
+            } else {
+                if (output("%s\n", tb->line) == -1) {
+                    survey_valid = 0;
+                    break;
+                }
+            }
+        } else
+            bypass--;
+        tb = tb->next;
+    }
 
     Rot13 = 0;
     endwritten = 0;
     cl = te.cl;
     while (cl) {
-	if (conf > 0) {
-	    sprintf(fname, "%s/%d/%ld", SKLAFF_DB, conf,
-		    cl->comment_num);
-	    if (file_exists(fname) == -1) {
-		mark_as_read(cl->comment_num, conf);
-		cl->comment_num = 0L;
-	    }
-	}
-	if (cl->comment_num) {
-	    if (!endwritten) {
-		if ((th->size >= (Numlines - 6)) || Author) {
-		    if (th->author) user_name(th->author, aname);
-		    output("\n%s %ld %s %s\n",
-               (th->type == TYPE_TEXT) ? MSG_EOT : MSG_EOSURVEY,
-			   th->num, MSG_BY, aname);
-		}
-		else output("\n-------\n");
-		endwritten = 1;
-	    }
-	    if (!cl->comment_author) {
-		sprintf(fname, "%s/%d/%ld", SKLAFF_DB, conf,
-			cl->comment_num);
-		if ((fd = open_file(fname, OPEN_QUIET)) == -1) {
-		    output("\n%s\n\n", MSG_NOTEXT);
-		    return -1;
-		}
-		if ((buf = read_file(fd)) == NULL) {
-		    output("\n%s\n\n", MSG_NOREAD);
-		    return -1;
-		}
-		oldbuf = buf;
-		if (close_file(fd) == -1) {
-		    return -1;
-		}
-		buf = get_text_entry(buf, &te2);
-		free(oldbuf);
-		tb = te2.body;
-		while (tb) {
-		    if ((ptr = strstr(tb->line, MSG_EMFROM)) != NULL) break;
-		    else if ((ptr = strstr(tb->line, MSG_EMFROM2)) != NULL) break;
-		    else if ((ptr = strstr(tb->line, MSG_EMFROM3)) != NULL) break;
-		    tb = tb->next;
-		}
-		ptr = ptr + strlen(MSG_EMFROM);
-		strcpy(username, ptr);
-		free_text_entry(&te2);
-	    }
-	    else {
-		user_name(cl->comment_author, username);
-	    }
-	    if (output("%s %ld %s %s\n", MSG_REPLYIN, cl->comment_num,
-		       MSG_BY, username) == -1) break;
-	}
-	cl = cl->next;
+        if (conf > 0) {
+            sprintf(fname, "%s/%d/%ld", SKLAFF_DB, conf,
+                cl->comment_num);
+            if (file_exists(fname) == -1) {
+                mark_as_read(cl->comment_num, conf);
+                cl->comment_num = 0L;
+            }
+        }
+        if (cl->comment_num) {
+            if (!endwritten) {
+                if ((th->size >= (Numlines - 6)) || Author) {
+                    if (th->author)
+                        user_name(th->author, aname);
+                    output("\n%s %ld %s %s\n",
+                        (th->type == TYPE_TEXT) ? MSG_EOT : MSG_EOSURVEY,
+                        th->num, MSG_BY, aname);
+                } else
+                    output("\n-------\n");
+                endwritten = 1;
+            }
+            if (!cl->comment_author) {
+                sprintf(fname, "%s/%d/%ld", SKLAFF_DB, conf,
+                    cl->comment_num);
+                if ((fd = open_file(fname, OPEN_QUIET)) == -1) {
+                    output("\n%s\n\n", MSG_NOTEXT);
+                    return -1;
+                }
+                if ((buf = read_file(fd)) == NULL) {
+                    output("\n%s\n\n", MSG_NOREAD);
+                    return -1;
+                }
+                oldbuf = buf;
+                if (close_file(fd) == -1) {
+                    return -1;
+                }
+                buf = get_text_entry(buf, &te2);
+                free(oldbuf);
+                tb = te2.body;
+                while (tb) {
+                    if ((ptr = strstr(tb->line, MSG_EMFROM)) != NULL)
+                        break;
+                    else if ((ptr = strstr(tb->line, MSG_EMFROM2)) != NULL)
+                        break;
+                    else if ((ptr = strstr(tb->line, MSG_EMFROM3)) != NULL)
+                        break;
+                    tb = tb->next;
+                }
+                ptr = ptr + strlen(MSG_EMFROM);
+                strcpy(username, ptr);
+                free_text_entry(&te2);
+            } else {
+                user_name(cl->comment_author, username);
+            }
+            if (output("%s %ld %s %s\n", MSG_REPLYIN, cl->comment_num,
+                    MSG_BY, username) == -1)
+                break;
+        }
+        cl = cl->next;
     }
 
     if (!endwritten && ((th->size >= (Numlines - 6)) || Author)) {
-	if (th->author) user_name(th->author, aname);
-	output("\n%s %ld %s %s\n",
-               (th->type == TYPE_TEXT) ? MSG_EOT : MSG_EOSURVEY,
-               th->num, MSG_BY, aname);
+        if (th->author)
+            user_name(th->author, aname);
+        output("\n%s %ld %s %s\n",
+            (th->type == TYPE_TEXT) ? MSG_EOT : MSG_EOSURVEY,
+            th->num, MSG_BY, aname);
     }
-
     output("\n");
 
     if (te.cl) {
-	cl = te.cl;
-	while (cl) {
-	    tmpcl = te.cl;
-	    savedcl = tmpcl;
-	    while (tmpcl->next) {
-		savedcl = tmpcl;
-		tmpcl = tmpcl->next;
-	    }
-	    if (stack && Current_conf && tmpcl->comment_num &&
-		(!check_if_read(tmpcl->comment_num, Current_conf)))
-		    push_comment(tmpcl->comment_num);
-	    if (savedcl == tmpcl) cl = NULL;
-	    else savedcl->next = NULL;
-	}
+        cl = te.cl;
+        while (cl) {
+            tmpcl = te.cl;
+            savedcl = tmpcl;
+            while (tmpcl->next) {
+                savedcl = tmpcl;
+                tmpcl = tmpcl->next;
+            }
+            if (stack && Current_conf && tmpcl->comment_num &&
+                (!check_if_read(tmpcl->comment_num, Current_conf)))
+                push_comment(tmpcl->comment_num);
+            if (savedcl == tmpcl)
+                cl = NULL;
+            else
+                savedcl->next = NULL;
+        }
     }
-
     if (th->type == TYPE_SURVEY && (survey_flag & TAKE_SURVEY)) {
-      if (survey_valid)
-	if (save_survey_result(num, conf, survey_reply, th->sh.n_questions))
-	  mark_survey_as_taken(num, conf);
-      free(survey_reply);
+        if (survey_valid)
+            if (save_survey_result(num, conf, survey_reply, th->sh.n_questions))
+                mark_survey_as_taken(num, conf);
+        free(survey_reply);
     }
-
     free_text_entry(&te);
 
     return 0;
@@ -1295,8 +1259,8 @@ int dtype;
  * ret: textnumber or no text (0) or error (-1)
  */
 
-long parse_text(args)
-char *args;
+long
+parse_text(char *args)
 {
     long textnum;
     LINE fname, home, tmpstr, tmpstr2;
@@ -1308,105 +1272,95 @@ char *args;
     struct USER_LIST *ul;
 
     if (!args || (*args == '\0')) {
-	Rot13 = 0;
-	output("\n%s\n\n", MSG_ERRTNUM);
-	return 0;
+        Rot13 = 0;
+        output("\n%s\n\n", MSG_ERRTNUM);
+        return 0;
     }
     down_string(args);
 
     strcpy(tmpstr, MSG_LASTREAD);
     strcpy(tmpstr2, MSG_REPLIED);
     if (strstr(tmpstr, args) == tmpstr) {
-	Last_conf = Current_conf;
-	if (Current_text) {
-	    textnum = Current_text;
-	}
-	else {
-	    Rot13 = 0;
-	    output("\n%s\n\n", MSG_NOLASTTEXT);
-	    return 0;
-	}
-    }
-    else if (strstr(tmpstr2, args) == tmpstr2) {
-	if (!Last_text) {
-	    Rot13 = 0;
-	    output("\n%s\n\n", MSG_NOLASTTEXT);
-	    return 0;
-	}
+        Last_conf = Current_conf;
+        if (Current_text) {
+            textnum = Current_text;
+        } else {
+            Rot13 = 0;
+            output("\n%s\n\n", MSG_NOLASTTEXT);
+            return 0;
+        }
+    } else if (strstr(tmpstr2, args) == tmpstr2) {
+        if (!Last_text) {
+            Rot13 = 0;
+            output("\n%s\n\n", MSG_NOLASTTEXT);
+            return 0;
+        }
+        if (Last_conf > 0) {
+            sprintf(fname, "%s/%d/%ld", SKLAFF_DB, Last_conf, Last_text);
+        } else {
+            if (Last_conf) {
+                uid = Last_conf - (Last_conf * 2);
+            } else {
+                uid = Uid;
+            }
+            mbox_dir(uid, home);
+            sprintf(fname, "%s/%ld", home, Last_text);
+        }
 
-	if (Last_conf > 0) {
-	    sprintf(fname, "%s/%d/%ld", SKLAFF_DB, Last_conf, Last_text);
-	}
-	else {
-	    if (Last_conf) {
-		uid = Last_conf - (Last_conf * 2);
-	    }
-	    else {
-		uid = Uid;
-	    }
-	    mbox_dir(uid, home);
-	    sprintf(fname, "%s/%ld", home, Last_text);
-	}
+        if ((fd = open_file(fname, OPEN_QUIET)) == -1) {
+            Rot13 = 0;
+            output("\n%s\n\n", MSG_NOTEXT);
+            return 0;
+        }
+        if ((buf = read_file(fd)) == NULL) {
+            Rot13 = 0;
+            output("\n%s\n\n", MSG_NOREAD);
+            return 0;
+        }
+        oldbuf = buf;
 
-	if ((fd = open_file(fname, OPEN_QUIET)) == -1) {
-	    Rot13 = 0;
-	    output("\n%s\n\n", MSG_NOTEXT);
-	    return 0;
-	}
+        if (close_file(fd) == -1) {
+            Rot13 = 0;
+            return 0;
+        }
+        buf = get_text_entry(buf, &te);
 
-	if ((buf = read_file(fd)) == NULL) {
-	    Rot13 = 0;
-	    output("\n%s\n\n", MSG_NOREAD);
-	    return 0;
-	}
+        free(oldbuf);
+        th = &te.th;
+        textnum = th->comment_num;
 
-	oldbuf = buf;
+        if (th->comment_conf) {
+            ul = get_confrc_struct(th->comment_conf);
+            ce = get_conf_struct(th->comment_conf);
+            right = conf_right(ul, Uid, ce->type, ce->creator);
+            free_userlist(ul);
+            if (!right)
+                Last_conf = th->comment_conf;
+            else
+                textnum = 0;
+        } else if (textnum) {
+            if (Last_conf < 1) {
+                if (th->author != Uid) {
+                    Last_conf = th->author - (th->author * 2);
+                } else {
+                    Last_conf = 0;
+                }
+            }
+        }
+        free_text_entry(&te);
 
-	if (close_file(fd) == -1) {
-	    Rot13 = 0;
-	    return 0;
-	}
-
-	buf = get_text_entry(buf, &te);
-
-	free(oldbuf);
-	th = &te.th;
-	textnum = th->comment_num;
-
-	if (th->comment_conf) {
-	    ul = get_confrc_struct(th->comment_conf);
-	    ce = get_conf_struct(th->comment_conf);
-	    right = conf_right (ul, Uid, ce->type, ce->creator);
-	    free_userlist(ul);
-	    if (!right) Last_conf = th->comment_conf;
-	    else textnum = 0;
-	}
-	else if (textnum) {
-	    if (Last_conf < 1) {
-		if (th->author != Uid) {
-		    Last_conf = th->author - (th->author * 2);
-		}
-		else {
-		    Last_conf = 0;
-		}
-	    }
-	}
-
-	free_text_entry(&te);
-
-	if (!textnum) {
-	    Rot13 = 0;
-	    output("\n%s\n\n", MSG_NOREPLY);
-	}
-    }
-    else {
-	Last_conf = Current_conf;
-	textnum = atol(args);
-	if (textnum == 0) {
-	    Rot13 = 0;
-	    output("\n%s\n\n", MSG_ERRTNUM);
-	    return 0;
-	}
+        if (!textnum) {
+            Rot13 = 0;
+            output("\n%s\n\n", MSG_NOREPLY);
+        }
+    } else {
+        Last_conf = Current_conf;
+        textnum = atol(args);
+        if (textnum == 0) {
+            Rot13 = 0;
+            output("\n%s\n\n", MSG_ERRTNUM);
+            return 0;
+        }
     }
     return textnum;
 }
@@ -1417,8 +1371,8 @@ char *args;
  * ret: ok (0) or failure (-1)
  */
 
-int stack_text(num)
-long num;
+int
+stack_text(long num)
 {
     LINE fname;
     int fd;
@@ -1429,47 +1383,46 @@ long num;
     sprintf(fname, "%s/%d/%ld", SKLAFF_DB, Current_conf, num);
 
     if ((fd = open_file(fname, OPEN_QUIET)) == -1) {
-	return -1;
+        return -1;
     }
-
     if ((buf = read_file(fd)) == NULL) {
-	return -1;
+        return -1;
     }
-
     oldbuf = buf;
 
     if (close_file(fd) == -1) {
-	return -1;
+        return -1;
     }
-
     buf = get_text_entry(buf, &te);
     free(oldbuf);
 
     cl = te.cl;
     while (cl) {
-	sprintf(fname, "%s/%d/%ld", SKLAFF_DB, Current_conf,
-		cl->comment_num);
-	if (file_exists(fname) == -1) {
-	    mark_as_read(cl->comment_num, Current_conf);
-	    cl->comment_num = 0L;
-	}
-	cl = cl->next;
+        sprintf(fname, "%s/%d/%ld", SKLAFF_DB, Current_conf,
+            cl->comment_num);
+        if (file_exists(fname) == -1) {
+            mark_as_read(cl->comment_num, Current_conf);
+            cl->comment_num = 0L;
+        }
+        cl = cl->next;
     }
 
     if (te.cl) {
-	cl = te.cl;
-	while (cl) {
-	    tmpcl = te.cl;
-	    savedcl = tmpcl;
-	    while (tmpcl->next) {
-		savedcl = tmpcl;
-		tmpcl = tmpcl->next;
-	    }
-	    if (tmpcl->comment_num)
-		    push_comment(tmpcl->comment_num);
-	    if (savedcl == tmpcl) cl = NULL;
-	    else savedcl->next = NULL;
-	}
+        cl = te.cl;
+        while (cl) {
+            tmpcl = te.cl;
+            savedcl = tmpcl;
+            while (tmpcl->next) {
+                savedcl = tmpcl;
+                tmpcl = tmpcl->next;
+            }
+            if (tmpcl->comment_num)
+                push_comment(tmpcl->comment_num);
+            if (savedcl == tmpcl)
+                cl = NULL;
+            else
+                savedcl->next = NULL;
+        }
     }
     free_text_entry(&te);
     return 0;
@@ -1481,8 +1434,8 @@ long num;
  * ret: top text or no text (0)
  */
 
-int tree_top(text)
-long text;
+int
+tree_top(long text)
 {
     LINE fname;
     int fd;
@@ -1493,39 +1446,34 @@ long text;
 
     top = text;
     while (text) {
-	sprintf(fname, "%s/%d/%ld", SKLAFF_DB, Current_conf, text);
+        sprintf(fname, "%s/%d/%ld", SKLAFF_DB, Current_conf, text);
 
-	if ((fd = open_file(fname, OPEN_QUIET)) == -1) {
-	    return top;
-	}
+        if ((fd = open_file(fname, OPEN_QUIET)) == -1) {
+            return top;
+        }
+        if ((buf = read_file(fd)) == NULL) {
+            return 0;
+        }
+        oldbuf = buf;
 
-	if ((buf = read_file(fd)) == NULL) {
-	    return 0;
-	}
+        if (close_file(fd) == -1) {
+            return 0;
+        }
+        buf = get_text_entry(buf, &te);
+        free(oldbuf);
 
-	oldbuf = buf;
+        th = &te.th;
+        if (th->comment_num && !th->comment_conf) {
+            text = th->comment_num;
+        } else {
+            text = 0;
+        }
 
-	if (close_file(fd) == -1) {
-	    return 0;
-	}
-
-	buf = get_text_entry(buf, &te);
-	free(oldbuf);
-
-	th = &te.th;
-	if (th->comment_num && !th->comment_conf) {
-	    text = th->comment_num;
-	}
-	else {
-	    text = 0;
-	}
-
-	sprintf(fname, "%s/%d/%ld", SKLAFF_DB, Current_conf, text);
-	if (file_exists(fname) != -1) {
-	    top = text;
-	}
-
-	free_text_entry(&te);
+        sprintf(fname, "%s/%d/%ld", SKLAFF_DB, Current_conf, text);
+        if (file_exists(fname) != -1) {
+            top = text;
+        }
+        free_text_entry(&te);
     }
     return top;
 }
@@ -1537,41 +1485,22 @@ long text;
  */
 
 int
-	list_subj(str)
-char
-	*str;
+list_subj(char *str)
 {
-    LINE
-	    subject,
-	    author,
-	    fname;
-    char
-	    *buf,
-	    *oldbuf,
-	    *ptr2, *ptr3, *ptr4, sav, c;
-    long
-	    firsttext,
-	    current_text;
-    int
-	    dot_count,
-	    wait_count,
-	    strlgth,
-	    xit,
-	    from,
-	    fd;
-    struct TEXT_ENTRY
-	    te;
-    struct TEXT_BODY
-	    *tb;
-    struct TEXT_HEADER
-	    *th;
+    LINE subject, author, fname;
+    char *buf, *oldbuf, *ptr2, *ptr3, *ptr4, sav, c;
+    long firsttext, current_text;
+    int dot_count, wait_count, strlgth, xit, from, fd;
+    struct TEXT_ENTRY te;
+    struct TEXT_BODY *tb;
+    struct TEXT_HEADER *th;
 
     if (Current_conf)
-	output("\n%7s  %-30s    %s\n\n", MSG_TEXTNAME, MSG_WRITTENBY,
-	       MSG_SUBJECT2);
+        output("\n%7s  %-30s    %s\n\n", MSG_TEXTNAME, MSG_WRITTENBY,
+            MSG_SUBJECT2);
     else
-	output("\n%7s  %-30s  %s\n\n", MSG_TEXTNAME, MSG_TOFROM,
-	       MSG_SUBJECT2);
+        output("\n%7s  %-30s  %s\n\n", MSG_TEXTNAME, MSG_TOFROM,
+            MSG_SUBJECT2);
 
     rtrim(str);
     up_string(str);
@@ -1583,146 +1512,151 @@ char
     dot_count = 0;
 
     do {
-	if (Current_conf) {
-	    sprintf(fname, "%s/%d/%ld", SKLAFF_DB, Current_conf, current_text);
-	}
-	else {
-	    sprintf(fname, "%s/%ld", Mbox, current_text);
-	}
-	if ((fd = open_file(fname, OPEN_QUIET)) != -1) {
-	    if ((buf = read_file(fd)) == NULL) {
-		sys_error("list_subj", 1, "read_file");
-		return -1;
-	    }
-	    if ((fd = close_file(fd)) == -1) {
-		free(buf);
-		sys_error("list_subj", 2, "close_file");
-		return -1;
-	    }
-	    oldbuf = buf;
-	    buf = get_text_entry(buf, &te);
-	    free(oldbuf);
+        if (Current_conf) {
+            sprintf(fname, "%s/%d/%ld", SKLAFF_DB, Current_conf, current_text);
+        } else {
+            sprintf(fname, "%s/%ld", Mbox, current_text);
+        }
+        if ((fd = open_file(fname, OPEN_QUIET)) != -1) {
+            if ((buf = read_file(fd)) == NULL) {
+                sys_error("list_subj", 1, "read_file");
+                return -1;
+            }
+            if ((fd = close_file(fd)) == -1) {
+                free(buf);
+                sys_error("list_subj", 2, "close_file");
+                return -1;
+            }
+            oldbuf = buf;
+            buf = get_text_entry(buf, &te);
+            free(oldbuf);
 
-	    th = &te.th;
+            th = &te.th;
 
-	    from = 0;
-	    if (!Current_conf && (th->author == Uid) && th->comment_author) {
-		user_name(th->comment_author, author);
-		from = 1;
-	    }
-	    else if ((th->author == Uid) && !Current_conf) {
-		if (te.body != NULL &&
-		    (ptr2 = strstr(te.body->line, MSG_COPYTO))) {
-		    strcpy(author, (ptr2 + 1 + strlen(MSG_COPYTO)));
-		    author[strlen(author) - 1] = 0;
-		    from = 1;
-		}
-		else user_name(th->author, author);
-	    }
-	    else if (th->author) user_name(th->author, author);
-	    else {
-		tb = te.body;
-		while (tb) {
-		    if ((ptr2 = strstr(tb->line, MSG_EMFROM)) != NULL) break;
-		    else if ((ptr2 = strstr(tb->line, MSG_EMFROM2)) != NULL) break;
-		    else if ((ptr2 = strstr(tb->line, MSG_EMFROM3)) != NULL) break;
-		    tb = tb->next;
-		}
-		ptr2 = ptr2 + strlen(MSG_EMFROM);
-		ptr3 = strchr(ptr2, '@');
-		if (!ptr3) ptr3 = strchr(ptr2, '!');
-		if (ptr3) {
-		    while ((*ptr3 != ' ') && (*ptr3 != '<')) ptr3--;
-		    ptr3++;
-		    ptr4 = strchr(ptr3, '>');
-		    if (!ptr4) ptr4 = strchr(ptr3, ' ');
-		    if (ptr4) {
-			sav = *ptr4;
-			*ptr4 = '\0';
-		    }
-		    strcpy(author, ptr3);
-		    if (ptr4) *ptr4 = sav;
-		}
-		else {
-		    ptr3 = strchr(ptr2, '(');
-		    if (!ptr3) ptr3 = strchr(ptr2, '<');
-		    if (ptr3) {
-			ptr3--;
-			sav = *ptr3;
-			*ptr3 = '\0';
-			strcpy(author, ptr2);
-			*ptr3 = sav;
-		    }
-		    else strcpy(author, ptr2);
-		}
-	    }
+            from = 0;
+            if (!Current_conf && (th->author == Uid) && th->comment_author) {
+                user_name(th->comment_author, author);
+                from = 1;
+            } else if ((th->author == Uid) && !Current_conf) {
+                if (te.body != NULL &&
+                    (ptr2 = strstr(te.body->line, MSG_COPYTO))) {
+                    strcpy(author, (ptr2 + 1 + strlen(MSG_COPYTO)));
+                    author[strlen(author) - 1] = 0;
+                    from = 1;
+                } else
+                    user_name(th->author, author);
+            } else if (th->author)
+                user_name(th->author, author);
+            else {
+                tb = te.body;
+                while (tb) {
+                    if ((ptr2 = strstr(tb->line, MSG_EMFROM)) != NULL)
+                        break;
+                    else if ((ptr2 = strstr(tb->line, MSG_EMFROM2)) != NULL)
+                        break;
+                    else if ((ptr2 = strstr(tb->line, MSG_EMFROM3)) != NULL)
+                        break;
+                    tb = tb->next;
+                }
+                ptr2 = ptr2 + strlen(MSG_EMFROM);
+                ptr3 = strchr(ptr2, '@');
+                if (!ptr3)
+                    ptr3 = strchr(ptr2, '!');
+                if (ptr3) {
+                    while ((*ptr3 != ' ') && (*ptr3 != '<'))
+                        ptr3--;
+                    ptr3++;
+                    ptr4 = strchr(ptr3, '>');
+                    if (!ptr4)
+                        ptr4 = strchr(ptr3, ' ');
+                    if (ptr4) {
+                        sav = *ptr4;
+                        *ptr4 = '\0';
+                    }
+                    strcpy(author, ptr3);
+                    if (ptr4)
+                        *ptr4 = sav;
+                } else {
+                    ptr3 = strchr(ptr2, '(');
+                    if (!ptr3)
+                        ptr3 = strchr(ptr2, '<');
+                    if (ptr3) {
+                        ptr3--;
+                        sav = *ptr3;
+                        *ptr3 = '\0';
+                        strcpy(author, ptr2);
+                        *ptr3 = sav;
+                    } else
+                        strcpy(author, ptr2);
+                }
+            }
 
-	    strcpy(subject, th->subject);
-	    up_string(subject);
+            strcpy(subject, th->subject);
+            up_string(subject);
 
-	    if (strlen(author) > 30) {
-		author[30] = 0;
-	    }
-	    if (strlen(th->subject) > 36) {
-		th->subject[36] = 0;
-	    }
+            if (strlen(author) > 30) {
+                author[30] = 0;
+            }
+            if (strlen(th->subject) > 36) {
+                th->subject[36] = 0;
+            }
+            if (strncmp(subject, str, strlgth) == 0) {
+                while (dot_count > 0) {
+                    output("\b \b");
+                    dot_count--;
+                }
+                wait_count = 0;
 
-	    if (strncmp(subject, str, strlgth) == 0) {
-		while (dot_count > 0) {
-		    output("\b \b");
-		    dot_count--;
-		}
-		wait_count = 0;
-
-		if (Current_conf) {
-		    if (th->comment_num) c = ' ';
-		    else c = '*';
-		    if (th->type == TYPE_SURVEY) c = '#';
-		    if (output("%7ld  %-30s  %c %s\n",
-			       th->num, author, c, th->subject
-			       ) == -1) {
-			xit = 1;
-		    }
-		}
-		else {
-		    if (from) {
-			if (output("%7ld  %s%-24s  %s\n",
-				th->num, MSG_TOSUB, author, th->subject
-				) == -1) {
-			    xit = 1;
-			}
-		    }
-		    else {
-			if (output("%7ld  %s%-24s  %s\n",
-				th->num, MSG_FROMSUB, author, th->subject
-				) == -1) {
-			    xit = 1;
-			}
-		    }
-		}
-	    } else {
-		wait_count++;
-		if (wait_count == 15) {
-		    if (dot_count < 79) {
-			output(".");
-			fflush(stdout);
-			dot_count++;
-		    } else {
-			while (dot_count > 0) {
-			    output("\b \b");
-			    dot_count--;
-			}
-		    }
-		    wait_count = 0;
-		}
-	    }
-	    free_text_entry(&te);
-	}
-	current_text--;
+                if (Current_conf) {
+                    if (th->comment_num)
+                        c = ' ';
+                    else
+                        c = '*';
+                    if (th->type == TYPE_SURVEY)
+                        c = '#';
+                    if (output("%7ld  %-30s  %c %s\n",
+                            th->num, author, c, th->subject
+                        ) == -1) {
+                        xit = 1;
+                    }
+                } else {
+                    if (from) {
+                        if (output("%7ld  %s%-24s  %s\n",
+                                th->num, MSG_TOSUB, author, th->subject
+                            ) == -1) {
+                            xit = 1;
+                        }
+                    } else {
+                        if (output("%7ld  %s%-24s  %s\n",
+                                th->num, MSG_FROMSUB, author, th->subject
+                            ) == -1) {
+                            xit = 1;
+                        }
+                    }
+                }
+            } else {
+                wait_count++;
+                if (wait_count == 15) {
+                    if (dot_count < 79) {
+                        output(".");
+                        fflush(stdout);
+                        dot_count++;
+                    } else {
+                        while (dot_count > 0) {
+                            output("\b \b");
+                            dot_count--;
+                        }
+                    }
+                    wait_count = 0;
+                }
+            }
+            free_text_entry(&te);
+        }
+        current_text--;
     } while ((!xit) && (current_text >= firsttext));
     while (dot_count > 0) {
-	output("\b \b");
-	dot_count--;
+        output("\b \b");
+        dot_count--;
     }
     output("\n");
     return 0;
@@ -1735,60 +1669,50 @@ char
  */
 
 long
-	age_to_textno(age)
-long
-	age;
+age_to_textno(long age)
 {
-    char
-	    *buf,
-	    *oldbuf;
-    long
-	    firsttext, textno,
-	    current_text;
-
+    char *buf, *oldbuf;
+    long firsttext, textno, current_text;
     time_t now, texttime;
-    int	    fd;
-    struct TEXT_ENTRY
-	    te;
-    struct TEXT_HEADER
-	    *th;
-
+    int fd;
+    struct TEXT_ENTRY te;
+    struct TEXT_HEADER *th;
     LINE fname;
+
     now = time(NULL);
 
-    current_text  = last_text(Current_conf, Uid);
+    current_text = last_text(Current_conf, Uid);
     firsttext = first_text(Current_conf, Uid);
 
     textno = -1;
     texttime = now;
     do {
-	if (Current_conf) {
-	    sprintf(fname, "%s/%d/%ld", SKLAFF_DB, Current_conf, current_text);
-	}
-	else {
-	    sprintf(fname, "%s/%ld", Mbox, current_text);
-	}
-	if ((fd = open_file(fname, OPEN_QUIET)) != -1) {
-	    if ((buf = read_file(fd)) == NULL) {
-		sys_error("list_subj", 1, "read_file");
-		return -1;
-	    }
-	    if ((fd = close_file(fd)) == -1) {
-		free(buf);
-		sys_error("list_subj", 2, "close_file");
-		return -1;
-	    }
-	    oldbuf = buf;
-	    buf = get_text_entry(buf, &te);
-	    free(oldbuf);
+        if (Current_conf) {
+            sprintf(fname, "%s/%d/%ld", SKLAFF_DB, Current_conf, current_text);
+        } else {
+            sprintf(fname, "%s/%ld", Mbox, current_text);
+        }
+        if ((fd = open_file(fname, OPEN_QUIET)) != -1) {
+            if ((buf = read_file(fd)) == NULL) {
+                sys_error("list_subj", 1, "read_file");
+                return -1;
+            }
+            if ((fd = close_file(fd)) == -1) {
+                free(buf);
+                sys_error("list_subj", 2, "close_file");
+                return -1;
+            }
+            oldbuf = buf;
+            buf = get_text_entry(buf, &te);
+            free(oldbuf);
 
-	    th = &te.th;
-	    texttime = th->time;
+            th = &te.th;
+            texttime = th->time;
 
-	    free_text_entry(&te);
-	}
-	current_text--;
-	textno++;
+            free_text_entry(&te);
+        }
+        current_text--;
+        textno++;
     } while (texttime > now - age);
 
     return textno;
@@ -1801,10 +1725,8 @@ long
  * ret: number of text saved
  */
 
-long save_text(fname, th, conf)
-char *fname;
-struct TEXT_HEADER *th;
-int conf;
+long
+save_text(char *fname, struct TEXT_HEADER * th, int conf)
 {
     int fd, fdinfile, fdoutfile, usernum, oldconf, ml;
     char *buf, *oldbuf, *nbuf, *inbuf, *fbuf;
@@ -1814,80 +1736,72 @@ int conf;
     oldconf = conf;
     ml = 0;
     if (conf < 0) {
-	usernum = conf - (conf * 2);
-	ml = usernum;
-	mbox_dir(usernum, home);
-	sprintf(conffile, "%s%s", home, MAILBOX_FILE);
-	sprintf(confdir, "%s/", home);
-	conf = 0;
-    }
-    else {
-	strcpy(conffile, CONF_FILE);
-	sprintf(confdir, "%s/%d/", SKLAFF_DB, conf);
+        usernum = conf - (conf * 2);
+        ml = usernum;
+        mbox_dir(usernum, home);
+        sprintf(conffile, "%s%s", home, MAILBOX_FILE);
+        sprintf(confdir, "%s/", home);
+        conf = 0;
+    } else {
+        strcpy(conffile, CONF_FILE);
+        sprintf(confdir, "%s/%d/", SKLAFF_DB, conf);
     }
 
     if ((fd = open_file(conffile, 0)) == -1) {
-	return -1L;
+        return -1L;
     }
-
     if ((buf = read_file(fd)) == NULL) {
-	return -1L;
+        return -1L;
     }
-
     oldbuf = buf;
 
     while ((buf = get_conf_entry(buf, &ce))) {
-	if (ce.num == conf) break;
+        if (ce.num == conf)
+            break;
     }
 
     if (ce.num == conf) {
-	ce.last_text++;
-	nbuf = replace_conf(&ce, oldbuf);
-	if (!nbuf) {
-	    output("\n%s\n\n", MSG_CONFMISSING);
-	    return -1L;
-	}
-    }
-    else {
-	output("\n%s\n\n", MSG_CONFMISSING);
-	return -1L;
+        ce.last_text++;
+        nbuf = replace_conf(&ce, oldbuf);
+        if (!nbuf) {
+            output("\n%s\n\n", MSG_CONFMISSING);
+            return -1L;
+        }
+    } else {
+        output("\n%s\n\n", MSG_CONFMISSING);
+        return -1L;
     }
 
     sprintf(textfile, "%s%ld", confdir, ce.last_text);
 
     if ((fdoutfile = open_file(textfile, OPEN_QUIET | OPEN_CREATE)) == -1) {
-	output("\n%s\n\n", MSG_ERRCREATET);
-	return -1L;
+        output("\n%s\n\n", MSG_ERRCREATET);
+        return -1L;
     }
-
     if ((fdinfile = open_file(fname, 0)) == -1) {
-	return -1L;
+        return -1L;
     }
-
     if ((inbuf = read_file(fdinfile)) == NULL) {
-	return -1L;
+        return -1L;
     }
-
     if (close_file(fdinfile) == -1) {
-	return -1L;
+        return -1L;
     }
-
-
-    fbuf = (char *)malloc(strlen(inbuf) + sizeof(LONG_LINE));
+    fbuf = (char *) malloc(strlen(inbuf) + sizeof(LONG_LINE));
     if (fbuf == NULL) {
-      sys_error("save_text", 1, "malloc");
-      return -1L;
+        sys_error("save_text", 1, "malloc");
+        return -1L;
     }
     bzero(fbuf, strlen(inbuf) + sizeof(LONG_LINE));
     if (th->type == TYPE_TEXT)
-      sprintf(fbuf, "%ld:%d:%lld:%ld:%d:%d:%d:%d\n", ce.last_text, th->author,
-	      (long long)th->time, th->comment_num, th->comment_conf,
-	      th->comment_author, th->size, th->type);
+        sprintf(fbuf, "%ld:%d:%lld:%ld:%d:%d:%d:%d\n", ce.last_text, th->author,
+            (long long) th->time, th->comment_num, th->comment_conf,
+            th->comment_author, th->size, th->type);
     else
-      sprintf(fbuf, "%ld:%d:%lld:%ld:%d:%d:%d:%d:%d:%lld\n", ce.last_text, th->author,
-	      (long long)th->time, th->comment_num, th->comment_conf,
-	      th->comment_author, th->size, th->type,
-	      th->sh.n_questions, (long long)th->sh.time);
+        sprintf(fbuf, "%ld:%d:%lld:%ld:%d:%d:%d:%d:%d:%lld\n", ce.last_text, th->author,
+            (long long) th->time, th->comment_num, th->comment_conf,
+            th->comment_author, th->size, th->type,
+            th->sh.n_questions, (long long) th->sh.time);
     strcat(fbuf, th->subject);
     strcat(fbuf, "\n");
     strcat(fbuf, inbuf);
@@ -1896,129 +1810,115 @@ int conf;
 
     critical();
     if (write_file(fdoutfile, fbuf) == -1) {
-	return -1L;
+        return -1L;
     }
-
     if (close_file(fdoutfile) == -1) {
-	return -1L;
+        return -1L;
     }
-
     if (write_file(fd, nbuf) == -1) {
-	return -1L;
+        return -1L;
     }
-
     if (close_file(fd) == -1) {
-	return -1L;
+        return -1L;
     }
-
     non_critical();
 
     /* Save copy if flag set and in mailbox */
 
     usernum = oldconf - (oldconf * 2);
     if ((oldconf < 0) && Copy && (usernum != Uid)) {
-	sprintf(conffile, "%s%s", Mbox, MAILBOX_FILE);
-	sprintf(confdir, "%s/", Mbox);
-	oldconf = 0;
+        sprintf(conffile, "%s%s", Mbox, MAILBOX_FILE);
+        sprintf(confdir, "%s/", Mbox);
+        oldconf = 0;
 
-	if ((fd = open_file(conffile, 0)) == -1) {
-	    return -1L;
-	}
+        if ((fd = open_file(conffile, 0)) == -1) {
+            return -1L;
+        }
+        if ((buf = read_file(fd)) == NULL) {
+            return -1L;
+        }
+        oldbuf = buf;
 
-	if ((buf = read_file(fd)) == NULL) {
-	    return -1L;
-	}
+        while ((buf = get_conf_entry(buf, &ce))) {
+            if (!ce.num)
+                break;
+        }
 
-	oldbuf = buf;
+        if (!ce.num) {
+            ce.last_text++;
+            nbuf = replace_conf(&ce, oldbuf);
+            if (!nbuf) {
+                output("\n%s\n\n", MSG_CONFMISSING);
+                return -1L;
+            }
+        } else {
+            output("\n%s\n\n", MSG_CONFMISSING);
+            return -1L;
+        }
 
-	while ((buf = get_conf_entry(buf, &ce))) {
-	    if (!ce.num) break;
-	}
+        sprintf(textfile, "%s%ld", confdir, ce.last_text);
 
-	if (!ce.num) {
-	    ce.last_text++;
-	    nbuf = replace_conf(&ce, oldbuf);
-	    if (!nbuf) {
-		output("\n%s\n\n", MSG_CONFMISSING);
-		return -1L;
-	    }
-	}
-	else {
-	    output("\n%s\n\n", MSG_CONFMISSING);
-	    return -1L;
-	}
+        if ((fdoutfile = open_file(textfile,
+                    OPEN_QUIET | OPEN_CREATE)) == -1) {
+            output("\n%s\n\n", MSG_ERRCREATET);
+            return -1L;
+        }
+        if ((fdinfile = open_file(fname, 0)) == -1) {
+            return -1L;
+        }
+        if ((inbuf = read_file(fdinfile)) == NULL) {
+            return -1L;
+        }
+        if (close_file(fdinfile) == -1) {
+            return -1L;
+        }
+        fbuf = (char *) malloc(strlen(inbuf) + LONG_LINE_LEN);
+        if (fbuf == NULL) {
+            sys_error("save_text", 1, "malloc");
+            return -1L;
+        }
+        bzero(fbuf, strlen(inbuf) + LONG_LINE_LEN);
+        th->comment_num = 0;
+        th->comment_conf = 0;
+        th->comment_author = usernum;
 
-	sprintf(textfile, "%s%ld", confdir, ce.last_text);
+        /* Note, mail copy is never a survey */
 
-	if ((fdoutfile = open_file(textfile,
-				   OPEN_QUIET | OPEN_CREATE)) == -1) {
-	    output("\n%s\n\n", MSG_ERRCREATET);
-	    return -1L;
-	}
+        sprintf(fbuf, "%ld:%d:%lld:%ld:%d:%d:%d:%d\n", ce.last_text, th->author,
+            (long long) th->time, th->comment_num, th->comment_conf,
+            th->comment_author, th->size, th->type);
+        strcat(fbuf, th->subject);
+        strcat(fbuf, "\n");
+        strcat(fbuf, inbuf);
 
-	if ((fdinfile = open_file(fname, 0)) == -1) {
-	    return -1L;
-	}
+        free(inbuf);
 
-	if ((inbuf = read_file(fdinfile)) == NULL) {
-	    return -1L;
-	}
+        critical();
+        if (write_file(fdoutfile, fbuf) == -1) {
+            return -1L;
+        }
+        if (close_file(fdoutfile) == -1) {
+            return -1L;
+        }
+        if (write_file(fd, nbuf) == -1) {
+            return -1L;
+        }
+        if (close_file(fd) == -1) {
+            return -1L;
+        }
+        non_critical();
 
-	if (close_file(fdinfile) == -1) {
-	    return -1L;
-	}
-
-	fbuf = (char *)malloc(strlen(inbuf) + LONG_LINE_LEN);
-	if (fbuf == NULL) {
-	    sys_error("save_text", 1, "malloc");
-	    return -1L;
-	}
-	bzero(fbuf, strlen(inbuf) + LONG_LINE_LEN);
-	th->comment_num = 0;
-	th->comment_conf = 0;
-	th->comment_author = usernum;
-
-	/* Note, mail copy is never a survey */
-
-	sprintf(fbuf, "%ld:%d:%lld:%ld:%d:%d:%d:%d\n", ce.last_text, th->author,
-		(long long)th->time, th->comment_num, th->comment_conf,
-		th->comment_author, th->size, th->type);
-	strcat(fbuf, th->subject);
-	strcat(fbuf, "\n");
-	strcat(fbuf, inbuf);
-
-	free(inbuf);
-
-	critical();
-	if (write_file(fdoutfile, fbuf) == -1) {
-	    return -1L;
-	}
-
-	if (close_file(fdoutfile) == -1) {
-	    return -1L;
-	}
-
-	if (write_file(fd, nbuf) == -1) {
-	    return -1L;
-	}
-
-	if (close_file(fd) == -1) {
-	    return -1L;
-	}
-
-	non_critical();
-
-	mark_as_read(ce.last_text, 0);
+        mark_as_read(ce.last_text, 0);
 
     }
-
     /* End of save-copy section */
 
     unlink(fname);
     if (ml) {
-	if (user_is_active(ml)) notify_user(ml, SIGNAL_NEW_TEXT);
-    }
-    else notify_all_processes(SIGNAL_NEW_TEXT);
+        if (user_is_active(ml))
+            notify_user(ml, SIGNAL_NEW_TEXT);
+    } else
+        notify_all_processes(SIGNAL_NEW_TEXT);
     return ce.last_text;
 }
 
@@ -2028,10 +1928,13 @@ int conf;
  * ret:	no_more	(0) or more (1)
  */
 
-int more_comment()
+int
+more_comment(void)
 {
-    if (cstack) return 1;
-    else return 0;
+    if (cstack)
+        return 1;
+    else
+        return 0;
 }
 
 
@@ -2040,13 +1943,13 @@ int more_comment()
  * ret:	no_more (0) or more (1)
  */
 
-int more_text()
+int
+more_text(void)
 {
     if (next_text(Current_conf)) {
-	return 1;
-    }
-    else {
-	return 0;
+        return 1;
+    } else {
+        return 0;
     }
 }
 
@@ -2055,21 +1958,21 @@ int more_text()
  *  free_text_entry - free text entry
  */
 
-void free_text_entry(te)
-struct TEXT_ENTRY *te;
+void
+free_text_entry(struct TEXT_ENTRY * te)
 {
     struct TEXT_BODY *tmptb;
     struct COMMENT_LIST *tmpcl;
 
     while (te->body) {
-	tmptb = te->body->next;
-	free (te->body);
-	te->body = tmptb;
+        tmptb = te->body->next;
+        free(te->body);
+        te->body = tmptb;
     }
     while (te->cl) {
-	tmpcl = te->cl->next;
-	free (te->cl);
-	te->cl = tmpcl;
+        tmpcl = te->cl->next;
+        free(te->cl);
+        te->cl = tmpcl;
     }
     return;
 }
@@ -2081,8 +1984,8 @@ struct TEXT_ENTRY *te;
  * ret: number of text saved
  */
 
-long save_mailcopy(rec, subject, inbuf)
-char *rec, *subject, *inbuf;
+long
+save_mailcopy(char *rec, char *subject, char *inbuf)
 {
     LONG_LINE conffile, confdir, textfile, copymsg;
     char *buf, *oldbuf, *nbuf, *fbuf, *ptr;
@@ -2093,35 +1996,37 @@ char *rec, *subject, *inbuf;
     sprintf(conffile, "%s%s", Mbox, MAILBOX_FILE);
     sprintf(confdir, "%s/", Mbox);
 
-    if ((fd = open_file(conffile, 0)) == -1) return -1L;
-    if ((buf = read_file(fd)) == NULL) return -1L;
+    if ((fd = open_file(conffile, 0)) == -1)
+        return -1L;
+    if ((buf = read_file(fd)) == NULL)
+        return -1L;
     oldbuf = buf;
-    while ((buf = get_conf_entry(buf, &ce))) if (!ce.num) break;
+    while ((buf = get_conf_entry(buf, &ce)))
+        if (!ce.num)
+            break;
 
     if (!ce.num) {
-	ce.last_text++;
-	nbuf = replace_conf(&ce, oldbuf);
-	if (!nbuf) {
-	    output("\n%s\n\n", MSG_CONFMISSING);
-	    return -1L;
-	}
-    }
-    else {
-	output("\n%s\n\n", MSG_CONFMISSING);
-	return -1L;
+        ce.last_text++;
+        nbuf = replace_conf(&ce, oldbuf);
+        if (!nbuf) {
+            output("\n%s\n\n", MSG_CONFMISSING);
+            return -1L;
+        }
+    } else {
+        output("\n%s\n\n", MSG_CONFMISSING);
+        return -1L;
     }
 
     sprintf(textfile, "%s%ld", confdir, ce.last_text);
 
     if ((fd2 = open_file(textfile, OPEN_QUIET | OPEN_CREATE)) == -1) {
-	output("\n%s\n\n", MSG_ERRCREATET);
-	return -1L;
+        output("\n%s\n\n", MSG_ERRCREATET);
+        return -1L;
     }
-
-    fbuf = (char *)malloc(strlen(inbuf) + 240);
+    fbuf = (char *) malloc(strlen(inbuf) + 240);
     if (fbuf == NULL) {
-	sys_error("save_mailcopy", 1, "malloc");
-	return -1L;
+        sys_error("save_mailcopy", 1, "malloc");
+        return -1L;
     }
     bzero(fbuf, strlen(inbuf) + 240);
 
@@ -2133,13 +2038,13 @@ char *rec, *subject, *inbuf;
     th.size = 0;
     th.type = TYPE_TEXT;
     ptr = inbuf;
-    while(1) {
-	ptr = strchr(ptr, '\n');
-	if (ptr) {
-	    th.size++;
-	    ptr++;
-	}
-	else break;
+    while (1) {
+        ptr = strchr(ptr, '\n');
+        if (ptr) {
+            th.size++;
+            ptr++;
+        } else
+            break;
     }
     th.size += 2;
     sprintf(copymsg, "<%s %s>", MSG_COPYTO, rec);
@@ -2147,8 +2052,8 @@ char *rec, *subject, *inbuf;
     /* Note, don't worry about saving survey info */
 
     sprintf(fbuf, "%ld:%d:%lld:%ld:%d:%d:%d:%d\n", ce.last_text, th.author,
-	    (long long)th.time, th.comment_num, th.comment_conf,
-	    th.comment_author, th.size, th.type);
+        (long long) th.time, th.comment_num, th.comment_conf,
+        th.comment_author, th.size, th.type);
     strcat(fbuf, subject);
     strcat(fbuf, "\n");
     strcat(fbuf, copymsg);
@@ -2157,11 +2062,15 @@ char *rec, *subject, *inbuf;
 
     critical();
 
-    if (write_file(fd2, fbuf) == -1) return -1L;
-    if (close_file(fd2) == -1) return -1L;
+    if (write_file(fd2, fbuf) == -1)
+        return -1L;
+    if (close_file(fd2) == -1)
+        return -1L;
 
-    if (write_file(fd, nbuf) == -1) return -1L;
-    if (close_file(fd) == -1) return -1L;
+    if (write_file(fd, nbuf) == -1)
+        return -1L;
+    if (close_file(fd) == -1)
+        return -1L;
 
     non_critical();
 
@@ -2175,76 +2084,109 @@ char *rec, *subject, *inbuf;
  * cnvcat - convert characters in string - by Daniel Gr|njord
  */
 
-void cnvnat(char *str, int ch)
+void
+cnvnat(char *str, int ch)
 {
-  char *c;
+    char *c;
 
-  if (!Ibm && !Iso8859 && !Mac)
-    return;
+    if (!Ibm && !Iso8859 && !Mac)
+        return;
 
-  c = str;
-  while (*c) {
-      if (Ibm) {
-	  switch (*c) {
-	  case '}':  *c = (char)134; break;
-	  case '{':  *c = (char)132; break;
-	  case '|':  *c = (char)148; break;
-	  case ']':  *c = (char)143; break;
-	  case '[':  *c = (char)142; break;
-	  case '\\': *c = (char)153; break;
-	  }
-      }
-      else if (Iso8859) {
-	  switch (*c) {
-	  case '}':  *c = (char)229; break;
-	  case '{':  *c = (char)228; break;
-	  case '|':  *c = (char)246; break;
-	  case ']':  *c = (char)197; break;
-	  case '[':  *c = (char)196; break;
-	  case '\\': *c = (char)214; break;
-	  }
-      }
-      else if (Mac) {
-	  switch (*c) {
-	  case '}':  *c = (char)140; break;
-	  case '{':  *c = (char)138; break;
-	  case '|':  *c = (char)154; break;
-	  case ']':  *c = (char)129; break;
-	  case '[':  *c = (char)128; break;
-	  case '\\': *c = (char)133; break;
-	  }
-      }
-      c++;
-  }
+    c = str;
+    while (*c) {
+        if (Ibm) {
+            switch (*c) {
+            case '}':
+                *c = (char) 134;
+                break;
+            case '{':
+                *c = (char) 132;
+                break;
+            case '|':
+                *c = (char) 148;
+                break;
+            case ']':
+                *c = (char) 143;
+                break;
+            case '[':
+                *c = (char) 142;
+                break;
+            case '\\':
+                *c = (char) 153;
+                break;
+            }
+        } else if (Iso8859) {
+            switch (*c) {
+            case '}':
+                *c = (char) 229;
+                break;
+            case '{':
+                *c = (char) 228;
+                break;
+            case '|':
+                *c = (char) 246;
+                break;
+            case ']':
+                *c = (char) 197;
+                break;
+            case '[':
+                *c = (char) 196;
+                break;
+            case '\\':
+                *c = (char) 214;
+                break;
+            }
+        } else if (Mac) {
+            switch (*c) {
+            case '}':
+                *c = (char) 140;
+                break;
+            case '{':
+                *c = (char) 138;
+                break;
+            case '|':
+                *c = (char) 154;
+                break;
+            case ']':
+                *c = (char) 129;
+                break;
+            case '[':
+                *c = (char) 128;
+                break;
+            case '\\':
+                *c = (char) 133;
+                break;
+            }
+        }
+        c++;
+    }
 }
 
 /*
  * int2ms - Convert integer to Microsoft Basic float. Urk.
  */
 
-void int2ms(i, c)
-int i;
-char c[4];
+void
+int2ms(int i, char c[4])
 {
-  int m, e;
+    int m, e;
 
-  if (i == 0) {
-    c[0] = c[1] = c[2] = 0;
-    c[3] = 0x80;
-    return;
-  }
+    if (i == 0) {
+        c[0] = c[1] = c[2] = 0;
+        c[3] = 0x80;
+        return;
+    }
+    e = 152;
+    m = 0x7fffff & i;
 
-  e = 152;
-  m = 0x7fffff & i;
-
-  while (!(0x800000 & m)) {
-    m <<= 1;
-    e--;
-  }
-  c[0] = 0xff & m;
-  c[1] = 0xff & (m >> 8);
-  c[2] = 0x7f & (m >> 16);
-  c[3] = 0xff & e;
+    while (!(0x800000 & m)) {
+        m <<= 1;
+        e--;
+    }
+    c[0] = 0xff & m;
+    c[1] = 0xff & (m >> 8);
+    c[2] = 0x7f & (m >> 16);
+    c[3] = 0xff & e;
 }
 
 
@@ -2255,9 +2197,8 @@ char c[4];
  * ret: ok (0) or failure (-1)
  */
 
-int display_survey_result(conf, num)
-int conf;
-long num;
+int
+display_survey_result(int conf, long num)
 {
     LINE fname, username, confdir, resfile, home, time_val, c;
     int fd, n, i;
@@ -2266,34 +2207,29 @@ long num;
     struct TEXT_HEADER *th;
 
     if (num == 0) {
-	output("\n%s\n\n", MSG_NOTEXTNUM);
-	return -1;
+        output("\n%s\n\n", MSG_NOTEXTNUM);
+        return -1;
     }
-
     if (conf > 0) {
-	sprintf(fname, "%s/%d/%ld", SKLAFF_DB, conf, num);
-    }
-    else {
-	output("\nInga enk{ter i brevl}dan\n\n");
-	return 0;
+        sprintf(fname, "%s/%d/%ld", SKLAFF_DB, conf, num);
+    } else {
+        output("\nInga enk{ter i brevl}dan\n\n");
+        return 0;
     }
 
     if ((fd = open_file(fname, OPEN_QUIET)) == -1) {
-	output("\n%s\n\n", MSG_NOTEXT);
-	return -1;
+        output("\n%s\n\n", MSG_NOTEXT);
+        return -1;
     }
-
     if ((buf = read_file(fd)) == NULL) {
-	output("\n%s\n\n", MSG_NOREAD);
-	return -1;
+        output("\n%s\n\n", MSG_NOREAD);
+        return -1;
     }
-
     oldbuf = buf;
 
     if (close_file(fd) == -1) {
-	return -1;
+        return -1;
     }
-
     buf = get_text_entry(buf, &te);
     free(oldbuf);
     output("\n");
@@ -2302,17 +2238,17 @@ long num;
     th->num = num;
 
     if (th->type != TYPE_SURVEY) {
-	output("%s\n\n", MSG_NOTASURVEY);
-	return 0;
+        output("%s\n\n", MSG_NOTASURVEY);
+        return 0;
     }
-    if (time(0) < th->sh.time) {  /* Time to show result? */
-	output("%s\n\n", MSG_NOTREPORTED);
-	return 0;
+    if (time(0) < th->sh.time) {/* Time to show result? */
+        output("%s\n\n", MSG_NOTREPORTED);
+        return 0;
     }
-
     user_name(th->author, username);
 
-    if (Clear) cmd_cls(home);
+    if (Clear)
+        cmd_cls(home);
 
     /* Get survey results */
 
@@ -2320,71 +2256,75 @@ long num;
     sprintf(resfile, "%s%ld.result", confdir, num);
 
     if ((fd = open_file(resfile, OPEN_QUIET)) == -1) {
-      n=0;
-      buf = NULL;
+        n = 0;
+        buf = NULL;
     } else {
 
-      if ((buf = read_file(fd)) == NULL) {
-	sys_error("display_survey_result", 1, "read_file");
-	return 0;
-      }
+        if ((buf = read_file(fd)) == NULL) {
+            sys_error("display_survey_result", 1, "read_file");
+            return 0;
+        }
+        if (close_file(fd) == -1) {
+            sys_error("display_survey_result", 1, "close_file");
+            return 0;
+        }
+        /* Get number of replies */
 
-      if (close_file(fd) == -1) {
-	sys_error("display_survey_result", 1, "close_file");
-	return 0;
-      }
-
-      /* Get number of replies */
-
-      s = buf; i=0; s2 = strchr(s, '\n'); n=0;
-      while (s2) {
-	i++;
-	if ((i % th->sh.n_questions) == 0)
-	  n++;
-	s = s2+1; s2 = strchr(s, '\n');
-      }
+        s = buf;
+        i = 0;
+        s2 = strchr(s, '\n');
+        n = 0;
+        while (s2) {
+            i++;
+            if ((i % th->sh.n_questions) == 0)
+                n++;
+            s = s2 + 1;
+            s2 = strchr(s, '\n');
+        }
     }
     /* Display header */
 
-    output ("%s %d; %s %s;", MSG_RESULTFOR,
-	    th->num, MSG_WRITTENBY, username);
+    output("%s %d; %s %s;", MSG_RESULTFOR,
+        th->num, MSG_WRITTENBY, username);
     switch (n) {
     case 0:
-      output (" %s\n", MSG_NOREPLIES);
-      break;
+        output(" %s\n", MSG_NOREPLIES);
+        break;
     case 1:
-        output (" %s\n", MSG_ONEANSWER);
+        output(" %s\n", MSG_ONEANSWER);
         break;
     default:
-      output (" %d %s\n", n, MSG_ANSWER);
-      break;
+        output(" %d %s\n", n, MSG_ANSWER);
+        break;
     }
-    time_string (th->sh.time, time_val, Date);
+    time_string(th->sh.time, time_val, Date);
     output("%s: %d; %s: %s\n", MSG_NQUESTIONS, th->sh.n_questions,
-	   MSG_REPORTRESULT, time_val);
-    output ("%s%s\n", MSG_SUBJECT, th->subject);
+        MSG_REPORTRESULT, time_val);
+    output("%s%s\n", MSG_SUBJECT, th->subject);
     for (i = 0; i < (strlen(th->subject) + 8); i++)
-      c[i] = '-';
+        c[i] = '-';
     c[i] = '\0';
-    output ("%s\n", c);
+    output("%s\n", c);
 
-    if (n>0) {
-      s = buf; i=0; s2 = strchr(s, '\n');
-      while (s2) {
-	*s2 = '\0';
-	if (output("%s\n", s) == -1)
-	  break;
-	i++;
-	if ((i % th->sh.n_questions) == 0)
-	  if (output("%s\n", MSG_SURVDELIMIT2) == -1)
-	    break;
-	s = s2+1; s2 = strchr(s, '\n');
-      }
-      free(buf);
+    if (n > 0) {
+        s = buf;
+        i = 0;
+        s2 = strchr(s, '\n');
+        while (s2) {
+            *s2 = '\0';
+            if (output("%s\n", s) == -1)
+                break;
+            i++;
+            if ((i % th->sh.n_questions) == 0)
+                if (output("%s\n", MSG_SURVDELIMIT2) == -1)
+                    break;
+            s = s2 + 1;
+            s2 = strchr(s, '\n');
+        }
+        free(buf);
     }
-
     output("\n%s %ld %s %s\n\n", MSG_EORESULT,
-	   th->num, MSG_BY, username);
+        th->num, MSG_BY, username);
     free_text_entry(&te);
 
     return 0;

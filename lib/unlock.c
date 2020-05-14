@@ -37,7 +37,7 @@
  */
 
 void
-unlock (int fd)
+unlock(int fd)
 {
     lseek(fd, 0L, 0);
     if (flock(fd, LOCK_UN)) {

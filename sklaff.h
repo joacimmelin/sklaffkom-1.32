@@ -32,9 +32,9 @@
 
 /* Define target system, one of: FREEBSD, SOLARIS, LINUX */
 
-#define FREEBSD			/* FreeBSD			*/
-/* #define SOLARIS */ 		/* Solaris			*/
-/* #define LINUX */ 		/* Linux with ELF		*/
+#define FREEBSD			// FreeBSD
+//#define SOLARIS		// Solaris
+//#define LINUX			// Linux
 
 /* Define language desired, one of: SWEDISH or ENGLISH */
 
@@ -78,8 +78,8 @@
 
 /* Default number of days before texts expire */
 
-#define EXP_DEF		10		/* Ordinary confs */
-#define EXP_DEF_NEWS	 3		/* News confs	  */
+#define EXP_DEF		10      /* Ordinary confs */
+#define EXP_DEF_NEWS	 3      /* News confs	  */
 
 /* System files used by SklaffKOM */
 
@@ -93,7 +93,7 @@
 #define SKLAFFSHELL	"/bin/sh"
 #define SKLAFFPASSWD 	"/usr/bin/passwd"
 #define SKLAFFGREP 	"/usr/bin/grep"
-#define GREPOPT		"-i -F"		      /* option to grep */
+#define GREPOPT		"-i -F" /* option to grep */
 #define SKLAFFAT 	"/usr/bin/at"
 #define SKLAFFECHO 	"/bin/echo"
 #define UPLOADPRGM	"/usr/bin/rz"
@@ -104,7 +104,7 @@
 #define DLOPT3          ""
 #define ZIPPRGM		"/usr/bin/zip -9"
 #define LSPRGM		"/bin/ls"
-#define LSOPT		"-1"		      /* option to make one column */
+#define LSOPT		"-1"    /* option to make one column */
 #define MVPRGM		"/bin/mv"
 #define MAILPRGM	"/usr/sbin/sendmail --"
 #define NEWSPRGM	"/usr/bin/inews"
@@ -216,11 +216,11 @@
 
 /* Defines for expand_name */
 
-#define USER		0x01	/* to search among users */
-#define CONF   		0x02	/* to search among confs. */
-#define ACTIVE 		0x04	/* to search among logged in users */
-#define SUBSCRIBED	0x08	/* to search among subscribed confs. */
-#define UNSUBSCRIBED	0x10	/* to search among unsubscribed confs. */
+#define USER		0x01    /* to search among users */
+#define CONF   		0x02    /* to search among confs. */
+#define ACTIVE 		0x04    /* to search among logged in users */
+#define SUBSCRIBED	0x08    /* to search among subscribed confs. */
+#define UNSUBSCRIBED	0x10    /* to search among unsubscribed confs. */
 #define ALSOERASED      0x20    /* to search also among erased confs */
 
 /* Defines for surveys */
@@ -253,46 +253,46 @@ typedef char HUGE_LINE[HUGE_LINE_LEN];
 
 /* lib-funktioner */
 
-int cmp_strings (char *, char *);
-int copy_file (char *, char *);
-void critical (void);
-char *down_string (char *);
-int file_exists (char *);
-off_t file_size (int);
-char *user_dir (int, char *);
-char *in_string (char *, char *);
-char *get_hostname (void);
-void haffo (int);
-void baffo (int);
-char *input (char *, char *, int, int, int, int);
-int input_extended (char *, char *, int, int, int, int, int, int);
-void lock (int);
-void non_critical (void);
-int output (char *,...);
-int outputex (char *,...);
-int close_file (int);
-int create_file (char *);
-int open_file (char *, int);
-int parse_strings (char *, char *, int, char *);
-char *read_file (int);
-int write_file (int, char *);
-char *rtrim (char *);
-char *ltrim (char *);
-void sig_reset (void);
-void sig_setup (void);
-void sys_error (char *, int, char *);
-char *time_string (time_t, char *, int);
-void tty_raw (void);
-void tty_reset (void);
-void unlock (int);
-char *up_string (char *);
-int wc (char *);
-char *fake_string (char *);
-char *order_name (char *, char *);
-char *real_string (char *);
-char *reorder_name (char *, char *);
-char *prog_name (char *);
-char *mbox_dir (int, char *);
+int cmp_strings(char *, char *);
+int copy_file(char *, char *);
+void critical(void);
+char *down_string(char *);
+int file_exists(char *);
+off_t file_size(int);
+char *user_dir(int, char *);
+char *in_string(char *, char *);
+char *get_hostname(void);
+void haffo(int);
+void baffo(int);
+char *input(char *, char *, int, int, int, int);
+int input_extended(char *, char *, int, int, int, int, int, int);
+void lock(int);
+void non_critical(void);
+int output(char *,...);
+int outputex(char *,...);
+int close_file(int);
+int create_file(char *);
+int open_file(char *, int);
+int parse_strings(char *, char *, int, char *);
+char *read_file(int);
+int write_file(int, char *);
+char *rtrim(char *);
+char *ltrim(char *);
+void sig_reset(void);
+void sig_setup(void);
+void sys_error(char *, int, char *);
+char *time_string(time_t, char *, int);
+void tty_raw(void);
+void tty_reset(void);
+void unlock(int);
+char *up_string(char *);
+int wc(char *);
+char *fake_string(char *);
+char *order_name(char *, char *);
+char *real_string(char *);
+char *reorder_name(char *, char *);
+char *prog_name(char *);
+char *mbox_dir(int, char *);
 
 /* Debugging */
 /* void *my_malloc (size_t); */
@@ -300,235 +300,236 @@ char *mbox_dir (int, char *);
 
 /* commands.c */
 
-int cmd_add_rights (char *);
-int cmd_change_conf (char *);
-int cmd_comment (char *);
-int cmd_create_conf (char *);
-int cmd_delete_conf (char *);
-int cmd_delete_text (char *);
-int cmd_display_commented (char *);
-int cmd_display_last (char *);
-int cmd_display_rot13 (char *);
-int cmd_display_time (char *);
-int cmd_end_session (char *);
-int cmd_restart (char *);
-int cmd_on_flag (char *);
-int cmd_off_flag (char *);
-int cmd_goto_text (char *);
-int cmd_help (char *);
-int cmd_info (char *);
-int cmd_jump_over (char *);
-int cmd_jump_tree (char *);
-int cmd_licens (char *);
-int cmd_list_confs (char *);
-int cmd_list_flags (char *);
-int cmd_list_last (char *);
-int cmd_list_member (char *);
-int cmd_list_news (char *);
-int cmd_list_rights (char *);
-int cmd_list_subj (char *);
-int cmd_list_users (char *);
-int cmd_long_help (char *);
-int cmd_mail (char *);
-int cmd_mod_note (char *);
-int cmd_mod_sig (char *);
-int cmd_mod_login (char *);
-int cmd_mod_pinfo (char *);
-int cmd_mod_timeout (char *);
-int cmd_next_comment (char *);
-int cmd_next_conf (char *);
-int cmd_next_text (char *);
-int cmd_only (char *);
-int cmd_personal (char *);
-int cmd_post_text (char *);
-int cmd_read_text (char *);
-int cmd_whole_text (char *);
-int cmd_say (char *);
-int cmd_show_status (char *);
-int cmd_sub_rights (char *);
-int cmd_subscribe (char *);
-int cmd_unread_text (char *);
-int cmd_unread_tree (char *);
-int cmd_unsubscribe (char *);
-int cmd_where (char *);
-int cmd_who (char *);
-int cmd_yell (char *);
-int cmd_change_cname (char *);
-int cmd_change_comc (char *);
-int cmd_change_passwd (char *);
-int cmd_cls (char *);
-int cmd_grep (char *);
-int cmd_global_grep (char *);
-int cmd_list_files (char *);
-int cmd_download (char *);
-int cmd_upload (char *);
-int cmd_unlink (char *);
-int cmd_describe (char *);
-int cmd_I (char *);
-int cmd_my (char *);
-int cmd_prio (char *);
-int cmd_deprio (char *);
-int cmd_back_text (char *);
-int cmd_readall (char *);
-int cmd_readsome (char *);
-int cmd_sendbatch (char *);
-int cmd_survey_result (char *);
-int cmd_unreadsub (char *);
-int cmd_jumpsub (char *);
-int cmd_jumpuser (char *);
-int cmd_answermsg (char *);
-int cmd_from (char *);
-int cmd_list_says (char *);
-int cmd_list_yells (char *);
-int cmd_read_last_text (char *);
+int cmd_add_rights(char *);
+int cmd_change_conf(char *);
+int cmd_comment(char *);
+int cmd_create_conf(char *);
+int cmd_delete_conf(char *);
+int cmd_delete_text(char *);
+int cmd_display_commented(char *);
+int cmd_display_last(char *);
+int cmd_display_rot13(char *);
+int cmd_display_time(char *);
+int cmd_end_session(char *);
+int cmd_restart(char *);
+int cmd_on_flag(char *);
+int cmd_off_flag(char *);
+int cmd_goto_text(char *);
+int cmd_help(char *);
+int cmd_info(char *);
+int cmd_jump_over(char *);
+int cmd_jump_tree(char *);
+int cmd_licens(char *);
+int cmd_list_confs(char *);
+int cmd_list_flags(char *);
+int cmd_list_last(char *);
+int cmd_list_member(char *);
+int cmd_list_news(char *);
+int cmd_list_rights(char *);
+int cmd_list_subj(char *);
+int cmd_list_users(char *);
+int cmd_long_help(char *);
+int cmd_mail(char *);
+int cmd_mod_note(char *);
+int cmd_mod_sig(char *);
+int cmd_mod_login(char *);
+int cmd_mod_pinfo(char *);
+int cmd_mod_timeout(char *);
+int cmd_next_comment(char *);
+int cmd_next_conf(char *);
+int cmd_next_text(char *);
+int cmd_only(char *);
+int cmd_personal(char *);
+int cmd_post_text(char *);
+int cmd_read_text(char *);
+int cmd_whole_text(char *);
+int cmd_say(char *);
+int cmd_show_status(char *);
+int cmd_sub_rights(char *);
+int cmd_subscribe(char *);
+int cmd_unread_text(char *);
+int cmd_unread_tree(char *);
+int cmd_unsubscribe(char *);
+int cmd_where(char *);
+int cmd_who(char *);
+int cmd_yell(char *);
+int cmd_change_cname(char *);
+int cmd_change_comc(char *);
+int cmd_change_passwd(char *);
+int cmd_cls(char *);
+int cmd_grep(char *);
+int cmd_global_grep(char *);
+int cmd_list_files(char *);
+int cmd_download(char *);
+int cmd_upload(char *);
+int cmd_unlink(char *);
+int cmd_describe(char *);
+int cmd_I(char *);
+int cmd_my(char *);
+int cmd_prio(char *);
+int cmd_deprio(char *);
+int cmd_back_text(char *);
+int cmd_readall(char *);
+int cmd_readsome(char *);
+int cmd_sendbatch(char *);
+int cmd_survey_result(char *);
+int cmd_unreadsub(char *);
+int cmd_jumpsub(char *);
+int cmd_jumpuser(char *);
+int cmd_answermsg(char *);
+int cmd_from(char *);
+int cmd_list_says(char *);
+int cmd_list_yells(char *);
+int cmd_read_last_text(char *);
 
 /* admin.c */
 
-char *display_prompt (char *, char *, int);
-void display_welcome (void);
-void display_news (void);
-void check_open (void);
-void out_onoff (int);
-int grep (int, char *);
-void logout (int);
-void exec_login (void);
-void timeout (int);
+char *display_prompt(char *, char *, int);
+void display_welcome(void);
+void display_news(void);
+void check_open(void);
+void out_onoff(int);
+int grep(int, char *);
+void logout(int);
+void exec_login(void);
+void timeout(int);
 void debuglog(char *, int);
-int strip_string(char *, char*);
-int show_status (int, int, int);
+int strip_string(char *, char *);
+int show_status(int, int, int);
 int list_who(int);
 
 /* buf.c */
 
 
-char *get_active_entry (char *, struct ACTIVE_ENTRY *);
-char *get_conf_entry (char *, struct CONF_ENTRY *);
-struct USER_LIST *get_confrc_users (char *);
-char *get_confs_entry (char *, struct CONFS_ENTRY *);
-char *get_msg_entry (char *, struct MSG_ENTRY *);
-char *get_parse_entry (char *, struct PARSE_ENTRY *);
-char *get_text_entry (char *, struct TEXT_ENTRY *);
-char *get_user_entry (char *, struct USER_ENTRY *);
-char *get_file_entry (char *, struct FILE_ENTRY *);
+char *get_active_entry(char *, struct ACTIVE_ENTRY *);
+char *get_conf_entry(char *, struct CONF_ENTRY *);
+struct USER_LIST *get_confrc_users(char *);
+char *get_confs_entry(char *, struct CONFS_ENTRY *);
+char *get_msg_entry(char *, struct MSG_ENTRY *);
+char *get_parse_entry(char *, struct PARSE_ENTRY *);
+char *get_text_entry(char *, struct TEXT_ENTRY *);
+char *get_user_entry(char *, struct USER_ENTRY *);
+char *get_file_entry(char *, struct FILE_ENTRY *);
 
 /* conf.c */
 
-char *conf_name (int, char *);
-int conf_num (char *);
-int can_see_conf (int, int, int, int);
-int is_conf_creator (int, int);
-int set_conf (int);
-int set_first_conf ();
-int member_of (int, int);
-void free_confs_entry (struct CONFS_ENTRY *);
-void free_userlist (struct USER_LIST *);
-struct CONF_ENTRY *get_conf_struct (int);
-struct USER_LIST *get_confrc_struct (int);
-char *replace_conf (struct CONF_ENTRY *, char *);
-char *replace_confs (struct CONFS_ENTRY *, char *);
-char *stringify_confs_struct (struct CONFS_ENTRY *, char *);
-char *stringify_conf_struct (struct CONF_ENTRY *, char *);
-long num_unread (int, int, long);
-int conf_right (struct USER_LIST *, int, int, int);
-int list_confs (int, int);
-int more_conf (void);
-int force_unsubscribe (void);
-long last_text (int, int);
-long first_text (int, int);
-struct CEN *sort_conf (struct CEL *, int);
-int list_news (int);
+char *conf_name(int, char *);
+int conf_num(char *);
+int can_see_conf(int, int, int, int);
+int is_conf_creator(int, int);
+int set_conf(int);
+int set_first_conf();
+int member_of(int, int);
+void free_confs_entry(struct CONFS_ENTRY *);
+void free_userlist(struct USER_LIST *);
+struct CONF_ENTRY *get_conf_struct(int);
+struct USER_LIST *get_confrc_struct(int);
+char *replace_conf(struct CONF_ENTRY *, char *);
+char *replace_confs(struct CONFS_ENTRY *, char *);
+char *stringify_confs_struct(struct CONFS_ENTRY *, char *);
+char *stringify_conf_struct(struct CONF_ENTRY *, char *);
+long num_unread(int, int, long);
+int conf_right(struct USER_LIST *, int, int, int);
+int list_confs(int, int);
+int more_conf(void);
+int force_unsubscribe(void);
+long last_text(int, int);
+long first_text(int, int);
+struct CEN *sort_conf(struct CEL *, int);
+int list_news(int);
 struct CONF_ENTRY *get_all_confs(void);
 
 /* edit.c */
 
-void abort_edit (int);
-int resume_aborted_edit (void);
-struct TEXT_HEADER *line_ed (char *, struct TEXT_HEADER *, int, int,
-			     int, int *, char *);
+void abort_edit(int);
+int resume_aborted_edit(void);
+struct TEXT_HEADER *
+line_ed(char *, struct TEXT_HEADER *, int, int,
+    int, int *, char *);
 
 /* file.c */
 
-int rebuild_index_file (void);
+int rebuild_index_file(void);
 
 /* flag.c */
 
-void set_flags (char *);
-int check_flag (char *, char *);
-int turn_flag (int, char *);
+void set_flags(char *);
+int check_flag(char *, char *);
+int turn_flag(int, char *);
 
 /* msg.c */
 
-void add_to_mlist (struct MSG_ENTRY *);
-void list_mlist (int, int);
-void newmsg (int);
-int display_msg (int);
-int send_msg (int, int, char *, int);
-int send_msg_to_all (int, char *);
-void notify_all_processes (int);
-void notify_user (int, int);
+void add_to_mlist(struct MSG_ENTRY *);
+void list_mlist(int, int);
+void newmsg(int);
+int display_msg(int);
+int send_msg(int, int, char *, int);
+int send_msg_to_all(int, char *);
+void notify_all_processes(int);
+void notify_user(int, int);
 
 /* parse.c */
 
-int (*parse (char *, char *)) ();
-void buggy_sunOS_fix (int);
-int parse_init (char *);
-char *expand_name (char*, int, int, int*);
+int (*parse(char *, char *)) ();
+void buggy_sunOS_fix(int);
+int parse_init(char *);
+char *expand_name(char *, int, int, int *);
 
 /* text.c */
 
-int check_if_read (long, int);
-void clear_comment (void);
-void display_header (struct TEXT_HEADER *, int, int, int, char *);
-int display_text (int, long, int, int);
-int display_survey_result (int, long);
-int list_subj (char *);
-int mark_as_read (long, int);
-int mark_as_unread (long, int);
-long next_text (int);
-long parse_text (char *);
-long pop_comment (void);
-int push_comment (long);
-long pop_unread (int *);
-int push_unread (int, long);
-long pop_unread2 (int *);
-int push_unread2 (int, long);
-long pop_read (int *);
-int push_read (int, long);
-int stack_text (long);
-int tree_top (long);
-long save_text (char *, struct TEXT_HEADER *, int);
-int more_comment (void);
-int more_text (void);
-void free_text_entry (struct TEXT_ENTRY *);
-long save_mailcopy (char *, char *, char *);
+int check_if_read(long, int);
+void clear_comment(void);
+void display_header(struct TEXT_HEADER *, int, int, int, char *);
+int display_text(int, long, int, int);
+int display_survey_result(int, long);
+int list_subj(char *);
+int mark_as_read(long, int);
+int mark_as_unread(long, int);
+long next_text(int);
+long parse_text(char *);
+long pop_comment(void);
+int push_comment(long);
+long pop_unread(int *);
+int push_unread(int, long);
+long pop_unread2(int *);
+int push_unread2(int, long);
+long pop_read(int *);
+int push_read(int, long);
+int stack_text(long);
+int tree_top(long);
+long save_text(char *, struct TEXT_HEADER *, int);
+int more_comment(void);
+int more_text(void);
+void free_text_entry(struct TEXT_ENTRY *);
+long save_mailcopy(char *, char *, char *);
 void cnvnat(char *, int);
 void int2ms(int, char *);
 long age_to_textno(long);
 
 /* user.c */
 
-struct USER_ENTRY *get_user_struct (int);
-time_t last_session (int);
-int user_is_active (int);
-int user_is_avail (int);
-char *replace_active (struct ACTIVE_ENTRY *, char *);
-int set_avail (int, int);
-int set_from (int, char *);
-char *user_name (int, char *);
-int user_uid (char *);
-int setup_new_user (void);
-char *stringify_user_struct (struct USER_ENTRY *, char *);
-int add_active (void);
-int remove_active (void);
-struct ACTIVE_ENTRY *check_active (int, struct ACTIVE_ENTRY *);
-long active_time (int);
-long idle_time (int);
-void make_activity_note ();
-int disp_note (int);
-int list_user (int, int, int);
-struct UEN *sort_user (struct UEL *, int);
-struct SKLAFFRC *read_sklaffrc (int);
-int write_sklaffrc (int, struct SKLAFFRC *);
+struct USER_ENTRY *get_user_struct(int);
+time_t last_session(int);
+int user_is_active(int);
+int user_is_avail(int);
+char *replace_active(struct ACTIVE_ENTRY *, char *);
+int set_avail(int, int);
+int set_from(int, char *);
+char *user_name(int, char *);
+int user_uid(char *);
+int setup_new_user(void);
+char *stringify_user_struct(struct USER_ENTRY *, char *);
+int add_active(void);
+int remove_active(void);
+struct ACTIVE_ENTRY *check_active(int, struct ACTIVE_ENTRY *);
+long active_time(int);
+long idle_time(int);
+void make_activity_note();
+int disp_note(int);
+int list_user(int, int, int);
+struct UEN *sort_user(struct UEL *, int);
+struct SKLAFFRC *read_sklaffrc(int);
+int write_sklaffrc(int, struct SKLAFFRC *);
 
 /* survey.c */
 

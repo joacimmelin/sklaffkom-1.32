@@ -29,69 +29,69 @@
 #include <termios.h>
 #include <signal.h>
 
-int Uid;				/* Uid of current user	*/
-LINE Home;				/* home_dir of current user */
-LINE Mbox;				/* mbox_dir of current user */
-int End_sklaff;				/* End sklaffKOM?	*/
-int Num_commands;			/* Number of commands	*/
-int Numlines;				/* Lines on terminal	*/
-int Lines;				/* Lines displayed	*/
-int Globalfd;				/* Used by line_ed	*/
-int Rot13;				/* Rot13 enabled	*/
-long Current_text;			/* Current text		*/
-int Current_author;			/* Uid of author of current text */
-long Last_text;				/* Last text read	*/
-int  Last_author;			/* Uid of author of last text */
-int Logging_in;			        /* 1 during exec_login  */
-int Current_conf;			/* Current conference	*/
-int Last_conf;				/* Last conference	*/
-long Size;				/* size of editing buf  */
-struct EDIT_BUF *Start;			/* start of editing buf */
-struct TEXT_HEADER *Globalth;		/* Used by line_ed	*/
-struct PARSE_ENTRY Par_ent[MAX_COMMANDS]; /* Parse entries      */
-struct COM_STACK *cstack;		/* Comment stack	*/
-struct UR_STACK *ustack, *rstack;	/* Unread/read stack	*/
-struct UR_STACK *ustack2;	        /* Temp text stack      */
-struct MSG_LIST *mlist;                 /* Last msg received    */
-int Interrupt_input = 0;		/* Allow interrupts (talk, new_texts)*/
-int Cont;				/* Cont. output         */
+int Uid;                        /* Uid of current user	 */
+LINE Home;                      /* home_dir of current user */
+LINE Mbox;                      /* mbox_dir of current user */
+int End_sklaff;                 /* End sklaffKOM?	 */
+int Num_commands;               /* Number of commands	 */
+int Numlines;                   /* Lines on terminal	 */
+int Lines;                      /* Lines displayed	 */
+int Globalfd;                   /* Used by line_ed	 */
+int Rot13;                      /* Rot13 enabled	 */
+long Current_text;              /* Current text		 */
+int Current_author;             /* Uid of author of current text */
+long Last_text;                 /* Last text read	 */
+int Last_author;                /* Uid of author of last text */
+int Logging_in;                 /* 1 during exec_login  */
+int Current_conf;               /* Current conference	 */
+int Last_conf;                  /* Last conference	 */
+long Size;                      /* size of editing buf  */
+struct EDIT_BUF *Start;         /* start of editing buf */
+struct TEXT_HEADER *Globalth;   /* Used by line_ed	 */
+struct PARSE_ENTRY Par_ent[MAX_COMMANDS];       /* Parse entries      */
+struct COM_STACK *cstack;       /* Comment stack	 */
+struct UR_STACK *ustack, *rstack;       /* Unread/read stack	 */
+struct UR_STACK *ustack2;       /* Temp text stack      */
+struct MSG_LIST *mlist;         /* Last msg received    */
+int Interrupt_input = 0;        /* Allow interrupts (talk, new_texts) */
+int Cont;                       /* Cont. output         */
 extern char *sklaff_version;
-char Program_name[80];			/* The name of the program file */
-LINE Prompt;				/* Last prompt written		*/
-LINE Overflow;				/* Overflow from last line	*/
-LINE Comstack[HISTORY_SIZE];		/* Command history              */
-LINE Sub;				/* Last subject read		*/
-int Comtop;				/* Top of command stack         */
-int Nextconf;				/* Number of next conference    */
-long Nexttext;				/* Number of next text          */
-int restart;				/* Restart program at logout    */
-int Change_prompt;			/* Prompt has been changed? 	*/
-int Change_msg;				/* Message has arrived? 	*/
-int Timeout;				/* Inactive timeout (minutes)   */
-int Warning;				/* Timeout warning flag    	*/
-int Say;				/* Allow says			*/
-int Shout;				/* Allow shouts		        */
-int Present;				/* Allow present-messages	*/
-int Ibm;				/* IBM mode			*/
-int Iso8859;				/* ISO-8859  mode		*/
-int Mac;				/* Macintosh mode		*/
-int Old_who;                            /* Old-style who list           */
-int Subject_change;			/* Subject change wanted	*/
-int End_default;			/* Logout as default		*/
-int Space;				/* Conservative space-handling  */
-int Copy;				/* Copy of mail sent		*/
-int Author;				/* Author after text		*/
-int Date;				/* Show date in textheader	*/
-int Beep;				/* Allow beeps 		   	*/
-int Clear;				/* Clear screen		   	*/
-int Header;				/* email header		   	*/
-int Special;				/* Special use, e.g. GUI client */
-int Presbeep;				/* Beep at present msg        	*/
+char Program_name[80];          /* The name of the program file */
+LINE Prompt;                    /* Last prompt written		 */
+LINE Overflow;                  /* Overflow from last line	 */
+LINE Comstack[HISTORY_SIZE];    /* Command history              */
+LINE Sub;                       /* Last subject read		 */
+int Comtop;                     /* Top of command stack         */
+int Nextconf;                   /* Number of next conference    */
+long Nexttext;                  /* Number of next text          */
+int restart;                    /* Restart program at logout    */
+int Change_prompt;              /* Prompt has been changed? 	 */
+int Change_msg;                 /* Message has arrived? 	 */
+int Timeout;                    /* Inactive timeout (minutes)   */
+int Warning;                    /* Timeout warning flag    	 */
+int Say;                        /* Allow says			 */
+int Shout;                      /* Allow shouts		        */
+int Present;                    /* Allow present-messages	 */
+int Ibm;                        /* IBM mode			 */
+int Iso8859;                    /* ISO-8859  mode		 */
+int Mac;                        /* Macintosh mode		 */
+int Old_who;                    /* Old-style who list           */
+int Subject_change;             /* Subject change wanted	 */
+int End_default;                /* Logout as default		 */
+int Space;                      /* Conservative space-handling  */
+int Copy;                       /* Copy of mail sent		 */
+int Author;                     /* Author after text		 */
+int Date;                       /* Show date in textheader	 */
+int Beep;                       /* Allow beeps 		   	 */
+int Clear;                      /* Clear screen		   	 */
+int Header;                     /* email header		   	 */
+int Special;                    /* Special use, e.g. GUI client */
+int Presbeep;                   /* Beep at present msg        	 */
 struct termios Tty_mode;
 sigset_t Oldmask;
 
-int ActiveFD;                           /* Global file descriptor used
-                                           for the active file.         */
+int ActiveFD;                   /* Global file descriptor used for the active
+                                 * file.         */
 
 /* Calles stuff for debugging */
 

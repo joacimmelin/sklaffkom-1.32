@@ -34,7 +34,7 @@
  */
 
 char *
-user_dir (int uid, char *dir)
+user_dir(int uid, char *dir)
 {
     sprintf(dir, "%s/%d", USER_DB, uid);
     return dir;

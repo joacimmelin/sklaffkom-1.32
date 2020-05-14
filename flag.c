@@ -34,173 +34,172 @@
  */
 
 void
-set_flags (char *flags)
+set_flags(char *flags)
 {
     char *p, *i;
 
     if (strlen(flags)) {
-	p = strstr(flags, "shout");
-	if (p) {
-	    i = strchr(p, '=');
-	    i++;
-	    Shout = atoi(i);
-	}
-	else Shout = 1;
+        p = strstr(flags, "shout");
+        if (p) {
+            i = strchr(p, '=');
+            i++;
+            Shout = atoi(i);
+        } else
+            Shout = 1;
 
-	p = strstr(flags, "say");
-	if (p) {
-	    i = strchr(p, '=');
-	    i++;
-	    Say = atoi(i);
-	}
-	else Say = 1;
+        p = strstr(flags, "say");
+        if (p) {
+            i = strchr(p, '=');
+            i++;
+            Say = atoi(i);
+        } else
+            Say = 1;
 
-	p = strstr(flags, "present");
-	if (p) {
-	    i = strchr(p, '=');
-	    i++;
-	    Present = atoi(i);
-	}
-	else Present = 1;
+        p = strstr(flags, "present");
+        if (p) {
+            i = strchr(p, '=');
+            i++;
+            Present = atoi(i);
+        } else
+            Present = 1;
 
-	p = strstr(flags, "ibm");
-	if (p) {
-	    i = strchr(p, '=');
-	    i++;
-	    Ibm = atoi(i);
-	}
-	else Ibm = 0;
+        p = strstr(flags, "ibm");
+        if (p) {
+            i = strchr(p, '=');
+            i++;
+            Ibm = atoi(i);
+        } else
+            Ibm = 0;
 
-	p = strstr(flags, "iso8859");
-	if (p) {
-	    i = strchr(p, '=');
-	    i++;
-	    Iso8859 = atoi(i);
-	}
-	else Iso8859 = 0;
+        p = strstr(flags, "iso8859");
+        if (p) {
+            i = strchr(p, '=');
+            i++;
+            Iso8859 = atoi(i);
+        } else
+            Iso8859 = 0;
 
-	p = strstr(flags, "mac");
-	if (p) {
-	    i = strchr(p, '=');
-	    i++;
-	    Mac = atoi(i);
-	}
-	else Mac = 0;
+        p = strstr(flags, "mac");
+        if (p) {
+            i = strchr(p, '=');
+            i++;
+            Mac = atoi(i);
+        } else
+            Mac = 0;
 
-	p = strstr(flags, "subject_change");
-	if (p) {
-	    i = strchr(p, '=');
-	    i++;
-	    Subject_change = atoi(i);
-	}
-	else Subject_change = 1;
+        p = strstr(flags, "subject_change");
+        if (p) {
+            i = strchr(p, '=');
+            i++;
+            Subject_change = atoi(i);
+        } else
+            Subject_change = 1;
 
-	p = strstr(flags, "end_default");
-	if (p) {
-	    i = strchr(p, '=');
-	    i++;
-	    End_default = atoi(i);
-	}
-	else End_default = 0;
+        p = strstr(flags, "end_default");
+        if (p) {
+            i = strchr(p, '=');
+            i++;
+            End_default = atoi(i);
+        } else
+            End_default = 0;
 
-	p = strstr(flags, "space");
-	if (p) {
-	    i = strchr(p, '=');
-	    i++;
-	    Space = atoi(i);
-	}
-	else Space = 0;
+        p = strstr(flags, "space");
+        if (p) {
+            i = strchr(p, '=');
+            i++;
+            Space = atoi(i);
+        } else
+            Space = 0;
 
-	p = strstr(flags, "copy");
-	if (p) {
-	    i = strchr(p, '=');
-	    i++;
-	    Copy = atoi(i);
-	}
-	else Copy = 1;
+        p = strstr(flags, "copy");
+        if (p) {
+            i = strchr(p, '=');
+            i++;
+            Copy = atoi(i);
+        } else
+            Copy = 1;
 
-	p = strstr(flags, "author");
-	if (p) {
-	    i = strchr(p, '=');
-	    i++;
-	    Author = atoi(i);
-	}
-	else Author = 0;
+        p = strstr(flags, "author");
+        if (p) {
+            i = strchr(p, '=');
+            i++;
+            Author = atoi(i);
+        } else
+            Author = 0;
 
-	p = strstr(flags, "date");
-	if (p) {
-	    i = strchr(p, '=');
-	    i++;
-	    Date = atoi(i);
-	}
-	else Date = 0;
+        p = strstr(flags, "date");
+        if (p) {
+            i = strchr(p, '=');
+            i++;
+            Date = atoi(i);
+        } else
+            Date = 0;
 
-	p = strstr(flags, "beep");
-	if (p) {
-	    i = strchr(p, '=');
-	    i++;
-	    Beep = atoi(i);
-	}
-	else Beep = 1;
+        p = strstr(flags, "beep");
+        if (p) {
+            i = strchr(p, '=');
+            i++;
+            Beep = atoi(i);
+        } else
+            Beep = 1;
 
-	p = strstr(flags, "clear");
-	if (p) {
-	    i = strchr(p, '=');
-	    i++;
-	    Clear = atoi(i);
-	}
-	else Clear = 0;
+        p = strstr(flags, "clear");
+        if (p) {
+            i = strchr(p, '=');
+            i++;
+            Clear = atoi(i);
+        } else
+            Clear = 0;
 
-	p = strstr(flags, "header");
-	if (p) {
-	    i = strchr(p, '=');
-	    i++;
-	    Header = atoi(i);
-	}
-	else Header = 1;
+        p = strstr(flags, "header");
+        if (p) {
+            i = strchr(p, '=');
+            i++;
+            Header = atoi(i);
+        } else
+            Header = 1;
 
-	p = strstr(flags, "presbeep");
-	if (p) {
-	    i = strchr(p, '=');
-	    i++;
-	    Presbeep = atoi(i);
-	}
-	else Presbeep = 0;
+        p = strstr(flags, "presbeep");
+        if (p) {
+            i = strchr(p, '=');
+            i++;
+            Presbeep = atoi(i);
+        } else
+            Presbeep = 0;
 
-	p = strstr(flags, "strip");
-	if (p) {
-	    i = strchr(p, '=');
-	    i++;
-	    Special = atoi(i);
-	}
-	else Special = 0;
+        p = strstr(flags, "strip");
+        if (p) {
+            i = strchr(p, '=');
+            i++;
+            Special = atoi(i);
+        } else
+            Special = 0;
 
-	p = strstr(flags, "oldwho");
-	if (p) {
-	    i = strchr(p, '=');
-	    i++;
-	    Old_who = atoi(i);
-	}
-	else Old_who = 0;
-    }
-    else {
-	Shout = 1;
-	Say = 1;
-	Present = 1;
-	Ibm = 0;
-	Iso8859 = 0;
-	Mac = 0;
-	Subject_change = 1;
-	End_default = 0;
-	Space = 0;
-	Copy = 1;
-	Author = 0;
-	Date = 0;
-	Beep = 1;
-	Clear = 0;
-	Header = 1;
-	Special = 0;
-	Presbeep = 0;
+        p = strstr(flags, "oldwho");
+        if (p) {
+            i = strchr(p, '=');
+            i++;
+            Old_who = atoi(i);
+        } else
+            Old_who = 0;
+    } else {
+        Shout = 1;
+        Say = 1;
+        Present = 1;
+        Ibm = 0;
+        Iso8859 = 0;
+        Mac = 0;
+        Subject_change = 1;
+        End_default = 0;
+        Space = 0;
+        Copy = 1;
+        Author = 0;
+        Date = 0;
+        Beep = 1;
+        Clear = 0;
+        Header = 1;
+        Special = 0;
+        Presbeep = 0;
         Old_who = 0;
     }
 }
@@ -212,15 +211,15 @@ set_flags (char *flags)
  */
 
 int
-check_flag (char *flags, char *flag)
+check_flag(char *flags, char *flag)
 {
     char *p, *i;
 
     p = strstr(flags, flag);
     if (p) {
-	i = strchr(p, '=');
-	i++;
-	return atoi(i);
+        i = strchr(p, '=');
+        i++;
+        return atoi(i);
     }
     return -1;
 }
@@ -232,7 +231,7 @@ check_flag (char *flags, char *flag)
  */
 
 int
-turn_flag (int mode, char *flag)
+turn_flag(int mode, char *flag)
 {
     int i;
     LINE flags[18], outline, tmpline;
@@ -259,134 +258,95 @@ turn_flag (int mode, char *flag)
     strcpy(flags[17], MSG_FLAG17);
 
     if (!flag || (*flag == '\0')) {
-	output("\n%s\n\n", MSG_NOFLAG);
-	return 0;
+        output("\n%s\n\n", MSG_NOFLAG);
+        return 0;
     }
     down_string(flag);
     i = strlen(flag);
     if ((strstr(flags[0], flag) == flags[0]) && (i >= MSG_FLAG0N)) {
-	if (mode && (Iso8859 || Mac)) {
-	    if (Iso8859) {
-		output("\n%s\n\n", MSG_ISOWARN);
-		return 0;
-	    }
-	    else if (Mac) {
-		output("\n%s\n\n", MSG_MACWARN);
-		return 0;
-	    }
-	}
-	Ibm = mode;
-	strcpy(outline, MSG_FLAG0F);
-    }
-
-    else if ((strstr(flags[1], flag) == flags[1]) && (i >= MSG_FLAG1N)) {
-	if (mode && (Ibm || Mac)) {
-	    if (Ibm) {
-		output("\n%s\n\n", MSG_PCWARN);
-		return 0;
-	    }
-	    else if (Mac) {
-		output("\n%s\n\n", MSG_MACWARN);
-		return 0;
-	    }
-	}
-	Iso8859 = mode;
-	strcpy(outline, MSG_FLAG1F);
-    }
-
-    else if ((strstr(flags[2], flag) == flags[2]) && (i >= MSG_FLAG2N)) {
-	if (mode && (Ibm || Iso8859)) {
-	    if (Ibm) {
-		output("\n%s\n\n", MSG_PCWARN);
-		return 0;
-	    }
-	    else if (Iso8859) {
-		output("\n%s\n\n", MSG_ISOWARN);
-		return 0;
-	    }
-	}
-	Mac = mode;
-	strcpy(outline, MSG_FLAG2F);
-    }
-
-    else if ((strstr(flags[3], flag) == flags[3]) && (i > MSG_FLAG3N)) {
-	Present = mode;
-	strcpy(outline, MSG_FLAG3F);
-    }
-
-    else if ((strstr(flags[4], flag) == flags[4]) && (i >= MSG_FLAG4N)) {
-	Shout = mode;
-	strcpy(outline, MSG_FLAG4F);
-    }
-
-    else if ((strstr(flags[5], flag) == flags[5]) && (i >= MSG_FLAG5N)) {
-	End_default = mode;
-	strcpy(outline, MSG_FLAG5F);
-    }
-
-    else if ((strstr(flags[6], flag) == flags[6]) && (i >= MSG_FLAG6N)) {
-	Say = mode;
-	strcpy(outline, MSG_FLAG6F);
-    }
-
-    else if ((strstr(flags[7], flag) == flags[7]) && (i >= MSG_FLAG7N)) {
-	Subject_change = mode;
-	strcpy(outline, MSG_FLAG7F);
-    }
-
-    else if ((strstr(flags[8], flag) == flags[8]) && (i >= MSG_FLAG8N)) {
-	Space = mode;
-	strcpy(outline, MSG_FLAG8F);
-    }
-
-    else if ((strstr(flags[9], flag) == flags[9]) && (i >= MSG_FLAG9N)) {
-	Copy = mode;
-	strcpy(outline, MSG_FLAG9F);
-    }
-
-    else if ((strstr(flags[10], flag) == flags[10]) && (i >= MSG_FLAG10N)) {
-	Author = mode;
-	strcpy(outline, MSG_FLAG10F);
-    }
-
-    else if ((strstr(flags[11], flag) == flags[11]) && (i >= MSG_FLAG11N)) {
-	Date = mode;
-	strcpy(outline, MSG_FLAG11F);
-    }
-
-    else if ((strstr(flags[12], flag) == flags[12]) && (i >= MSG_FLAG12N)) {
-	Beep = mode;
-	strcpy(outline, MSG_FLAG12F);
-    }
-
-    else if ((strstr(flags[13], flag) == flags[13]) && (i >= MSG_FLAG13N)) {
-	Clear = mode;
-	strcpy(outline, MSG_FLAG13F);
-    }
-
-    else if ((strstr(flags[14], flag) == flags[14]) && (i >= MSG_FLAG14N)) {
-	Header = mode;
-	strcpy(outline, MSG_FLAG14F);
-    }
-
-    else if ((strstr(flags[15], flag) == flags[15]) && (i >= MSG_FLAG15N)) {
-	Special = mode;
-	strcpy(outline, MSG_FLAG15F);
-    }
-
-    else if ((strstr(flags[16], flag) == flags[16]) && (i >= MSG_FLAG16N)) {
-	Presbeep = mode;
-	strcpy(outline, MSG_FLAG16F);
-    }
-
-    else if ((strstr(flags[17], flag) == flags[17]) && (i >= MSG_FLAG17N)) {
-	Old_who = mode;
-	strcpy(outline, MSG_FLAG17F);
-    }
-
-    else {
-	output("\n%s\n\n", MSG_BADFLAG);
-	return 0;
+        if (mode && (Iso8859 || Mac)) {
+            if (Iso8859) {
+                output("\n%s\n\n", MSG_ISOWARN);
+                return 0;
+            } else if (Mac) {
+                output("\n%s\n\n", MSG_MACWARN);
+                return 0;
+            }
+        }
+        Ibm = mode;
+        strcpy(outline, MSG_FLAG0F);
+    } else if ((strstr(flags[1], flag) == flags[1]) && (i >= MSG_FLAG1N)) {
+        if (mode && (Ibm || Mac)) {
+            if (Ibm) {
+                output("\n%s\n\n", MSG_PCWARN);
+                return 0;
+            } else if (Mac) {
+                output("\n%s\n\n", MSG_MACWARN);
+                return 0;
+            }
+        }
+        Iso8859 = mode;
+        strcpy(outline, MSG_FLAG1F);
+    } else if ((strstr(flags[2], flag) == flags[2]) && (i >= MSG_FLAG2N)) {
+        if (mode && (Ibm || Iso8859)) {
+            if (Ibm) {
+                output("\n%s\n\n", MSG_PCWARN);
+                return 0;
+            } else if (Iso8859) {
+                output("\n%s\n\n", MSG_ISOWARN);
+                return 0;
+            }
+        }
+        Mac = mode;
+        strcpy(outline, MSG_FLAG2F);
+    } else if ((strstr(flags[3], flag) == flags[3]) && (i > MSG_FLAG3N)) {
+        Present = mode;
+        strcpy(outline, MSG_FLAG3F);
+    } else if ((strstr(flags[4], flag) == flags[4]) && (i >= MSG_FLAG4N)) {
+        Shout = mode;
+        strcpy(outline, MSG_FLAG4F);
+    } else if ((strstr(flags[5], flag) == flags[5]) && (i >= MSG_FLAG5N)) {
+        End_default = mode;
+        strcpy(outline, MSG_FLAG5F);
+    } else if ((strstr(flags[6], flag) == flags[6]) && (i >= MSG_FLAG6N)) {
+        Say = mode;
+        strcpy(outline, MSG_FLAG6F);
+    } else if ((strstr(flags[7], flag) == flags[7]) && (i >= MSG_FLAG7N)) {
+        Subject_change = mode;
+        strcpy(outline, MSG_FLAG7F);
+    } else if ((strstr(flags[8], flag) == flags[8]) && (i >= MSG_FLAG8N)) {
+        Space = mode;
+        strcpy(outline, MSG_FLAG8F);
+    } else if ((strstr(flags[9], flag) == flags[9]) && (i >= MSG_FLAG9N)) {
+        Copy = mode;
+        strcpy(outline, MSG_FLAG9F);
+    } else if ((strstr(flags[10], flag) == flags[10]) && (i >= MSG_FLAG10N)) {
+        Author = mode;
+        strcpy(outline, MSG_FLAG10F);
+    } else if ((strstr(flags[11], flag) == flags[11]) && (i >= MSG_FLAG11N)) {
+        Date = mode;
+        strcpy(outline, MSG_FLAG11F);
+    } else if ((strstr(flags[12], flag) == flags[12]) && (i >= MSG_FLAG12N)) {
+        Beep = mode;
+        strcpy(outline, MSG_FLAG12F);
+    } else if ((strstr(flags[13], flag) == flags[13]) && (i >= MSG_FLAG13N)) {
+        Clear = mode;
+        strcpy(outline, MSG_FLAG13F);
+    } else if ((strstr(flags[14], flag) == flags[14]) && (i >= MSG_FLAG14N)) {
+        Header = mode;
+        strcpy(outline, MSG_FLAG14F);
+    } else if ((strstr(flags[15], flag) == flags[15]) && (i >= MSG_FLAG15N)) {
+        Special = mode;
+        strcpy(outline, MSG_FLAG15F);
+    } else if ((strstr(flags[16], flag) == flags[16]) && (i >= MSG_FLAG16N)) {
+        Presbeep = mode;
+        strcpy(outline, MSG_FLAG16F);
+    } else if ((strstr(flags[17], flag) == flags[17]) && (i >= MSG_FLAG17N)) {
+        Old_who = mode;
+        strcpy(outline, MSG_FLAG17F);
+    } else {
+        output("\n%s\n\n", MSG_BADFLAG);
+        return 0;
     }
 
     rc = read_sklaffrc(Uid);
@@ -431,10 +391,9 @@ turn_flag (int mode, char *flag)
     write_sklaffrc(Uid, rc);
     output("\n%s %s ", MSG_FLAG, outline);
     if (mode) {
-	output("%s\n\n", MSG_FLON);
-    }
-    else {
-	output("%s\n\n", MSG_FLOFF);
+        output("%s\n\n", MSG_FLON);
+    } else {
+        output("%s\n\n", MSG_FLOFF);
     }
     return 0;
 }

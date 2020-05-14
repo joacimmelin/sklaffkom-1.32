@@ -33,20 +33,21 @@
  * ret: pointer to timestring
  */
 
-static char weekdays[7][10] = { MSG_SUNDAY, MSG_MONDAY, MSG_TUESDAY,
-				MSG_WEDNESDAY, MSG_THURSDAY, MSG_FRIDAY,
-				MSG_SATURDAY };
+static char weekdays[7][10] = {MSG_SUNDAY, MSG_MONDAY, MSG_TUESDAY,
+    MSG_WEDNESDAY, MSG_THURSDAY, MSG_FRIDAY,
+MSG_SATURDAY};
 
-static char months[12][4] = { MSG_JAN, MSG_FEB, MSG_MAR, MSG_APR, MSG_MAY,
-			      MSG_JUN, MSG_JUL, MSG_AUG, MSG_SEP, MSG_OCT,
-			      MSG_NOV, MSG_DEC };
+static char months[12][4] = {MSG_JAN, MSG_FEB, MSG_MAR, MSG_APR, MSG_MAY,
+    MSG_JUN, MSG_JUL, MSG_AUG, MSG_SEP, MSG_OCT,
+MSG_NOV, MSG_DEC};
 
-static char closedays[2][10] = { MSG_TODAY, MSG_YESTERDAY };
+static char closedays[2][10] = {MSG_TODAY, MSG_YESTERDAY};
 
-char *time_string(in_time, out_time, show_date)
-time_t in_time;
-char *out_time;
-int show_date;
+char *
+time_string(in_time, out_time, show_date)
+    time_t in_time;
+    char *out_time;
+    int show_date;
 {
     struct tm ts, ts_now;
     time_t now;
@@ -55,29 +56,30 @@ int show_date;
 
     memcpy(&ts, localtime(&in_time), sizeof(struct tm));
     if (show_date) {
-	sprintf(out_time, "%d %s %d %.2d:%.2d", ts.tm_mday,
-		months[ts.tm_mon], 1900 + ts.tm_year, ts.tm_hour, ts.tm_min);
-    }
-    else {
-	time(&now);
-	memcpy(&ts_now, localtime(&now), sizeof(struct tm));
-	out_day = ts_now.tm_yday - ts.tm_yday;
-	comp_year = 1900 + ts_now.tm_year;
-	if (out_day < 0) {
-	    if (ts.tm_year % 4) out_day += 365;
-	    else out_day += 366;
-	    comp_year--;
-	}
-	if ((out_day < 7) && (comp_year == 1900 + ts.tm_year)) {
-	    if (out_day < 2) strcpy(day_string, closedays[out_day]);
-	    else strcpy(day_string, weekdays[ts.tm_wday]);
-	    sprintf(out_time, "%s %.2d:%.2d", day_string, ts.tm_hour, ts.tm_min);
-	} else sprintf(out_time, "%d %s %d %.2d:%.2d", ts.tm_mday,
-		       months[ts.tm_mon], 1900 +  ts.tm_year, ts.tm_hour,
-		       ts.tm_min);
+        sprintf(out_time, "%d %s %d %.2d:%.2d", ts.tm_mday,
+            months[ts.tm_mon], 1900 + ts.tm_year, ts.tm_hour, ts.tm_min);
+    } else {
+        time(&now);
+        memcpy(&ts_now, localtime(&now), sizeof(struct tm));
+        out_day = ts_now.tm_yday - ts.tm_yday;
+        comp_year = 1900 + ts_now.tm_year;
+        if (out_day < 0) {
+            if (ts.tm_year % 4)
+                out_day += 365;
+            else
+                out_day += 366;
+            comp_year--;
+        }
+        if ((out_day < 7) && (comp_year == 1900 + ts.tm_year)) {
+            if (out_day < 2)
+                strcpy(day_string, closedays[out_day]);
+            else
+                strcpy(day_string, weekdays[ts.tm_wday]);
+            sprintf(out_time, "%s %.2d:%.2d", day_string, ts.tm_hour, ts.tm_min);
+        } else
+            sprintf(out_time, "%d %s %d %.2d:%.2d", ts.tm_mday,
+                months[ts.tm_mon], 1900 + ts.tm_year, ts.tm_hour,
+                ts.tm_min);
     }
     return out_time;
 }
-
-
-

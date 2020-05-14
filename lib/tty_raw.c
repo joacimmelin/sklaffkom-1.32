@@ -34,7 +34,7 @@
  */
 
 void
-tty_raw (void)
+tty_raw(void)
 {
 
     struct termios temp_mode;
@@ -43,10 +43,10 @@ tty_raw (void)
     memcpy(&Tty_mode, &temp_mode, sizeof(temp_mode));
     temp_mode.c_iflag = 0;
     temp_mode.c_oflag &= ~OPOST;
-    temp_mode.c_lflag &= ~(ISIG | ICANON | ECHO );
+    temp_mode.c_lflag &= ~(ISIG | ICANON | ECHO);
     temp_mode.c_cc[VMIN] = 1;
     temp_mode.c_cc[VTIME] = 0;
-    tcsetattr(0, TCSANOW,&temp_mode);
+    tcsetattr(0, TCSANOW, &temp_mode);
     Numlines = 24;
     Lines = 1;
 }

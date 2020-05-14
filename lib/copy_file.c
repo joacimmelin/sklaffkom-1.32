@@ -34,41 +34,34 @@
  */
 
 int
-copy_file (char *fil1, char *fil2)
+copy_file(char *fil1, char *fil2)
 {
-    char	*buf;
-    int	fd1, fd2;
+    char *buf;
+    int fd1, fd2;
 
     if ((fd1 = open_file(fil1, 0)) == -1) {
-	sys_error("copy_file", 1, "open_file");
-	return -1;
+        sys_error("copy_file", 1, "open_file");
+        return -1;
     }
-
     if ((buf = read_file(fd1)) == NULL) {
-	sys_error("copy_file", 2, "read_file");
-	return -1;
+        sys_error("copy_file", 2, "read_file");
+        return -1;
     }
-
     if ((fd2 = open_file(fil2, OPEN_CREATE | OPEN_QUIET)) == -1) {
-	sys_error("copy_file", 3, "open_file");
-	return -1;
+        sys_error("copy_file", 3, "open_file");
+        return -1;
     }
-
     if (write_file(fd2, buf) == -1) {
-	sys_error("copy_file", 4, "write_file");
-	return -1;
+        sys_error("copy_file", 4, "write_file");
+        return -1;
     }
-
     if (close_file(fd2) == -1) {
-	sys_error("copy_file", 5, "close_file");
-	return -1;
+        sys_error("copy_file", 5, "close_file");
+        return -1;
     }
-
     if (close_file(fd1) == -1) {
-	sys_error("copy_file", 6, "close_file");
-	return -1;
+        sys_error("copy_file", 6, "close_file");
+        return -1;
     }
-
     return 0;
 }
-

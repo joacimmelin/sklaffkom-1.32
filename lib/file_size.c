@@ -36,7 +36,7 @@
  */
 
 off_t
-file_size (int fildes)
+file_size(int fildes)
 {
     struct stat buf;
 

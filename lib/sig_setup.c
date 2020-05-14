@@ -34,7 +34,7 @@
  */
 
 void
-sig_setup (void)
+sig_setup(void)
 {
     signal(SIGHUP, logout);
     signal(SIGPIPE, logout);

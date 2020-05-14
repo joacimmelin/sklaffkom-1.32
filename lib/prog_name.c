@@ -46,51 +46,47 @@ prog_name(char *pname)
 
     if (*pname == '-') {
         pw = getpwuid(getuid());
-	strcpy(absname, pw->pw_shell);
-	return absname;
+        strcpy(absname, pw->pw_shell);
+        return absname;
     }
-
     getcwd(cwd, HUGE_LINE_LEN);
 
     if (*pname == '/') {
-	strcpy(absname, pname);
-	return absname;
+        strcpy(absname, pname);
+        return absname;
     }
-
     if (strchr(pname, '/')) {
-	strcpy(absname, cwd);
-	strcat(absname, "/");
-	strcat(absname, pname);
-	return absname;
+        strcpy(absname, cwd);
+        strcat(absname, "/");
+        strcat(absname, pname);
+        return absname;
     }
-
     path = getenv("PATH");
     strcpy(p, path);
     tmp = p;
     while (*tmp) {
-	p1 = strchr(tmp, ':');
-	if (!p1) {
-            while (*p1 != 0) p1++;
-	}
-	else {
-	    *p1 = '\0';
-	    p1++;
-	}
-	strcpy(absname, tmp);
-	strcat(absname, "/");
-	strcat(absname, pname);
-	if (file_exists(absname) != -1) {
-	    break;
-	}
-	tmp = p1;
+        p1 = strchr(tmp, ':');
+        if (!p1) {
+            while (*p1 != 0)
+                p1++;
+        } else {
+            *p1 = '\0';
+            p1++;
+        }
+        strcpy(absname, tmp);
+        strcat(absname, "/");
+        strcat(absname, pname);
+        if (file_exists(absname) != -1) {
+            break;
+        }
+        tmp = p1;
     }
 
     if (*absname != '/') {
-	strcpy(p, absname);
-	strcpy(absname, cwd);
-	strcat(absname, "/");
-	strcat(absname, p);
+        strcpy(p, absname);
+        strcpy(absname, cwd);
+        strcat(absname, "/");
+        strcat(absname, p);
     }
-
     return absname;
 }

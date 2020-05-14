@@ -34,7 +34,7 @@
  */
 
 void
-sig_reset (void)
+sig_reset(void)
 {
     signal(SIGHUP, SIG_DFL);
     signal(SIGPIPE, SIG_DFL);

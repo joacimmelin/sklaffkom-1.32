@@ -34,14 +34,15 @@
  */
 
 char *
-ltrim (char *s)
+ltrim(char *s)
 {
     char *ptr;
 
-    if (!s) return NULL;
+    if (!s)
+        return NULL;
     ptr = s;
     while (*ptr && (*ptr == 0x20)) {
-	ptr++;
+        ptr++;
     }
     strcpy(s, ptr);
     return s;
