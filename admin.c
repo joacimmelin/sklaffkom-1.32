@@ -111,7 +111,7 @@ display_welcome(void)
 
     make_activity_note();       /* Touches the activity file */
 
-    sprintf(name, "login initialized");
+    snprintf(name, sizeof(name), "login initialized");
     debuglog(name, 10);
 
     if (user_name(Uid, name) == NULL) {
@@ -211,7 +211,7 @@ display_welcome(void)
     }
     display_news();
 
-    sprintf(name, "display_welcome(): smta");
+    snprintf(name, sizeof(name), "display_welcome(): smta");
     debuglog(name, 20);
     send_msg_to_all(MSG_LOGIN, "");
 
@@ -332,7 +332,8 @@ out_onoff(int tmp)
 int
 grep(int conf, char *search)
 {
-    LONG_LINE dirname, cmdline, lineread, tsear, greparg;
+    LONG_LINE dirname, lineread, tsear, greparg;
+    char cmdline[512];
     LINE cwd;
     FILE *pipe;
     int found;
@@ -341,9 +342,9 @@ grep(int conf, char *search)
     lasttext = last_text(conf, Uid);
 
     if (conf) {
-        sprintf(dirname, "%s/%d", SKLAFF_DB, conf);
+        snprintf(dirname, sizeof(dirname), "%s/%d", SKLAFF_DB, conf);
     } else {
-        strcpy(dirname, Mbox);
+        strlcpy(dirname, Mbox, sizeof(dirname));
     }
     getcwd(cwd, LINE_LEN);
     found = 0;
@@ -366,9 +367,8 @@ grep(int conf, char *search)
     strcpy(greparg, "[1-9] [1-9][0-9]");        /* Text 1-99 */
 
     while (found < 2 && curtext <= lasttext) {
-
-        sprintf(cmdline, "%s %s \'%s\' %s 2>/dev/null", SKLAFFGREP,
-            GREPOPT, tsear, greparg);
+        snprintf(cmdline, sizeof(cmdline), "%s %s \'%s\' %s 2>/dev/null",
+            SKLAFFGREP, GREPOPT, tsear, greparg);
 
         if ((pipe = (FILE *) popen(cmdline, "r")) == NULL) {
             output("%s\n\n", MSG_NOGREP);
@@ -391,7 +391,7 @@ grep(int conf, char *search)
         }
         curtext += 100;
         /* Text curtext - curtext+99 */
-        sprintf(greparg, "%ld[0-9][0-9]", (long) curtext / 100);
+        snprintf(greparg, sizeof(greparg), "%ld[0-9][0-9]", (long) curtext / 100);
     }
 
     chdir(cwd);
@@ -437,10 +437,10 @@ logout(int tmp)
         output("\n\n%s\n", MSG_TIMEOUT);
     }
     if (tmp != 0) {
-        sprintf(tmpdir, "forced logout w/ sig %d begun", tmp);
+        snprintf(tmpdir, sizeof(tmpdir), "forced logout w/ sig %d begun", tmp);
         debuglog(tmpdir, 5);
     } else {
-        sprintf(tmpdir, "controlled logout begun");
+        snprintf(tmpdir, sizeof(tmpdir), "controlled logout begun");
         debuglog(tmpdir, 10);
     }
 
@@ -623,7 +623,7 @@ debuglog(char *s, int level)
 {
     time_t now;
     FILE *fp;
-    char logname[255], entry[255], tstr[255];
+    char logname[255], entry[512], tstr[255];
 
     if (level < LOGLEVEL) {
         sprintf(logname, "%s/%d.%d.log", LOGDIR, Uid, getpid());
@@ -651,7 +651,8 @@ show_status(int num, int flag, int st_type)
 {
     int u_num = -1, c_num = -1, first = 0, fd;
     char *u_name, *buf, *oldbuf, *c_name;
-    static LINE tmp, home, cname, uname;
+    static LINE home, cname, uname;
+    static char tmp[512];
     struct SKLAFFRC *rc;
     struct CONF_ENTRY *ce;
     struct CONFS_ENTRY cse;
@@ -800,7 +801,7 @@ show_status(int num, int flag, int st_type)
 /* if (u_num != Uid) return 0;*/
             output("%s\n", MSG_SUBTO);
             user_dir(u_num, home);
-            sprintf(tmp, "%s%s", home, CONFS_FILE);
+            snprintf(tmp, sizeof(tmp), "%s%s", home, CONFS_FILE);
             if ((fd = open_file(tmp, 0)) == -1) {
                 sys_error("cmd_show_status", 1, "open_file");
                 return -1;

@@ -48,7 +48,7 @@ add_to_mlist(struct MSG_ENTRY * me)
 void
 list_mlist(int max, int type_filter)
 {
-    int count, i, r, l;
+    int count, i, r = 0, l;
     struct MSG_LIST *current;
     struct MSG_ENTRY **me;
     LINE name;

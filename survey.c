@@ -309,7 +309,7 @@ show_survey_result(survey, conf, tbstart, n_quest)
     int fd, i, j, k, n, quest, qtype, nalt, n2;
     LINE confdir, resfile, infofile, utlinje, uttmp;
     char *buf, *t, *utbuf, *buf2;
-    struct RESSHOW *resbuf;
+    struct RESSHOW *resbuf = NULL;
     long *repbuf;
     double *repbufd;
     long totlen, repi;
@@ -806,7 +806,7 @@ input_survey_quest(lin, reply, qtype, flag)
     int qtype, flag;
 {
     char *s, *s2;
-    long n1, n2;
+    long n1 = 0, n2 = 0;
     int i = 0, j = 0, t, ret;
 
     ret = 0;

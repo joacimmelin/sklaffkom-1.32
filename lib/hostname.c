@@ -96,39 +96,38 @@ get_hostname(void)
 {
 #if defined(SOLARIS)
     struct utmpx ut;
-
 #else
     struct utmp ut;
-
 #endif
     int uf;
-    static char my_host[150];
+    static char my_host[256 + 1];
     char uhost[UT_HOSTSIZE + 1];
     LINE tmp;
     char *ptr;
     unsigned long l;
     struct hostent *hp;
 
-    ptr = (char *) ttyname(0);
+    ptr = ttyname(0);
     if (!ptr) {
         strcpy(my_host, "N/A");
         return my_host;
     }
-    strcpy(tmp, ptr);
+    strlcpy(tmp, ptr, sizeof(my_host));
     ptr = strchr(tmp + 1, '/');
     ptr++;
     uf = open(UTMP_REC, O_RDONLY);
     while (read(uf, &ut, sizeof(ut)) == sizeof(ut)) {
-        if (!strncmp(ptr, ut.ut_line, 8)) {
+        if (!strncmp(ptr, ut.ut_line, UT_LINESIZE)) {
             if (strstr(ptr, "pt") || strstr(ptr, "yp")) {
                 strncpy(uhost, ut.ut_host, UT_HOSTSIZE);
                 uhost[UT_HOSTSIZE] = 0;
                 l = inet_addr(uhost);
                 hp = gethostbyaddr((char *) &l, sizeof(l), AF_INET);
                 if (hp)
-                    strncpy(my_host, hp->h_name, 149);
+                    strncpy(my_host, hp->h_name, sizeof(my_host));
                 else
-                    strncpy(my_host, uhost, 149);
+                    strncpy(my_host, uhost, sizeof(my_host));
+                my_host[256] = 0;
             } else {
                 strncpy(my_host, ut.ut_line, UT_LINESIZE);
                 my_host[UT_LINESIZE] = 0;

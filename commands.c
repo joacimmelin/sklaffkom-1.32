@@ -41,8 +41,9 @@
 int
 cmd_sendbatch(char *args)
 {
-    LINE tmpdir, cwd, cmdline, dest, source, cname, answer;
-    LONG_LINE tmpline;
+    LINE tmpdir, cwd, cmdline, source, answer;
+    LONG_LINE dest, cname;
+    char tmpline[512];
     int fd, fd2;
     long num;
     char *oldbuf, *buf, *nbuf;
@@ -75,7 +76,7 @@ cmd_sendbatch(char *args)
     FILE *fp, *cof, *mep, *msf;
     struct stat stbuf;
     LINE package;
-    char sbuf[256], pdate[24], *ptr2, ch = 0;
+    char sbuf[256], pdate[256], *ptr2, ch = 0;
     int usrc, cnfc, ssc, c, l, usr_find, to_find, msg_count = 0, blocks;
     FILE *nep;
     char filler[1], msint[4];
@@ -118,26 +119,27 @@ cmd_sendbatch(char *args)
     output("\n%s", MSG_CRPACK);
     fflush(stdout);
 
-    sprintf(tmpdir, "/tmp/%d", getpid());
+    snprintf(tmpdir, sizeof(tmpdir), "/tmp/%d", getpid());
     mkdir(tmpdir, 0777);
     getcwd(cwd, LINE_LEN);
     chdir(tmpdir);
 
     /* copy userlist */
 
-    sprintf(dest, "%s/user", tmpdir);
+    snprintf(dest, sizeof(dest), "%s/user", tmpdir);
     copy_file(USER_FILE, dest);
 
     /* copy infofile */
 
-    sprintf(dest, "%s/info", tmpdir);
+    snprintf(dest, sizeof(dest), "%s/info", tmpdir);
     if ((fd = open_file(dest, OPEN_CREATE | OPEN_QUIET)) == -1) {
         set_avail(Uid, 0);
         return -1;
     }
     nbuf = (char *) malloc(100000);
     bzero(nbuf, 100000);
-    sprintf(nbuf, "%s\n%s\n%s\n%s\n%s\n", SKLAFF_ID, SKLAFF_LOC, SKLAFF_NUM,
+    snprintf(nbuf, 100000, "%s\n%s\n%s\n%s\n%s\n",
+        SKLAFF_ID, SKLAFF_LOC, SKLAFF_NUM,
         SKLAFF_SYSOP, user_name(Uid, cname));
     critical();
     if (write_file(fd, nbuf) == -1) {
@@ -168,7 +170,7 @@ cmd_sendbatch(char *args)
         set_avail(Uid, 0);
         return -1;
     }
-    sprintf(dest, "%s/conf", tmpdir);
+    snprintf(dest, sizeof(dest), "%s/conf", tmpdir);
     if ((fd2 = open_file(dest, OPEN_CREATE | OPEN_QUIET)) == -1) {
         set_avail(Uid, 0);
         return -1;
@@ -179,7 +181,7 @@ cmd_sendbatch(char *args)
     while ((buf = get_confs_entry(buf, &cse)) != NULL) {
         free_confs_entry(&cse);
         conf_name(cse.num, cname);
-        sprintf(tmpline, "%d:%s\n", cse.num, cname);
+        snprintf(tmpline, sizeof(tmpline), "%d:%s\n", cse.num, cname);
         strcat(nbuf, tmpline);
     }
 
@@ -203,7 +205,7 @@ cmd_sendbatch(char *args)
         if (next_text(cse.num)) {
             output(".");
             fflush(stdout);
-            sprintf(dest, "%s/%d", tmpdir, cse.num);
+            snprintf(dest, sizeof(dest), "%s/%d", tmpdir, cse.num);
             if ((fd = open_file(dest, OPEN_CREATE | OPEN_QUIET)) == -1) {
                 set_avail(Uid, 0);
                 return -1;
@@ -211,9 +213,9 @@ cmd_sendbatch(char *args)
             lseek(fd, 0L, 0);
             while ((num = next_text(cse.num)) != 0) {
                 if (cse.num > 0)
-                    sprintf(cname, "%s/%d/%ld", SKLAFF_DB, cse.num, num);
+                    snprintf(cname, sizeof(cname), "%s/%d/%ld", SKLAFF_DB, cse.num, num);
                 else
-                    sprintf(cname, "%s/%ld", Mbox, num);
+                    snprintf(cname, sizeof(cname), "%s/%ld", Mbox, num);
                 if ((fd2 = open_file(cname, 0)) != -1) {
                     if ((nbuf = read_file(fd2)) == NULL) {
                         set_avail(Uid, 0);
@@ -261,7 +263,7 @@ cmd_sendbatch(char *args)
 
     /* Test if QWK-file already exists */
 
-    sprintf(package, "%d", getpid());
+    snprintf(package, sizeof(package), "%d", getpid());
     strcpy(sbuf, package);
     strcat(sbuf, ".qwk");
     if ((fp = fopen(sbuf, "r")) != NULL) {
@@ -276,8 +278,9 @@ cmd_sendbatch(char *args)
         return -1;
     }
     tim = *localtime(&stbuf.st_mtime);  /* Need to set TZ? */
-    sprintf(pdate, "%.2d-%.2d-%.2d,%.2d:%.2d:%.2d", tim.tm_mon + 1, tim.tm_mday,
-        tim.tm_year + 1900, tim.tm_hour, tim.tm_min, tim.tm_sec);
+    snprintf(pdate, sizeof(pdate), "%.2d-%.2d-%.2d,%.2d:%.2d:%.2d",
+        tim.tm_mon + 1, tim.tm_mday, tim.tm_year + 1900,
+        tim.tm_hour, tim.tm_min, tim.tm_sec);
 
     /* Parse info file */
 
@@ -363,12 +366,12 @@ cmd_sendbatch(char *args)
     fprintf(mep, "%-128s", sbuf);
 
     for (c = 0; c < cnfc; c++) {
-        sprintf(sbuf, "%d", clst[c].cid);
+        snprintf(sbuf, sizeof(sbuf), "%d", clst[c].cid);
         if ((msf = fopen(sbuf, "rt")) != NULL) {
             if (clst[c].cid < 1000)
-                sprintf(sbuf, "%0.3d.ndx", clst[c].cid);
+                snprintf(sbuf, sizeof(sbuf), "%03d.ndx", clst[c].cid);
             else
-                sprintf(sbuf, "%0.4d.ndx", clst[c].cid);
+                snprintf(sbuf, sizeof(sbuf), "%04d.ndx", clst[c].cid);
             if ((nep = fopen(sbuf, "wt+")) == NULL) {
                 output("Can't create %s\n", sbuf);
                 set_avail(Uid, 0);
@@ -516,7 +519,7 @@ cmd_sendbatch(char *args)
     /* Temporary solution due to bug in TC 2.01 */
 
     for (c = 0; c < cnfc; c++) {
-        sprintf(sbuf, "%d\n%.13s\n", clst[c].cid, clst[c].name);
+        snprintf(sbuf, sizeof(sbuf), "%d\n%.13s\n", clst[c].cid, clst[c].name);
         fputs(sbuf, cof);
     }
 
@@ -546,18 +549,18 @@ cmd_sendbatch(char *args)
     unlink(CTL_FILE);
     unlink(MSG2_FILE);
     for (c = 0; c < cnfc; c++) {
-        sprintf(sbuf, "%d", clst[c].cid);
+        snprintf(sbuf, sizeof(sbuf), "%d", clst[c].cid);
         unlink(sbuf);
         if (clst[c].cid < 1000)
-            sprintf(sbuf, "%0.3d.ndx", clst[c].cid);
+            snprintf(sbuf, sizeof(sbuf), "%03d.ndx", clst[c].cid);
         else
-            sprintf(sbuf, "%0.4d.ndx", clst[c].cid);
+            snprintf(sbuf, sizeof(sbuf), "%04d.ndx", clst[c].cid);
         unlink(sbuf);
     }
 
     output("%s\n", MSG_FINPACK);
 
-    sprintf(cmdline, "%d.qwk", getpid());
+    snprintf(cmdline, sizeof(cmdline), "%d.qwk", getpid());
     if (!fork()) {
         sig_reset();
         execl(DOWNLOADPRGM, DOWNLOADPRGM, DLOPT1, DLOPT2, DLOPT3, cmdline, NULL);
@@ -565,7 +568,7 @@ cmd_sendbatch(char *args)
         wait(NULL);
     }
 
-    sprintf(cmdline, "%d.qwk", getpid());
+    snprintf(cmdline, sizeof(cmdline), "%d.qwk", getpid());
     unlink(cmdline);
     chdir(cwd);
     rmdir(tmpdir);
@@ -859,7 +862,7 @@ cmd_who(char *args)
             if (itime == 0)
                 strcpy(idle, "    ");
             else
-                sprintf(idle, "%4ld", itime);
+                snprintf(idle, sizeof(idle), "%4ld", itime);
             if (output("%-25s %-11s %4ld %s  %s\n",
                     namn,
                     time_string(ea.login_time, tid, 0),
@@ -902,7 +905,7 @@ cmd_who(char *args)
             if (itime < IDLE_LIMIT)
                 strcpy(idle, "    ");
             else {
-                sprintf(idle, "%4ld", itime);
+                snprintf(idle, sizeof(idle), "%4ld", itime);
                 nidle++;
             }
             if (output("%-25s %-11s %4ld %s  %s\n",
@@ -1139,11 +1142,11 @@ cmd_create_conf(char *args)
         if (close_file(fd) == -1) {
             return -1;
         }
-        sprintf(newname, "%s/%d", SKLAFF_DB, ce.num);
+        snprintf(newname, sizeof(newname), "%s/%d", SKLAFF_DB, ce.num);
         mkdir(newname, NEW_DIR_MODE);
-        sprintf(newname, "%s/%d", FILE_DB, ce.num);
+        snprintf(newname, sizeof(newname), "%s/%d", FILE_DB, ce.num);
         mkdir(newname, NEW_DIR_MODE);
-        sprintf(newname, "%s/%d", SKLAFF_DB, ce.num);
+        snprintf(newname, sizeof(newname), "%s/%d", SKLAFF_DB, ce.num);
         strcat(newname, CONFRC_FILE);
 
         if ((fd2 = open_file(newname, OPEN_CREATE | OPEN_QUIET)) == -1) {
@@ -1212,10 +1215,10 @@ cmd_subscribe(char *args)
                 free(buf);
                 first = first_text(conf, Uid);
                 if (first > 1) {
-                    sprintf(userstr, "%d:1-%ld\n", conf,
+                    snprintf(userstr, sizeof(userstr), "%d:1-%ld\n", conf,
                         (first - 1));
                 } else {
-                    sprintf(userstr, "%d:\n", conf);
+                    snprintf(userstr, sizeof(userstr), "%d:\n", conf);
                 }
                 strcat(nbuf, userstr);
                 critical();
@@ -1350,7 +1353,7 @@ cmd_add_rights(char *args)
             if (ce->creator == Uid) {
                 ul = get_confrc_struct(Current_conf);
                 saved = ul;
-                sprintf(confrcfile, "%s/%d%s", SKLAFF_DB,
+                snprintf(confrcfile, sizeof(confrcfile), "%s/%d%s", SKLAFF_DB,
                     Current_conf, CONFRC_FILE);
                 if ((fd = open_file(confrcfile, 0)) == -1)
                     return -1;
@@ -1362,13 +1365,13 @@ cmd_add_rights(char *args)
                         return -1;
                     bzero(nbuf, i);
                     if ((ce->type > 0) && (ce->type < 3)) {
-                        sprintf(newuid, "%d\n", unum);
+                        snprintf(newuid, sizeof(newuid), "%d\n", unum);
                         strcpy(nbuf, buf);
                         strcat(nbuf, newuid);
                     } else {
                         while (ul) {
                             if (ul->num != unum) {
-                                sprintf(newuid, "%d\n", ul->num);
+                                snprintf(newuid, sizeof(newuid), "%d\n", ul->num);
                                 strcat(nbuf, newuid);
                             }
                             ul = ul->next;
@@ -1422,7 +1425,7 @@ cmd_sub_rights(char *args)
                 if (ce->creator != unum) {
                     ul = get_confrc_struct(Current_conf);
                     saved = ul;
-                    sprintf(confrcfile, "%s/%d%s", SKLAFF_DB,
+                    snprintf(confrcfile, sizeof(confrcfile), "%s/%d%s", SKLAFF_DB,
                         Current_conf, CONFRC_FILE);
                     if ((fd = open_file(confrcfile, 0)) == -1)
                         return -1;
@@ -1438,13 +1441,13 @@ cmd_sub_rights(char *args)
                         if ((ce->type > 0) && (ce->type < 3)) {
                             while (ul) {
                                 if (ul->num != unum) {
-                                    sprintf(newuid, "%d\n", ul->num);
+                                    snprintf(newuid, sizeof(newuid), "%d\n", ul->num);
                                     strcat(nbuf, newuid);
                                 }
                                 ul = ul->next;
                             }
                         } else {
-                            sprintf(newuid, "%d\n", unum);
+                            snprintf(newuid, sizeof(newuid), "%d\n", unum);
                             strcpy(nbuf, buf);
                             strcat(nbuf, newuid);
                         }
@@ -1688,7 +1691,7 @@ cmd_goto_text(char *args)
     count = 0;
     clear_comment();
     textnum = parse_text(args);
-    sprintf(fname, "%s/%d/%ld", SKLAFF_DB, Current_conf, textnum);
+    snprintf(fname, sizeof(fname), "%s/%d/%ld", SKLAFF_DB, Current_conf, textnum);
     if (file_exists(fname) != -1) {
         while (textnum > 0) {
             count += mark_as_unread(textnum, Current_conf);
@@ -1738,7 +1741,7 @@ cmd_unread_tree(char *args)
         output("\n%s\n\n", MSG_ERRTNUM);
         return 0;
     }
-    sprintf(fn, "%s/%d/%ld", SKLAFF_DB, Current_conf, textnum);
+    snprintf(fn, sizeof(fn), "%s/%d/%ld", SKLAFF_DB, Current_conf, textnum);
     if (file_exists(fn) == -1) {
         output("\n%s\n\n", MSG_ERRTNUM);
         return 0;
@@ -1949,7 +1952,7 @@ cmd_mail(char *args)
             }
             output("%s\n\n", MSG_SAVED);
         } else {
-            sprintf(cmdline, "%s %s", MAILPRGM, mailrec);
+            snprintf(cmdline, sizeof(cmdline), "%s %s", MAILPRGM, mailrec);
             if ((pipe = (FILE *) popen(cmdline, "w")) == NULL) {
                 output("%s\n\n", MSG_NOMAIL);
                 return -1;
@@ -2018,7 +2021,7 @@ cmd_mail(char *args)
             }
             free(inbuf);
             pw = getpwuid(Uid);
-            sprintf(tmpstr, "<%s@%s>", pw->pw_name, MACHINE_NAME);
+            snprintf(tmpstr, sizeof(tmpstr), "<%s@%s>", pw->pw_name, MACHINE_NAME);
             fprintf(pipe, "%s%s\n%s\n%s\n%s\n%s%s\n%s", MSG_EMRETURN, tmpstr,
                 MSG_MIMETYPE, MSG_MIMECONT, MSG_MIMEENC, MSG_EMSUB,
                 th.subject, finbuf);
@@ -2081,7 +2084,7 @@ cmd_personal(char *args)
             output("\n%s\n\n", MSG_NOLASTTEXT);
         return 0;
     }
-    sprintf(fname, "%s/%d/%ld", SKLAFF_DB, Current_conf, textnum);
+    snprintf(fname, sizeof(fname), "%s/%d/%ld", SKLAFF_DB, Current_conf, textnum);
 
     if ((fd = open_file(fname, OPEN_QUIET)) == -1) {
         output("\n%s\n\n", MSG_NOTEXT);
@@ -2185,7 +2188,7 @@ cmd_personal(char *args)
             return -1;
         }
     } else {
-        sprintf(cmdline, "%s %s", MAILPRGM, mailrec);
+        snprintf(cmdline, sizeof(cmdline), "%s %s", MAILPRGM, mailrec);
         if ((pipe = (FILE *) popen(cmdline, "w")) == NULL) {
             output("%s\n\n", MSG_NOMAIL);
             return -1;
@@ -2239,7 +2242,7 @@ cmd_personal(char *args)
         }
         free(inbuf);
         pw = getpwuid(Uid);
-        sprintf(tmpstr, "<%s@%s>", pw->pw_name, MACHINE_NAME);
+        snprintf(tmpstr, sizeof(tmpstr), "<%s@%s>", pw->pw_name, MACHINE_NAME);
         fprintf(pipe, "%s%s\n%s\n%s\n%s\n%s%s\n%s", MSG_EMRETURN, tmpstr,
             MSG_MIMETYPE, MSG_MIMECONT, MSG_MIMEENC, MSG_EMSUB,
             th.subject, finbuf);
@@ -2309,10 +2312,10 @@ cmd_post_text(char *args)
         LONG_LINE tmp;
         struct passwd *pw = getpwuid(Uid);
 
-        sprintf(uname, "%s@%s (%s)", pw->pw_name, MACHINE_NAME,
+        snprintf(uname, sizeof(uname), "%s@%s (%s)", pw->pw_name, MACHINE_NAME,
             user_name(Uid, tmp));
         un = uname;
-        sprintf(group, "%s %s", MSG_NGROUP, conf_name(confid, tmp));
+        snprintf(group, sizeof(group), "%s %s", MSG_NGROUP, conf_name(confid, tmp));
         th.author = 0;
     }
 #endif
@@ -2348,7 +2351,7 @@ cmd_post_text(char *args)
         return 0;
     }
     if (un) {
-        sprintf(cmdline, "%s", NEWSPRGM);
+        snprintf(cmdline, sizeof(cmdline), "%s", NEWSPRGM);
         if ((pipe = (FILE *) popen(cmdline, "w")) == NULL) {
             output("%s\n\n", MSG_NOINEWS);
             return -1;
@@ -2399,8 +2402,8 @@ cmd_post_text(char *args)
 int
 cmd_comment(char *args)
 {
-    LINE fname, newline, cname, mr, cmdline, uname, refname, reference, tmpstr;
-    LONG_LINE group, tmp;
+    LINE fname, newline, mr, cmdline, uname, refname, reference, tmpstr;
+    LONG_LINE group, tmp, cname;
     char *buf, *oldbuf, *nbuf, *ptr2, *mailrec, *inbuf, *ptr3, *ptr4, sav;
     char *finbuf, *inptr, *bptr;
     int conf, fd, commentuid, allow, nc, *ptr, i, msize, right;
@@ -2433,10 +2436,10 @@ cmd_comment(char *args)
         return 0;
     }
     if (Current_conf > 0) {
-        sprintf(cname, "%s/%d/%ld", SKLAFF_DB, Current_conf, textnum);
+        snprintf(cname, sizeof(cname), "%s/%d/%ld", SKLAFF_DB, Current_conf, textnum);
         allow = 1;
     } else {
-        sprintf(cname, "%s/%ld", Mbox, textnum);
+        snprintf(cname, sizeof(cname), "%s/%ld", Mbox, textnum);
         allow = 0;
     }
 
@@ -2588,7 +2591,7 @@ cmd_comment(char *args)
             return -1;
         }
     } else if (!nc) {
-        sprintf(cmdline, "%s %s", MAILPRGM, mailrec);
+        snprintf(cmdline, sizeof(cmdline), "%s %s", MAILPRGM, mailrec);
         if ((pipe = (FILE *) popen(cmdline, "w")) == NULL) {
             output("%s\n\n", MSG_NOMAIL);
             return -1;
@@ -2640,7 +2643,7 @@ cmd_comment(char *args)
         }
         free(inbuf);
         pw = getpwuid(Uid);
-        sprintf(tmpstr, "<%s@%s>", pw->pw_name, MACHINE_NAME);
+        snprintf(tmpstr, sizeof(tmpstr), "<%s@%s>", pw->pw_name, MACHINE_NAME);
         fprintf(pipe, "%s%s\n%s\n%s\n%s\n%s%s\n%s", MSG_EMRETURN, tmpstr,
             MSG_MIMETYPE, MSG_MIMECONT, MSG_MIMEENC, MSG_EMSUB,
             th.subject, finbuf);
@@ -2652,7 +2655,7 @@ cmd_comment(char *args)
         output("%s\n\n", MSG_MAILED);
         return 0;
     } else {
-        sprintf(refname, "%s/%d/%ld", SKLAFF_DB, Current_conf, textnum);
+        snprintf(refname, sizeof(refname), "%s/%d/%ld", SKLAFF_DB, Current_conf, textnum);
         if ((fd = open_file(refname, 0)) == -1)
             return -1;
         if ((buf = read_file(fd)) == NULL)
@@ -2671,15 +2674,15 @@ cmd_comment(char *args)
             }
         }
         free(oldbuf);
-        sprintf(cmdline, "%s", NEWSPRGM);
+        snprintf(cmdline, sizeof(cmdline), "%s", NEWSPRGM);
         if ((pipe = (FILE *) popen(cmdline, "w")) == NULL) {
             output("%s\n\n", MSG_NOINEWS);
             return -1;
         }
         pw = getpwuid(Uid);
-        sprintf(uname, "%s@%s (%s)", pw->pw_name, MACHINE_NAME,
+        snprintf(uname, sizeof(uname), "%s@%s (%s)", pw->pw_name, MACHINE_NAME,
             user_name(Uid, tmp));
-        sprintf(group, "%s %s", MSG_NGROUP, conf_name(nc, tmp));
+        snprintf(group, sizeof(group), "%s %s", MSG_NGROUP, conf_name(nc, tmp));
         if ((fd = open_file(fname, 0)) == -1)
             return -1;
         if ((inbuf = read_file(fd)) == NULL)
@@ -2725,7 +2728,7 @@ cmd_comment(char *args)
         }
         bzero(nbuf, i);
 
-        sprintf(newline, "%ld:%d\n", savednum, Uid);
+        snprintf(newline, sizeof(newline), "%ld:%d\n", savednum, Uid);
         strcpy(nbuf, buf);
         strcat(nbuf, newline);
         free(buf);
@@ -3168,7 +3171,7 @@ cmd_mod_timeout(char *args)
         intime = atoi(subba);
         if (intime < 0)
             intime = 0;
-        sprintf(subba, "%d", intime);
+        snprintf(subba, sizeof(subba), "%d", intime);
         output("\n%s %d %s\n\n", MSG_TIMESET, intime, MSG_MINUTES);
         strcpy(rc->timeout, subba);
         if (rc->timeout[0] != '\0') {
@@ -3257,7 +3260,7 @@ cmd_mod_login(char *args)
 int
 cmd_delete_text(char *args)
 {
-    LINE fname;
+    LONG_LINE fname;
     int fd;
     char *buf, *oldbuf;
     struct TEXT_ENTRY te;
@@ -3270,9 +3273,9 @@ cmd_delete_text(char *args)
         return 0;
     }
     if (Current_conf > 0) {
-        sprintf(fname, "%s/%d/%ld", SKLAFF_DB, Current_conf, num);
+        snprintf(fname, sizeof(fname), "%s/%d/%ld", SKLAFF_DB, Current_conf, num);
     } else {
-        sprintf(fname, "%s/%ld", Mbox, num);
+        snprintf(fname, sizeof(fname), "%s/%ld", Mbox, num);
     }
 
     if ((fd = open_file(fname, OPEN_QUIET)) == -1) {
@@ -3313,7 +3316,7 @@ int
 cmd_unread_text(char *args)
 {
     long textnum;
-    LINE cname;
+    LONG_LINE cname;
 
     Change_prompt = 1;
     if (*args == '\0') {
@@ -3329,9 +3332,9 @@ cmd_unread_text(char *args)
     }
 
     if (Current_conf > 0) {
-        sprintf(cname, "%s/%d/%ld", SKLAFF_DB, Current_conf, textnum);
+        snprintf(cname, sizeof(cname), "%s/%d/%ld", SKLAFF_DB, Current_conf, textnum);
     } else {
-        sprintf(cname, "%s/%ld", Mbox, textnum);
+        snprintf(cname, sizeof(cname), "%s/%ld", Mbox, textnum);
     }
 
     if (file_exists(cname) == -1) {
@@ -3741,7 +3744,7 @@ cmd_delete_conf(char *args)
             close_file(fd);
             return -1;
         }
-        sprintf(newname, "%s %d (%s) (%s)", MSG_CONFCALL, c_num,
+        snprintf(newname, sizeof(newname), "%s %d (%s) (%s)", MSG_CONFCALL, c_num,
             ce.name, MSG_DELETED2);
         strncpy(ce.name, newname, (LINE_LEN - 1));
         ce.name[LINE_LEN - 1] = 0;
@@ -3759,7 +3762,7 @@ cmd_delete_conf(char *args)
         if (close_file(fd) == -1) {
             return -1;
         }
-        sprintf(newname, "%s/%d%s", SKLAFF_DB, ce.num, CONFRC_FILE);
+        snprintf(newname, sizeof(newname), "%s/%d%s", SKLAFF_DB, ce.num, CONFRC_FILE);
         if ((fd = open_file(newname, 0)) == -1)
             return -1;
         if ((buf = read_file(fd)) == NULL)
@@ -3900,7 +3903,8 @@ cmd_info(char *args)
 int
 cmd_long_help(char *args)
 {
-    static LINE tmp, fname;
+    static LINE tmp;
+    static LONG_LINE fname;
     char *tmp2;
     int (*fcn) (), i, fd;
     char *buf;
@@ -3916,7 +3920,7 @@ cmd_long_help(char *args)
                     } else {
                         strcpy(tmp, strchr(tmp2, '_') + 1);
                     }
-                    sprintf(fname, "%s/%s", HELP_DIR, tmp);
+                    snprintf(fname, sizeof(fname), "%s/%s", HELP_DIR, tmp);
                     if (file_exists(fname)) {
                         output("\n%s\n\n", MSG_NOHELP);
                     } else {
@@ -3974,7 +3978,6 @@ cmd_long_help(char *args)
 int
 cmd_change_passwd(char *args)
 {
-    struct passwd *p;
     sigset_t sigmask, oldsigmask;
 
     Change_prompt = 1;
@@ -3988,7 +3991,6 @@ cmd_change_passwd(char *args)
     sigaddset(&sigmask, SIGNAL_NEW_TEXT);
     sigaddset(&sigmask, SIGNAL_NEW_MSG);
     sigprocmask(SIG_BLOCK, &sigmask, &oldsigmask);
-    p = getpwuid(Uid);
     if (fork()) {
         (void) wait(NULL);
     } else {
@@ -4170,7 +4172,8 @@ cmd_licens(char *args)
 int
 cmd_upload(char *args)
 {
-    LINE cwd, filed;
+    LINE cwd;
+    LONG_LINE filed;
     int fd;
 
     Change_msg = 1;
@@ -4184,7 +4187,7 @@ cmd_upload(char *args)
     getcwd(cwd, LINE_LEN);
     signal(SIGNAL_NEW_TEXT, SIG_IGN);
     signal(SIGNAL_NEW_MSG, SIG_IGN);
-    sprintf(filed, "%s/%d", FILE_DB, Current_conf);
+    snprintf(filed, sizeof(filed), "%s/%d", FILE_DB, Current_conf);
     chdir(filed);
     if (fork()) {
         (void) wait(&fd);
@@ -4210,7 +4213,8 @@ cmd_upload(char *args)
 int
 cmd_download(char *args)
 {
-    LINE fname, cwd, filed;
+    LINE fname, cwd;
+    LONG_LINE filed;
     sigset_t sigmask, oldsigmask;
 
     Change_msg = 1;
@@ -4246,7 +4250,7 @@ cmd_download(char *args)
     signal(SIGNAL_NEW_TEXT, SIG_IGN);
     signal(SIGNAL_NEW_MSG, SIG_IGN);
     set_avail(Uid, 1);
-    sprintf(filed, "%s/%d", FILE_DB, Current_conf);
+    snprintf(filed, sizeof(filed), "%s/%d", FILE_DB, Current_conf);
     chdir(filed);
     if (!fork()) {
         sig_reset();
@@ -4274,7 +4278,7 @@ cmd_download(char *args)
 int
 cmd_list_files(char *args)
 {
-    LINE fn;
+    LONG_LINE fn;
     struct FILE_ENTRY fe;
     char *buf, *oldbuf;
     struct stat fs;
@@ -4304,7 +4308,7 @@ cmd_list_files(char *args)
     while (buf != NULL) {
         buf = get_file_entry(buf, &fe);
         if (buf) {
-            sprintf(fn, "%s/%d/%s", FILE_DB, Current_conf, fe.name);
+            snprintf(fn, sizeof(fn), "%s/%d/%s", FILE_DB, Current_conf, fe.name);
             if (stat(fn, &fs) == -1) {
                 fs.st_size = 0;
             }
@@ -4329,7 +4333,8 @@ cmd_list_files(char *args)
 int
 cmd_describe(char *args)
 {
-    LINE fn, fname;
+    LINE fname;
+    char fn[512];
     int fd, i;
     char *buf, *oldbuf, *nbuf, *ptr;
     struct FILE_ENTRY fe;
@@ -4355,12 +4360,12 @@ cmd_describe(char *args)
         output("%s\n\n", MSG_BADFNAME);
         return 0;
     }
-    sprintf(fn, "%s/%d/%s", FILE_DB, Current_conf, fname);
+    snprintf(fn, sizeof(fn), "%s/%d/%s", FILE_DB, Current_conf, fname);
     if (file_exists(fn) == -1) {
         output("%s\n\n", MSG_BADFILE);
         return 0;
     }
-    sprintf(fn, "%s/%d%s", FILE_DB, Current_conf, INDEX_FILE);
+    snprintf(fn, sizeof(fn), "%s/%d%s", FILE_DB, Current_conf, INDEX_FILE);
     if ((fd = open_file(fn, 0)) == -1) {
         return -1;
     }
@@ -4414,7 +4419,7 @@ cmd_describe(char *args)
     buf = ptr;
     *ptr = 0;
     strcpy(nbuf, oldbuf);
-    sprintf(fn, "%s%s\n", fname, fe.desc);
+    snprintf(fn, sizeof(fn), "%s%s\n", fname, fe.desc);
     strcat(nbuf, fn);
     buf++;
     ptr = strchr(buf, '\n');
@@ -4437,7 +4442,8 @@ cmd_describe(char *args)
 int
 cmd_unlink(char *args)
 {
-    LINE fn, fname;
+    LINE fname;
+    char fn[512];
 
     if (!Current_conf) {
         output("\n%s\n\n", MSG_NOTINMBOX);
@@ -4461,7 +4467,7 @@ cmd_unlink(char *args)
         output("%s\n\n", MSG_BADFNAME);
         return 0;
     }
-    sprintf(fn, "%s/%d/%s", FILE_DB, Current_conf, fname);
+    snprintf(fn, sizeof(fn), "%s/%d/%s", FILE_DB, Current_conf, fname);
     if (file_exists(fn) == -1) {
         output("%s\n\n", MSG_BADFILE);
         return 0;
@@ -4777,7 +4783,7 @@ cmd_readall(char *args)
 int
 cmd_readsome(char *args)
 {
-    int oldlines, conf;
+    int oldlines;
     long textnum, counter;
 
     if (args && *args) {
@@ -4790,7 +4796,6 @@ cmd_readsome(char *args)
     oldlines = Numlines;
     Numlines = 0;
     counter = 0;
-    conf = 0;
     while (1) {
         textnum = pop_comment();
         if (textnum == -1)
@@ -4890,9 +4895,9 @@ cmd_unreadsub(char *args)
     last = last_text(Current_conf, Uid);
     while (last > first) {
         if (Current_conf > 0)
-            sprintf(cname, "%s/%d/%ld", SKLAFF_DB, Current_conf, last);
+            snprintf(cname, sizeof(cname), "%s/%d/%ld", SKLAFF_DB, Current_conf, last);
         else
-            sprintf(cname, "%s/%ld", Mbox, last);
+            snprintf(cname, sizeof(cname), "%s/%ld", Mbox, last);
         if (file_exists(cname) != -1) {
             if ((fd = open_file(cname, 0)) != -1) {
                 if ((buf = read_file(fd)) == NULL)
@@ -4957,9 +4962,9 @@ cmd_jumpsub(char *args)
     start = NULL;
     while ((num = next_text(Current_conf)) != 0) {
         if (Current_conf > 0)
-            sprintf(cname, "%s/%d/%ld", SKLAFF_DB, Current_conf, num);
+            snprintf(cname, sizeof(cname), "%s/%d/%ld", SKLAFF_DB, Current_conf, num);
         else
-            sprintf(cname, "%s/%ld", Mbox, num);
+            snprintf(cname, sizeof(cname), "%s/%ld", Mbox, num);
         if (file_exists(cname) != -1) {
             if ((fd = open_file(cname, 0)) != -1) {
                 if ((buf = read_file(fd)) == NULL)
@@ -5047,9 +5052,9 @@ cmd_jumpuser(char *args)
     start = NULL;
     while ((num = next_text(Current_conf)) != 0) {
         if (Current_conf > 0)
-            sprintf(cname, "%s/%d/%ld", SKLAFF_DB, Current_conf, num);
+            snprintf(cname, sizeof(cname), "%s/%d/%ld", SKLAFF_DB, Current_conf, num);
         else
-            sprintf(cname, "%s/%ld", Mbox, num);
+            snprintf(cname, sizeof(cname), "%s/%ld", Mbox, num);
         if (file_exists(cname) != -1) {
             if ((fd = open_file(cname, 0)) != -1) {
                 if ((buf = read_file(fd)) == NULL)
@@ -5382,7 +5387,7 @@ cmd_post_survey(char *args)
          * Exact format differs between platforms. */
 
 #ifdef SOLARIS
-        sprintf(cmdline, "%s '%s %d %ld' | %s -t %4d%02d%02d%02d%02d 2>/dev/null",
+        snprintf(cmdline, sizeof(cmdline), "%s '%s %d %ld' | %s -t %4d%02d%02d%02d%02d 2>/dev/null",
             SKLAFFECHO, SURVREPORT, confid, textnum,
             SKLAFFAT,
             reporttime.tm_year + 1900,
@@ -5392,7 +5397,7 @@ cmd_post_survey(char *args)
             reporttime.tm_min);
 #endif
 #ifdef LINUX
-        sprintf(cmdline, "%s '%s %d %ld' | %s %02d%02d%02d %02d%02d 2>/dev/null",
+        snprintf(cmdline, sizeof(cmdline), "%s '%s %d %ld' | %s %02d%02d%02d %02d%02d 2>/dev/null",
             SKLAFFECHO, SURVREPORT, confid, textnum,
             SKLAFFAT,
             reporttime.tm_mday,
@@ -5402,8 +5407,7 @@ cmd_post_survey(char *args)
             reporttime.tm_mon + 1);
 #endif
 #ifdef FREEBSD
-        sprintf(cmdline, "%s '%s %d %ld' | %s %02d%02d %02d%02d%02d 2>/dev/null",
-
+        snprintf(cmdline, sizeof(cmdline), "%s '%s %d %ld' | %s %02d%02d %02d%02d%02d 2>/dev/null",
             SKLAFFECHO, SURVREPORT, confid, textnum,
             SKLAFFAT,
             reporttime.tm_hour,

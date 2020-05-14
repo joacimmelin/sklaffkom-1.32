@@ -326,7 +326,6 @@ set_avail(uid, value)
 {
     char *oldbuf, *buf, *nbuf;
     struct ACTIVE_ENTRY ae;
-    int found;
 
     critical();                 /* I'd say even here! /OR 98-07-20 */
 
@@ -340,10 +339,8 @@ set_avail(uid, value)
     }
     oldbuf = buf;
 
-    found = 0;
     while ((buf = get_active_entry(buf, &ae))) {
         if (ae.user == uid) {
-            found = 1;
             break;
         }
     }
@@ -376,7 +373,6 @@ set_from(uid, value)
 {
     char *oldbuf, *buf, *nbuf;
     struct ACTIVE_ENTRY ae;
-    int found;
 
     critical();                 /* I'd think it's even here! /OR 98-07-20 */
 
@@ -390,10 +386,8 @@ set_from(uid, value)
     }
     oldbuf = buf;
 
-    found = 0;
     while ((buf = get_active_entry(buf, &ae))) {
         if (ae.user == uid) {
-            found = 1;
             break;
         }
     }
@@ -674,9 +668,9 @@ add_active()
 int
 remove_active()
 {
+    char *buf, *nbuf, *tmpbuf, *oldbuf;
     int found;
     struct ACTIVE_ENTRY ae;
-    char *buf, *nbuf, *tmpbuf, *oldbuf;
 
     critical();                 /* See comment above in add_active() /OR
                                  * 98-07-20 */

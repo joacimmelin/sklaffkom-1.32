@@ -165,13 +165,13 @@ get_confrc_struct(int num)
 {
     int fd;
     char *buf, *oldbuf;
-    LINE file_name;
+    LONG_LINE file_name;
     struct USER_LIST *ul;
 
     if (num <= 0) {
         return NULL;
     }
-    sprintf(file_name, "%s/%d%s", SKLAFF_DB, num, CONFRC_FILE);
+    snprintf(file_name, sizeof(file_name), "%s/%d%s", SKLAFF_DB, num, CONFRC_FILE);
     if ((fd = open_file(file_name, 0)) == -1) {
         sys_error("get_confrc_struct", 1, "open_file");
         return NULL;
@@ -373,7 +373,7 @@ replace_conf(struct CONF_ENTRY * ce, char *buf)
     char *tbuf, *nbuf, *obuf;
     int i;
     LONG_LINE newline;
-    struct CONF_ENTRY tce;                       /* Temporary confs-entry */
+    struct CONF_ENTRY tce = {0};               /* Temporary confs-entry */
 
     obuf = buf;
 
@@ -390,7 +390,6 @@ replace_conf(struct CONF_ENTRY * ce, char *buf)
     }
 
     if (ce->num == tce.num) {
-
         tbuf = buf;
 
         if (tbuf > obuf)
@@ -784,9 +783,9 @@ int
 more_conf(void)
 {
     int fd, fd2, saveconf, i, flag, confnum;
-    long text, first, high, *confsiz;
+    long text, first = 0, high, *confsiz;
     char *buf, *oldbuf, *buf2, *oldbuf2, *nbuf, *tmpbuf, saved;
-    LONG_LINE fname;
+    char fname[512];
     struct CONFS_ENTRY cse;
     struct CONF_ENTRY ce, mbox;
 
@@ -931,7 +930,7 @@ more_conf(void)
                         *tmpbuf = 0;
                         strcpy(nbuf, oldbuf2);
                         *tmpbuf = saved;
-                        sprintf(fname, "%d:1-%ld\n", cse.num, (first - 1L));
+                        snprintf(fname, sizeof(fname), "%d:1-%ld\n", cse.num, (first - 1L));
                         strcat(nbuf, fname);
                         strcat(nbuf, buf2);
                         strcpy(fname, Home);
@@ -1162,7 +1161,8 @@ last_text(int conf, int uid)
 long
 first_text(int conf, int uid)
 {
-    LINE fname, fhome;
+    LONG_LINE fname;
+    LINE fhome;
     long first, last, ptr;
 
     if (!conf)
@@ -1173,28 +1173,28 @@ first_text(int conf, int uid)
     while (last > first) {
         ptr = (first + last) / 2L;
         if (conf) {
-            sprintf(fname, "%s/%d/%ld", SKLAFF_DB, conf, ptr);
+            snprintf(fname, sizeof(fname), "%s/%d/%ld", SKLAFF_DB, conf, ptr);
         } else {
-            sprintf(fname, "%s/%ld", fhome, ptr);
+            snprintf(fname, sizeof(fname), "%s/%ld", fhome, ptr);
         }
         if (file_exists(fname) == -1) {
             if (conf) {
-                sprintf(fname, "%s/%d/%ld", SKLAFF_DB, conf, (ptr - 1L));
+                snprintf(fname, sizeof(fname), "%s/%d/%ld", SKLAFF_DB, conf, (ptr - 1L));
             } else {
-                sprintf(fname, "%s/%ld", fhome, (ptr - 1L));
+                snprintf(fname, sizeof(fname), "%s/%ld", fhome, (ptr - 1L));
             }
             if (file_exists(fname) == -1) {
                 if (conf) {
-                    sprintf(fname, "%s/%d/%ld", SKLAFF_DB, conf, (ptr - 2L));
+                    snprintf(fname, sizeof(fname), "%s/%d/%ld", SKLAFF_DB, conf, (ptr - 2L));
                 } else {
-                    sprintf(fname, "%s/%ld", fhome, (ptr - 2L));
+                    snprintf(fname, sizeof(fname), "%s/%ld", fhome, (ptr - 2L));
                 }
                 if (file_exists(fname) == -1) {
                     if (conf) {
-                        sprintf(fname, "%s/%d/%ld", SKLAFF_DB, conf,
+                        snprintf(fname, sizeof(fname), "%s/%d/%ld", SKLAFF_DB, conf,
                             (ptr - 3L));
                     } else {
-                        sprintf(fname, "%s/%ld", fhome, (ptr - 3L));
+                        snprintf(fname, sizeof(fname), "%s/%ld", fhome, (ptr - 3L));
                     }
                     if (file_exists(fname) == -1) {
                         first = (ptr + 1L);
