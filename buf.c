@@ -126,15 +126,10 @@ struct CONF_ENTRY *ce;
  * args: buffer (buf), pointer to PARSE_ENTRY (pe)
  * ret: next position in buffer or NULL
  */
-
-char *get_parse_entry (buf, pe)
-char *buf;
-struct PARSE_ENTRY *pe;
+char *get_parse_entry(char *buf, struct PARSE_ENTRY *pe)
 {
     int res;
-#ifdef BSD
     LINE tmpline;
-#endif
     
     bzero (pe->cmd, LINE_LEN);
     bzero (pe->func, LINE_LEN);
@@ -144,15 +139,9 @@ struct PARSE_ENTRY *pe;
 		      pe->func, pe->help);
 	rtrim (pe->cmd);
 	rtrim (pe->func);
-#ifdef BSD
-#ifndef LINUXELF
-#ifndef SOLARIS
 	strcpy(tmpline, pe->func);
 	strcpy(pe->func, "_");
 	strcat(pe->func, tmpline);
-#endif
-#endif
-#endif		
 	rtrim (pe->help);
 	if (res == -1)
 		return NULL;

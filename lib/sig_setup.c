@@ -47,8 +47,10 @@ void sig_setup()
     signal(SIGNAL_NEW_TEXT, baffo);
     signal(SIGNAL_NEW_MSG, newmsg);
     signal(SIGCONT, SIG_IGN);
-#ifdef BSD
+#ifdef SIGXCPU
     signal(SIGXCPU, logout);
+#endif
+#ifdef SIGXFSZ
     signal(SIGXFSZ, logout);
 #endif
 }

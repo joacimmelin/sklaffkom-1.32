@@ -5500,7 +5500,7 @@ char *args;
 	      reporttime.tm_hour,
 	      reporttime.tm_min);
 #endif
-#ifdef LINUXELF
+#ifdef LINUX
       sprintf(cmdline, "%s '%s %d %ld' | %s %02d%02d%02d %02d%02d 2>/dev/null", 
 	      SKLAFFECHO, SURVREPORT, confid, textnum,
 	      SKLAFFAT,

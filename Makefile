@@ -28,9 +28,6 @@ LIBS=-lsklaff -ltermcap -lm
 # uncomment for LINUXELF
 #LIBS=-lsklaff -ltermcap -lelf -lm
 
-# uncomment for MT_XINU
-#LIBS=-lsklaff -ltermcap lib/strstr.o lib/vsprintf.o -lm
-
 #
 # Change nothing below this line
 #

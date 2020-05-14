@@ -39,7 +39,7 @@ void tty_raw()
     struct termios temp_mode;
     
     tcgetattr(0, &temp_mode);
-    // memcpy(&Tty_mode, &temp_mode, sizeof(temp_mode));
+    memcpy(&Tty_mode, &temp_mode, sizeof(temp_mode));
     temp_mode.c_iflag = 0;
     temp_mode.c_oflag &= ~OPOST;
     temp_mode.c_lflag &= ~(ISIG | ICANON | ECHO );

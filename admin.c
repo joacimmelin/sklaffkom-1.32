@@ -436,11 +436,13 @@ int tmp;
     LONG_LINE tbuf;
     struct termios temp_mode;
     
-#ifdef BSD
+#ifdef SIGXCPU
     if (tmp == SIGXCPU) {
 	output("\n\n%s\n", MSG_CPUERR);
     }
-    
+#endif
+
+#ifdef SIGXFSZ
     if (tmp == SIGXFSZ) {
 	output("\n\n%s\n", MSG_DISKERR);
     }

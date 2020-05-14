@@ -48,8 +48,10 @@ void sig_reset()
     signal(SIGNAL_NEW_TEXT, SIG_DFL);
     signal(SIGNAL_NEW_MSG, SIG_DFL);
     signal(SIGCONT, SIG_DFL);
-#ifdef BSD
+#ifdef SIGXCPU
     signal(SIGXCPU, SIG_DFL);
+#endif
+#ifdef SIGXFSZ
     signal(SIGXFSZ, SIG_DFL);
 #endif
 }

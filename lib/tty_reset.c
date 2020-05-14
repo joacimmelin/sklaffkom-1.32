@@ -35,6 +35,5 @@
 
 void tty_reset()
 {
-    struct termios Tty_mode;
-    tcsetattr(0, TCSANOW,&Tty_mode);
+    tcsetattr(0, TCSANOW, &Tty_mode);
 }

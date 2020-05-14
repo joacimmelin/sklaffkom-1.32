@@ -41,18 +41,8 @@
 void unlock(fd)
 int fd;
 {
-#ifdef LINUXELF
-    lseek(fd, 0L, 0);
-    lockf(fd, F_ULOCK, 0L);
-#else
-#ifdef BSD
     lseek(fd, 0L, 0);
     if (flock(fd, LOCK_UN)) {
       output("\nFel %d vid flock(). Notera detta felmeddelande och meddela info@skom.se.\n", errno);
     }
-#else
-    lseek(fd, 0L, 0);
-    lockf(fd, F_ULOCK, 0L);
-#endif
-#endif
 }

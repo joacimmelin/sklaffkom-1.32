@@ -13,17 +13,13 @@ sort_util.o prog_name.o mbox_dir.o
 #
 # memory.o
 
-EXTOBJS=strstr.o vsprintf.o bzero.o
-
-all: libsklaff.a extobjs
+all: libsklaff.a
 
 $(OBJS): ../sklaff.h ../ext_globals.h ../struct.h ../lang.h
 
 libsklaff.a: $(OBJS)  ../sklaff.h ../ext_globals.h ../struct.h ../lang.h
 	ar cr libsklaff.a $(OBJS)
 	-ranlib libsklaff.a
-
-extobjs: $(EXTOBJS)
 
 clean:
 	-rm -f *.o \#* *~ core libsklaff.a

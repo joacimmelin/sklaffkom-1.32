@@ -26,18 +26,7 @@
  */
 
 #include <nlist.h>
-#ifdef BSDTERMIO
-#include <sys/ioctl.h>
-#ifdef MT_XINU
-#include <sgtty.h>
-#else
-#ifndef SOLARIS
-#include <sys/ttycom.h>
-#endif
-#endif
-#else
-#include <termio.h>
-#endif
+#include <termios.h>
 #include <signal.h>
 
 int Uid;				/* Uid of current user	*/
@@ -98,13 +87,8 @@ int Clear;				/* Clear screen		   	*/
 int Header;				/* email header		   	*/
 int Special;				/* Special use, e.g. GUI client */
 int Presbeep;				/* Beep at present msg        	*/
-#ifdef BSDTERMIO
-#else
-struct termio Tty_mode;
-#endif
-#ifdef BSD
+struct termios Tty_mode;
 sigset_t Oldmask;
-#endif
 
 int ActiveFD;                           /* Global file descriptor used
                                            for the active file.         */

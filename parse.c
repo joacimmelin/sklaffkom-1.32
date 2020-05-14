@@ -244,20 +244,12 @@ char	*program_name;
     }
     close_file(pf);
 
-#ifdef LINUXOLD
-    while ((buf = get_parse_entry(buf, &Par_ent[i])) != NULL) {
-	commands[i].n_un.n_name = Par_ent[i].func;
-	i++;
-    }
-    commands[i].n_un.n_name = NULL;
-#else
     while ((buf = get_parse_entry(buf, &Par_ent[i])) != NULL) {
 	commands[i].n_name = Par_ent[i].func;
 	i++;
     }
     commands[i].n_name = NULL;
-#endif
-    
+
     /* This strange line of code is a result of a */
     /* typedef/struct misfeature */
     

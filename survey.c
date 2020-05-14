@@ -37,21 +37,9 @@ struct RESSHOW {
 };
 
 
-#ifdef __STDC__
-
 /* static int resshowcompare(struct RESSHOW *, struct RESSHOW *); */
 static int parse_survey_line(char *);
 static int input_survey_quest(char *, char *, int, int);
-
-#else
-
-static int resshowcompare();
-static int parse_survey_line();
-static int input_survey_quest();
-static int repbufcompare();
-
-#endif
-
 
 int
 make_survey(reply, quest, ll, flag)

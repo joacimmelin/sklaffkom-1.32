@@ -27,20 +27,14 @@
 
 #include "sklaff.h"
 
-#ifdef __GNUC__
 static void skip_beyond_space (char *, int *);
-#else
-static void skip_beyond_space ();
-#endif
 
 /*
  * skip_beyond_rpar - skips beyond right parenthesis
  * args: input string (s), position in string (index)
  */
 
-static void skip_beyond_rpar (s, index)
-char *s;
-int *index;
+static void skip_beyond_rpar(char *s, int *index)
 {
     int i;
     i = *index;
@@ -60,9 +54,7 @@ int *index;
  * args: input string (s), position in string (index)
  */
 
-static void skip_beyond_space (s, index)
-char *s;
-int *index;
+static void skip_beyond_space(char *s, int *index)
 {
     int i;
     i = *index;
@@ -81,8 +73,7 @@ int *index;
  * ret: match (1), no match (0)
  */
 
-int cmp_strings (s1, s2)
-char *s1, *s2;
+int cmp_strings(char *s1, char *s2)
 {
     static LINE tmp1, tmp2;
     int p1 = 0, p2 = 0;

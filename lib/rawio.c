@@ -35,17 +35,11 @@
  * ret: failure (-1), ok (0, 1)
  */
 
-int write_file(fildes,buf)
-int fildes;
-char *buf; 
+int write_file(int fildes, char *buf)
 {
-    
-    char	*func_name = "write_file";
-    long	length;
-#ifdef SYSV
-    int	fs;
-    char	*nbuf;
-#endif   
+    char *func_name = "write_file";
+    long length;
+
     if (fildes == -1)
 	    return -1;
         
@@ -55,34 +49,18 @@ char *buf;
     }
     
     length = strlen(buf);
-#ifdef SYSV
-    fs = file_size(fildes);
-    if (length < fs) {
-	length++;
-	nbuf = (char *)malloc(fs);
-	bzero(nbuf, fs);
-	strcpy(nbuf, buf);
-	free(buf);
-	buf = nbuf;
-	length = fs;
-    }
-#endif	
     if (write(fildes,buf,length) == -1) {
 	sys_error(func_name,2,"write");
 	return -1;
     }
     
-#ifdef BSD
-    if (ftruncate(fildes,(off_t)strlen(buf)) == -1) {
+    if (ftruncate(fildes,(off_t)length) == -1) {
 	sys_error(func_name,3,"ftruncate");
 	return 1;
     }
     
     free(buf);
-#else
-    (void) free(buf);
-#endif
-    
+
     return 0;
 }
 

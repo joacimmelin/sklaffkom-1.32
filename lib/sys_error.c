@@ -29,25 +29,15 @@
 #include "ext_globals.h"
 #include <errno.h>
 
-#ifdef MT_XINU
-extern int errno;
-#endif
-
 /*
  * sys_error - display error message for failed system call
  * args: function called (calling_function), index (error_index),
  *       function caused (causing function)
  */
 
-#ifndef FREEBSD
-extern char *sys_errlist[];
-#endif
-
-void	sys_error(calling_function, error_index, causing_function)
-char	*calling_function, *causing_function;
-int	error_index;
+void sys_error(char *calling_function, int error_index, char *causing_function)
 {
-  LONG_LINE rok;
+    LONG_LINE rok;
 
     sprintf(rok, "%s[%s #%d] %s(): %s\n", Program_name,
 	   calling_function, error_index, causing_function,
