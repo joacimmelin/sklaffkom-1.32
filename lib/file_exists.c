@@ -25,8 +25,9 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "sklaff.h"
 #include <sys/stat.h>
+
+#include "sklaff.h"
 
 /*
  * file_exists - check if file exists
@@ -34,8 +35,8 @@
  * ret: not found (-1) or found (any other value)
  */
 
-int file_exists (fname)
-char *fname;
+int
+file_exists (char *fname)
 {
     struct stat buf;
 

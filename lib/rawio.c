@@ -70,8 +70,8 @@ int write_file(int fildes, char *buf)
  * ret: buffer containing file or NULL
  */
 
-char *read_file (fildes)
-int fildes;
+char *
+read_file (int fildes)
 {
     struct stat s;
     char *buf;
@@ -96,9 +96,8 @@ int fildes;
  * TEST TEST TEST TEST
  */
 
-int open_file(filename,flag)
-char	*filename;
-int	flag;
+int
+open_file (char *filename, int flag)
 {
     int	mode;
     int	tmp_filedesc;
@@ -181,8 +180,8 @@ int	flag;
  * ret: ok (0), failure (-1)
  */
 
-int close_file(filedesc)
-int	filedesc;
+int
+close_file (int filedesc)
 
 {
 
@@ -198,8 +197,8 @@ int	filedesc;
  * ret: ok (0), failure (-1)
  */
 
-int create_file(filename)
-char *filename;
+int
+create_file (char *filename)
 
 {
 

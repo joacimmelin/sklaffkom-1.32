@@ -33,8 +33,8 @@
  * ret: pointer to outstr
  */
 
-char *order_name(instr, outstr)
-char *instr, *outstr;
+char *
+order_name (char *instr, char *outstr)
 {
     char *ptr, *tmp;
 
@@ -66,8 +66,8 @@ char *instr, *outstr;
  * ret: pointer to outstr
  */
 
-char *reorder_name(instr, outstr)
-char *instr, *outstr;
+char *
+reorder_name (char *instr, char *outstr)
 {
     char *ptr, *tmp;
 
@@ -99,8 +99,8 @@ char *instr, *outstr;
  * ret: pointer to string
  */
 
-char *fake_string(string)
-char *string;
+char *
+fake_string (char *string)
 {
     char *ptr;
 
@@ -123,8 +123,8 @@ char *string;
  * ret: pointer to string
  */
 
-char *real_string(string)
-char *string;
+char *
+real_string (char *string)
 {
     char *ptr;
 

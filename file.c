@@ -25,17 +25,19 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <sys/wait.h>
+#include <fcntl.h>
+
 #include "sklaff.h"
 #include "ext_globals.h"
-#include <fcntl.h>
-#include <sys/wait.h>
 
 /*
  * rebuild_index_file - rebuild file index in current conference
  * ret: ok (0) or error (-1)
  */
 
-int rebuild_index_file()
+int
+rebuild_index_file (void)
 {
     LINE cwd, currfile, filed;
     LONG_LINE outrec, fn, fn2, fn3;
@@ -57,11 +59,7 @@ int rebuild_index_file()
 	return -1;
     }
 
-#ifndef GETCWD
-    getwd(cwd);
-#else
     getcwd(cwd, LINE_LEN);
-#endif
 
     sprintf(filed, "%s/%d", FILE_DB, Current_conf);
     chdir(filed);

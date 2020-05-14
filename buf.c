@@ -33,9 +33,8 @@
  * ret: next position in buffer or NULL
  */
 
-char *get_user_entry (buf, ue)
-char *buf;
-struct USER_ENTRY *ue;
+char *
+get_user_entry (char *buf, struct USER_ENTRY *ue)
 {
     char *ptr, *str;
 
@@ -63,9 +62,8 @@ struct USER_ENTRY *ue;
  * ret: next position in buffer or NULL
  */
 
-char *get_file_entry (buf, fe)
-char *buf;
-struct FILE_ENTRY *fe;
+char *
+get_file_entry (char *buf, struct FILE_ENTRY *fe)
 {
     char *tmpbuf, *ptr;
 
@@ -90,9 +88,8 @@ struct FILE_ENTRY *fe;
  * ret: next position in buffer or NULL
  */
 
-char *get_conf_entry (buf, ce)
-char *buf;
-struct CONF_ENTRY *ce;
+char *
+get_conf_entry (char *buf, struct CONF_ENTRY *ce)
 {
     char *ptr, *str;
 
@@ -161,8 +158,8 @@ char *get_parse_entry(char *buf, struct PARSE_ENTRY *pe)
  * ret: USER_LIST or NULL
  */
 
-struct USER_LIST *get_confrc_users (buf)
-char *buf;
+struct USER_LIST *
+get_confrc_users (char *buf)
 {
     int itmp;
     struct USER_LIST *tmp, *top;
@@ -207,9 +204,8 @@ char *buf;
  * ret: next position in buffer or NULL
  */
 
-char *get_text_entry (buf, te)
-char *buf;
-struct TEXT_ENTRY *te;
+char *
+get_text_entry (char *buf, struct TEXT_ENTRY *te)
 {
     int i, itmp2, c;
     long itmp1;
@@ -427,9 +423,8 @@ struct TEXT_ENTRY *te;
  * ret: next position in buffer or NULL
  */
 
-char *get_active_entry (buf, ae)
-char *buf;
-struct ACTIVE_ENTRY *ae;
+char *
+get_active_entry (char *buf, struct ACTIVE_ENTRY *ae)
 {
     char *ptr, *str;
 
@@ -475,9 +470,8 @@ struct ACTIVE_ENTRY *ae;
  * ret: next position in buffer or NULL
  */
 
-char *get_confs_entry (buf, ce)
-char *buf;
-struct CONFS_ENTRY *ce;
+char *
+get_confs_entry (char *buf, struct CONFS_ENTRY *ce)
 
 {
     char *oldbuf, *t1, *t2;
@@ -544,14 +538,8 @@ struct CONFS_ENTRY *ce;
  * ret: next position in buffer or NULL
  */
 
-char
-	*get_msg_entry(buf, me)
-
-char
-	*buf;
-
-struct MSG_ENTRY
-	*me;
+char *
+get_msg_entry (char *buf, struct MSG_ENTRY *me)
 
 {
     char *ptr, *ptr2;

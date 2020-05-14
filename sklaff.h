@@ -166,11 +166,9 @@
 
 /* Change nothing below this line (unless it won't compile) */
 
-#ifndef MT_XINU
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#endif
 
 /* Misc defines */
 

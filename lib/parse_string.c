@@ -77,10 +77,8 @@ int *index;
  * ret: number of words marched
  */
 
-int parse_strings (s1, s2, wcnt, parm)
-char *s1, *s2;
-int wcnt;
-char *parm;
+int
+parse_strings (char *s1, char *s2, int wcnt, char *parm)
 {
     static LINE tmp1, tmp2, orig;
     int p1 = 0, p2 = 0, words = 0;

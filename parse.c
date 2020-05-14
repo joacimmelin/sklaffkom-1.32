@@ -43,8 +43,8 @@ int find_max_match(struct hitlist *hl);
  * ret: pointer to function or NULL
  */
 
-int (*parse(buf, args))()
-char *buf, *args;
+int (*
+parse (char *buf, char *args))(void)
 {
     struct hitlist hl[MAX_COMMANDS];
     int	i, found, full_hit, arg_hit, part_hit, max_words,
@@ -227,8 +227,8 @@ int find_max_match(struct hitlist *hl)
  * ret: number of commands or failure (-1)
  */
 
-int	parse_init(program_name)
-char	*program_name;
+int
+parse_init (char *program_name)
 {
     int	i = 0, pf;
     char	*buf;
@@ -281,8 +281,8 @@ char	*program_name;
  * args: indexnumber in Par_ent struct
  */
 
-void	buggy_sunOS_fix(i)
-int	i;
+void
+buggy_sunOS_fix (int i)
 {
     int	j;
 
@@ -306,8 +306,8 @@ struct expand_list {
  * args: type of message
  */
 
-static void invalid_name (type)
-int type;
+static void
+invalid_name (int type)
 {
     switch (type) {
     case CONF:
@@ -337,9 +337,8 @@ int type;
  * ret: name expanded or NULL
  */
 
-char *expand_name (name, type, quiet, expanded_type)
-char *name;
-int type, quiet, *expanded_type;
+char *
+expand_name (char *name, int type, int quiet, int *expanded_type)
 {
     int fd, i, overflow = 0, found = 0;
     char *buf, *tmpbuf;

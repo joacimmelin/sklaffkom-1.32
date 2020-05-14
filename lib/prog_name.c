@@ -25,9 +25,10 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <pwd.h>
+
 #include "sklaff.h"
 #include "ext_globals.h"
-#include <pwd.h>
 
 /*
  * prog_name - finds out absolute path to program running
@@ -35,8 +36,8 @@
  * ret: abolute path to program
  */
 
-char *prog_name(pname)
-char *pname;
+char *
+prog_name(char *pname)
 {
     static LINE absname;
     char *path, *p1, *tmp;
@@ -49,11 +50,7 @@ char *pname;
 	return absname;
     }
 
-#ifndef GETCWD
-    getwd(cwd);
-#else
     getcwd(cwd, HUGE_LINE_LEN);
-#endif
 
     if (*pname == '/') {
 	strcpy(absname, pname);

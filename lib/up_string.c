@@ -33,8 +33,8 @@
  * ret:	pointer to string
  */
 
-char *up_string(str)
-char *str;
+char *
+up_string (char *str)
 {
     char *tmp;
 

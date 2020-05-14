@@ -33,9 +33,8 @@
  * ret: pointer to string or NULL
  */
 
-char *mbox_dir(uid, dir)
-int uid;
-char *dir;
+char *
+mbox_dir (int uid, char *dir)
 {
     sprintf(dir, "%s/%d", MBOX_DB, uid);
     return dir;

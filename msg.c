@@ -25,12 +25,13 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "sklaff.h"
-#include "ext_globals.h"
 #include <signal.h>
 
-void add_to_mlist(me)
-struct MSG_ENTRY *me;
+#include "sklaff.h"
+#include "ext_globals.h"
+
+void
+add_to_mlist (struct MSG_ENTRY *me)
 {
     struct MSG_LIST *new_entry;
 
@@ -44,9 +45,8 @@ struct MSG_ENTRY *me;
     mlist = new_entry;
 }
 
-void list_mlist(max, type_filter)
-int max;
-int type_filter;
+void
+list_mlist (int max, int type_filter)
 {
     int count, i, r, l;
     struct MSG_LIST *current;
@@ -112,8 +112,8 @@ int type_filter;
  * args: type of interrupt (tmp)
  */
 
-void newmsg(tmp)
-int tmp;
+void
+newmsg (int tmp)
 {
     sigset_t sigmask, oldsigmask;
 
@@ -295,15 +295,7 @@ int display_msg(int num)
  */
 
 int
-	send_msg(uid, type, msg, confirm)
-
-int
-	type,
-	uid;
-
-char
-	*msg;
-int confirm;
+send_msg (int uid, int type, char *msg, int confirm)
 
 {
     int
@@ -448,13 +440,7 @@ int confirm;
  */
 
 int
-	send_msg_to_all(type, msg)
-
-int
-	type;
-
-char
-	*msg;
+send_msg_to_all (int type, char *msg)
 
 {
     char
@@ -521,8 +507,8 @@ char
  * args: signal to send (sig)
  */
 
-void notify_all_processes(sig)
-int	sig;
+void
+notify_all_processes (int sig)
 
 {
     char	*buf, *oldbuf;
@@ -558,9 +544,8 @@ int	sig;
  * args: user (uid), signal to send (sig)
  */
 
-void notify_user(uid, sig)
-int	uid;
-int	sig;
+void
+notify_user (int uid, int sig)
 {
 
     char	  *buf, *oldbuf;

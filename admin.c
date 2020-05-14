@@ -25,10 +25,14 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <sys/stat.h>
+
+#include <fcntl.h>
+#include <pwd.h>
+#include <signal.h>
+
 #include "sklaff.h"
 #include "ext_globals.h"
-#include <signal.h>
-#include <pwd.h>
 
 /*
  * display_prompt - displays default prompt
@@ -36,10 +40,8 @@
  * ret: pointer to prompt displayed
  */
 
-char *display_prompt(p, oldp, type)
-char *p;
-char *oldp;
-int type;
+char *
+display_prompt (char *p, char *oldp, int type)
 {
     int y, x;
     if (Change_prompt) {
@@ -87,10 +89,8 @@ int type;
  * display_welcome - displays welcome message and sets up new users
  */
 
-#include <sys/stat.h>
-#include <fcntl.h>
-
-void display_welcome()
+void
+display_welcome (void)
 {
     LINE name, home, fname;
     int fd;
@@ -245,7 +245,8 @@ void display_welcome()
  * display_news - display news file
  */
 
-void display_news()
+void
+display_news (void)
 {
     int fd;
     char *buf;
@@ -274,7 +275,8 @@ void display_news()
  * check_open - check if SklaffKOM login is allowed
  */
 
-void check_open()
+void
+check_open (void)
 {
     int fd;
     char *buf;
@@ -306,8 +308,8 @@ void check_open()
  * returns: no of charachters removed
  */
 
-int strip_string(str, rmstr)
-char *str, *rmstr;
+int
+strip_string (char *str, char *rmstr)
 {
   char *s1, *s2;
   int n;
@@ -333,16 +335,15 @@ char *str, *rmstr;
  * args: flag status (tmp)
  */
 
-void out_onoff(tmp)
-int tmp;
+void
+out_onoff (int tmp)
 {
     if (tmp) output("%s  ", MSG_ON);
     else output("%s  ", MSG_OFF);
 }
 
-int grep(conf, search)
-int conf;
-char *search;
+int
+grep (int conf, char *search)
 {
     LONG_LINE dirname, cmdline, lineread, tsear, greparg;
     LINE cwd;
@@ -358,11 +359,7 @@ char *search;
     else {
 	strcpy(dirname, Mbox);
     }
-#ifndef GETCWD
-    getwd(cwd);
-#else
     getcwd(cwd, LINE_LEN);
-#endif
     found = 0;
     chdir(dirname);
 
@@ -425,8 +422,8 @@ char *search;
  * args: signal received or 0 (tmp)
  */
 
-void logout(tmp)
-int tmp;
+void
+logout (int tmp)
 {
     LINE name, tmpdir;
     int fd, conf, i;
@@ -572,7 +569,8 @@ int tmp;
  * exec_login - execute user login script
  */
 
-void exec_login()
+void
+exec_login (void)
 {
     struct SKLAFFRC *rc;
     LINE cmdline, args;
@@ -612,8 +610,8 @@ void exec_login()
  * timeout - called by SIGALRM
  */
 
-void timeout(sig)
-int sig;
+void
+timeout (int sig)
 {
   LINE name;
     if (Warning) logout(SIGALRM);
@@ -630,8 +628,8 @@ int sig;
  *  debuglog()
  */
 
-void debuglog(s, level)
-char *s;
+void
+debuglog (char *s, int level)
 {
   time_t now;
   FILE *fp;
@@ -658,8 +656,8 @@ char *s;
  * ret: ok (0) or error (-1)
  */
 
-int show_status (num, flag, st_type)
-int num, flag, st_type;
+int
+show_status (int num, int flag, int st_type)
 {
     int u_num = -1, c_num = -1, first = 0, fd;
     char *u_name, *buf, *oldbuf, *c_name;
@@ -899,14 +897,16 @@ int num, flag, st_type;
 
 
 static int
-active_entry_cmp(ae1, ae2)
-struct ACTIVE_ENTRY *ae1, *ae2;
+active_entry_cmp (const void *a, const void *b)
 {
-  int r = idle_time(ae1->user) - idle_time(ae2->user);
-  if (r == 0)
-    r = active_time(ae2->user) - active_time(ae1->user);
+    const struct ACTIVE_ENTRY *ae1 = a;
+    const struct ACTIVE_ENTRY *ae2 = b;
 
-  return(r);
+    int r = idle_time(ae1->user) - idle_time(ae2->user);
+    if (r == 0)
+        r = active_time(ae2->user) - active_time(ae1->user);
+
+    return(r);
 }
 
 
@@ -916,8 +916,8 @@ struct ACTIVE_ENTRY *ae1, *ae2;
  * ret: ok (0) or error (-1)
  */
 
-int list_who(who_type)
-int who_type;
+int
+list_who (int who_type)
 {
     long itime;
     LINE  tid, idle, namn;

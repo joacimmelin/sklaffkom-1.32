@@ -50,7 +50,8 @@
 
 #define KOM_MAX_HOST 256
 
-char *get_hostname()
+char *
+get_hostname (void)
 {
     static char myhost[KOM_MAX_HOST + 1];
     struct utmpx ul, *u;
@@ -88,7 +89,8 @@ char *get_hostname()
     return myhost;
 }
 #else
-char *get_hostname()
+char *
+get_hostname (void)
 {
 #if defined(SOLARIS)
     struct utmpx ut;

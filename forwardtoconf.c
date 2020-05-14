@@ -56,10 +56,8 @@ int main(int argc, char *argv[])
     exit(0);
 }
 
-int send_mail(conf, mbuf, ouid, ogrp)
-int conf;
-char *mbuf;
-int ouid, ogrp;
+int
+send_mail (int conf, char *mbuf, int ouid, int ogrp)
 {
     LINE home, conffile, confdir, textfile;
     struct CONF_ENTRY ce;

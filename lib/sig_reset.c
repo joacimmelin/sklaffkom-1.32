@@ -25,14 +25,16 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "sklaff.h"
 #include <signal.h>
+
+#include "sklaff.h"
 
 /*
  * sig_reset - reset signals setup by sig_setup
  */
 
-void sig_reset()
+void
+sig_reset (void)
 {
     signal(SIGHUP, SIG_DFL);
     signal(SIGPIPE, SIG_DFL);

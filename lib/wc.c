@@ -68,8 +68,8 @@ int *index;
  * ret: number of words
  */
 
-int wc (s)
-char *s;
+int
+wc (char *s)
 {
     int words = 0, p = 0;
     while (s[p] != '\0') {

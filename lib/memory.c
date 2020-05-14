@@ -20,8 +20,8 @@ size_t bytes;
   exit(1);
 }
 
-void my_free(ptr)
-void *ptr;
+void
+my_free (void *ptr)
 {
   int tmppotr;
 

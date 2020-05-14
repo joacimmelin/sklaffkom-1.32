@@ -25,14 +25,16 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "sklaff.h"
 #include <signal.h>
+
+#include "sklaff.h"
 
 /*
  * sig_setup - setup signal for SklaffKOM
  */
 
-void sig_setup()
+void
+sig_setup (void)
 {
     signal(SIGHUP, logout);
     signal(SIGPIPE, logout);

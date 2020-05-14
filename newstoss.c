@@ -393,7 +393,8 @@ long first_news(char *newslib, long last)
 }
 
 
-int add_text()
+int
+add_text (void)
 {
     if (top) {
 	rf->next = (struct REFLIST *)malloc

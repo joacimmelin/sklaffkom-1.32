@@ -33,8 +33,8 @@
  * ret: pointer to string
  */
 
-char *rtrim (s)
-char *s;
+char *
+rtrim (char *s)
 {
     char *ptr;
 

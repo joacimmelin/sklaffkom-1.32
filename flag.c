@@ -33,8 +33,8 @@
  * args: pointer to flagbuffer (flags)
  */
 
-void set_flags(flags)
-char *flags;
+void
+set_flags (char *flags)
 {
     char *p, *i;
 
@@ -211,9 +211,8 @@ char *flags;
  * ret: value of flag or failure (-1)
  */
 
-int check_flag(flags, flag)
-char *flags;
-char *flag;
+int
+check_flag (char *flags, char *flag)
 {
     char *p, *i;
 
@@ -232,9 +231,8 @@ char *flag;
  * ret: always 0
  */
 
-int turn_flag(mode, flag)
-int mode;
-char *flag;
+int
+turn_flag (int mode, char *flag)
 {
     int i;
     LINE flags[18], outline, tmpline;

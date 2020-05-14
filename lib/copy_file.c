@@ -33,8 +33,8 @@
  * ret: ok (0), failure (-1)
  */
 
-int copy_file(fil1, fil2)
-char *fil1, *fil2;
+int
+copy_file (char *fil1, char *fil2)
 {
     char	*buf;
     int	fd1, fd2;

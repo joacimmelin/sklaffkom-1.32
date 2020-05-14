@@ -25,15 +25,17 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <signal.h>
+
 #include "sklaff.h"
 #include "ext_globals.h"
-#include <signal.h>
 
 /*
  * non_critical - exit critical section
  */
 
-void non_critical()
+void
+non_critical(void)
 {
     sigprocmask(SIG_UNBLOCK, &Oldmask, NULL);
 }

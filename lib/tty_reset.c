@@ -33,7 +33,8 @@
  * tty_reset - resets tty characteristics to default
  */
 
-void tty_reset()
+void
+tty_reset (void)
 {
     tcsetattr(0, TCSANOW, &Tty_mode);
 }

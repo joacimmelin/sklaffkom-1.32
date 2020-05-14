@@ -33,7 +33,8 @@
  * tty_raw - sets terminal in raw mode
  */
 
-void tty_raw()
+void
+tty_raw (void)
 {
 
     struct termios temp_mode;

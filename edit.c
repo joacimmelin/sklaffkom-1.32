@@ -25,11 +25,12 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <fcntl.h>
+#include <pwd.h>
+#include <signal.h>
+
 #include "sklaff.h"
 #include "ext_globals.h"
-#include <fcntl.h>
-#include <signal.h>
-#include <pwd.h>
 
 /*
  * line_ed - simple line editor
@@ -38,15 +39,8 @@
  *       conference moved to (nc) NULL = no move allowed
  */
 
-struct TEXT_HEADER *line_ed(fname, th, edit_text, allow_say, allow_abort,
-			    nc, mailrec)
-char *fname;
-struct TEXT_HEADER *th;
-int edit_text;
-int allow_say;
-int allow_abort;
-int *nc;
-char *mailrec;
+struct TEXT_HEADER *
+line_ed (char *fname, struct TEXT_HEADER *th, int edit_text, int allow_say, int allow_abort, int *nc, char *mailrec)
 {
     unsigned char c, c2;
     char *space, *cptr, *j, *p, outc, lastchar, *confname;
@@ -768,8 +762,8 @@ char *mailrec;
  * args: signal received (tmp)
  */
 
-void abort_edit(tmp)
-int tmp;
+void
+abort_edit (int tmp)
 {
     struct EDIT_BUF *ptr, *tmpptr;
     LINE fname;
@@ -821,7 +815,8 @@ int tmp;
  * ret: no session aborted (1) or ok (0) or error (-1)
  */
 
-int resume_aborted_edit()
+int
+resume_aborted_edit (void)
 {
     int fd, tmp, oldconf, result;
     struct TEXT_HEADER th;

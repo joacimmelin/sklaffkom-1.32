@@ -25,9 +25,10 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <sys/stat.h>
+
 #include "sklaff.h"
 #include "ext_globals.h"
-#include <sys/stat.h>
 
 void free_userlist(struct USER_LIST *);
 
@@ -37,9 +38,8 @@ void free_userlist(struct USER_LIST *);
  * ret: pointer to string or NULL
  */
 
-char *conf_name (num, name)
-int num;
-char *name;
+char *
+conf_name (int num, char *name)
 {
     int fd;
     char *buf, *oldbuf;
@@ -79,8 +79,8 @@ char *name;
  * ret: number of conference or failure (0) or error (-1)
  */
 
-int conf_num (name)
-char *name;
+int
+conf_num (char *name)
 {
     int fd;
     char *buf, *oldbuf;
@@ -121,8 +121,8 @@ char *name;
  * ret: pointer to static CONF_ENTRY or NULL
  */
 
-struct CONF_ENTRY *get_conf_struct (num)
-int num;
+struct CONF_ENTRY *
+get_conf_struct (int num)
 {
     int fd;
     char *buf, *oldbuf;
@@ -162,8 +162,8 @@ int num;
  * ret: pointer to static USER_LIST or NULL
  */
 
-struct USER_LIST *get_confrc_struct (num)
-int num;
+struct USER_LIST *
+get_confrc_struct (int num)
 {
     int fd;
     char *buf, *oldbuf;
@@ -201,8 +201,8 @@ int num;
  * ret: yes (1) or no (0)
  */
 
-int is_conf_creator (u_num, c_num)
-int u_num, c_num;
+int
+is_conf_creator (int u_num, int c_num)
 {
     struct CONF_ENTRY *ce;
 
@@ -219,8 +219,8 @@ int u_num, c_num;
  * ret: yes (1) or no (0)
  */
 
-int can_see_conf (u_num, c_num, t_num, cr_num)
-int u_num, c_num, t_num, cr_num;
+int
+can_see_conf (int u_num, int c_num, int t_num, int cr_num)
 {
     int right;
     struct USER_LIST *ul;
@@ -244,9 +244,8 @@ int u_num, c_num, t_num, cr_num;
  * ret: pointer to static string
  */
 
-char *stringify_confs_struct(cse, buf)
-struct CONFS_ENTRY *cse;
-char *buf;
+char *
+stringify_confs_struct (struct CONFS_ENTRY *cse, char *buf)
 {
     LINE intbuf;
     struct INT_LIST *int_list_sav;
@@ -269,9 +268,8 @@ char *buf;
  * args: pointer to CONFS_ENTRY
  */
 
-void free_confs_entry(cse)
-
-struct CONFS_ENTRY *cse;
+void
+free_confs_entry (struct CONFS_ENTRY *cse)
 {
     struct INT_LIST *til, *wil;
 
@@ -290,8 +288,8 @@ struct CONFS_ENTRY *cse;
  * args: pointer to USER_LIST
  */
 
-void free_userlist(ul)
-struct USER_LIST *ul;
+void
+free_userlist (struct USER_LIST *ul)
 {
     struct USER_LIST
 	    *tul;
@@ -309,9 +307,8 @@ struct USER_LIST *ul;
  * ret: pointer to buffer with replaced entry
  */
 
-char *replace_confs(cse, buf)
-struct CONFS_ENTRY *cse;
-char *buf;
+char *
+replace_confs (struct CONFS_ENTRY *cse, char *buf)
 {
     char *tbuf, *nbuf, *obuf, temp;
     HUGE_LINE tmpbuf;
@@ -369,13 +366,8 @@ char *buf;
  * ret: pointer to buffer with replaced entry
  */
 
-char *replace_conf(ce, buf)
-
-struct CONF_ENTRY
-	*ce;
-
-char
-	*buf;
+char *
+replace_conf (struct CONF_ENTRY *ce, char *buf)
 
 {
     char
@@ -440,9 +432,8 @@ char
  * ret: pointer to static string
  */
 
-char	*stringify_conf_struct(conf_entry, buf)
-struct CONF_ENTRY *conf_entry;
-char *buf;
+char *
+stringify_conf_struct (struct CONF_ENTRY *conf_entry, char *buf)
 {
     sprintf(buf, "%d:%ld:%d:%lld:%d:%d:%d:%s\n", conf_entry->num,
 	    conf_entry->last_text, conf_entry->creator,
@@ -457,8 +448,8 @@ char *buf;
  * ret: conference number
  */
 
-int set_conf(conf)
-int conf;
+int
+set_conf (int conf)
 {
     Current_conf = conf;
     Last_conf = conf;
@@ -470,7 +461,8 @@ int conf;
  * ret: conference number
  */
 
-int set_first_conf()
+int
+set_first_conf (void)
 {
     int conf;
 
@@ -494,8 +486,8 @@ int set_first_conf()
  * ret:	ok (0) or error (-1)
  */
 
-int list_confs(uid, all)
-int uid, all;
+int
+list_confs (int uid, int all)
 {
     int   fd, rights, count, x, xit;
     char *buf, *oldbuf, member, creator, filarea, *mbuf, *oldmbuf;
@@ -677,9 +669,8 @@ int uid, all;
  * ret: all (0) or look (1) or none (2) or error (-1)
  */
 
-int conf_right(ul, uid, type, cr_num)
-struct USER_LIST *ul;
-int uid, type, cr_num;
+int
+conf_right (struct USER_LIST *ul, int uid, int type, int cr_num)
 {
     int xit;
 
@@ -709,12 +700,8 @@ int uid, type, cr_num;
  * ret: number of texts or error (-1L)
  */
 
-long num_unread(uid, conf, last)
-
-int
-	uid,
-	conf;
-long	last;
+long
+num_unread (int uid, int conf, long last)
 {
     long
 	    unread;
@@ -782,8 +769,8 @@ long	last;
  * ret: yes (1) or no (0) or error (-1)
  */
 
-int member_of(uid, conf)
-int uid, conf;
+int
+member_of (int uid, int conf)
 {
     int fd, xit;
     char *buf, *oldbuf;
@@ -824,7 +811,8 @@ int uid, conf;
  * ret: conference number or -1
  */
 
-int more_conf()
+int
+more_conf (void)
 {
     int fd, fd2, saveconf, i, flag, confnum;
     long text, first, high, *confsiz;
@@ -1106,12 +1094,8 @@ int more_conf()
  * ret: textnumber or error (-1)
  */
 
-long last_text (conf, uid)
-
-int
-	conf;
-int
-	uid;
+long
+last_text (int conf, int uid)
 {
     int
 	    fd;
@@ -1192,9 +1176,8 @@ int
  * ret: textnumber
  */
 
-long first_text(conf, uid)
-int conf;
-int uid;
+long
+first_text (int conf, int uid)
 {
     LINE fname, fhome;
     long first, last, ptr;
@@ -1265,7 +1248,8 @@ int uid;
  * ret: ok (0) or error (-1)
  */
 
-int force_unsubscribe()
+int
+force_unsubscribe (void)
 {
     int fd, rights;
     char *buf, *oldbuf;
@@ -1323,9 +1307,8 @@ int force_unsubscribe()
  * ret: pointer to CEN struct
  */
 
-struct CEN *sort_conf(ce_list, count)
-struct CEL *ce_list;
-int count;
+struct CEN *
+sort_conf (struct CEL *ce_list, int count)
 {
     int x;
     struct CEL *saved;
@@ -1414,8 +1397,8 @@ struct CONF_ENTRY *get_all_confs(void)
  * ret:	ok (0) or error (-1)
  */
 
-int list_news(uid)
-int uid;
+int
+list_news (int uid)
 {
     int fd, fd2, xit;
     long unreads, left;

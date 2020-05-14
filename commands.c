@@ -38,8 +38,8 @@
  * ret: ok (0) or error (-1)
  */
 
-int cmd_sendbatch(args)
-char *args;
+int
+cmd_sendbatch (char *args)
 {
     LINE tmpdir, cwd, cmdline, dest, source, cname, answer;
     LONG_LINE tmpline;
@@ -613,8 +613,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int	cmd_help(args)
-char	*args;
+int
+cmd_help (char *args)
 {
     int	i;
 
@@ -635,8 +635,8 @@ char	*args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_where(args)
-char *args;
+int
+cmd_where (char *args)
 {
     LINE confname;
     int left;
@@ -656,8 +656,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_change_conf(args)
-char *args;
+int
+cmd_change_conf (char *args)
 {
     char *newname;
     int conf;
@@ -700,8 +700,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_display_time(args)
-char *args;
+int
+cmd_display_time (char *args)
 {
     LINE tmp_str;
     long at;
@@ -732,8 +732,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_end_session(args)
-char *args;
+int
+cmd_end_session (char *args)
 {
     if (args && *args) {
 	output("\n%s\n\n", MSG_NOARG);
@@ -750,8 +750,8 @@ char *args;
  * ret: ok (0)
  */
 
-int cmd_restart(args)
-char *args;
+int
+cmd_restart (char *args)
 {
     if (args && *args) {
 	output("\n%s\n\n", MSG_NOARG);
@@ -769,8 +769,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_list_users(args)
-char *args;
+int
+cmd_list_users (char *args)
 {
     list_user(1, 0, 0);
     return 0;
@@ -782,20 +782,22 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_list_last(args)
-char *args;
+int
+cmd_list_last (char *args)
 {
     list_user(2, 0, 0);
     return 0;
 }
 
 static int
-active_entry_cmp(ae1, ae2)
-struct ACTIVE_ENTRY *ae1, *ae2;
+active_entry_cmp (const void *a, const void *b)
 {
-  int r = idle_time(ae1->user) - idle_time(ae2->user);
-  if (r == 0)
-    r = active_time(ae2->user) - active_time(ae1->user);
+    const struct ACTIVE_ENTRY *ae1 = a;
+    const struct ACTIVE_ENTRY *ae2 = b;
+
+    int r = idle_time(ae1->user) - idle_time(ae2->user);
+    if (r == 0)
+        r = active_time(ae2->user) - active_time(ae1->user);
 
   return(r);
 }
@@ -806,10 +808,8 @@ struct ACTIVE_ENTRY *ae1, *ae2;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_who(args)
-
-char
-	*args;
+int
+cmd_who (char *args)
 {
       long itime;
     LINE  tid, idle, namn;
@@ -947,8 +947,8 @@ char
  * ret: ok (0) or error (-1)
  */
 
-int cmd_list_confs(args)
-char *args;
+int
+cmd_list_confs (char *args)
 {
     return(list_confs(Uid, 1));
 }
@@ -959,8 +959,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_list_news(args)
-char *args;
+int
+cmd_list_news (char *args)
 {
     int
 	    uid;
@@ -986,8 +986,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_list_rights(args)
-char *args;
+int
+cmd_list_rights (char *args)
 {
     int count, x, confnum;
     struct UEL *ue_list, *top;
@@ -1078,8 +1078,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_create_conf(args)
-char *args;
+int
+cmd_create_conf (char *args)
 {
     int fd, fd2, conf_type, confnum, i;
     char *buf, *oldbuf, *nbuf, *tmp;
@@ -1191,8 +1191,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_subscribe(args)
-char *args;
+int
+cmd_subscribe (char *args)
 {
     LINE confname, userstr, confsname;
     char *exp_confname, *buf, *nbuf;
@@ -1261,8 +1261,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_unsubscribe(args)
-char *args;
+int
+cmd_unsubscribe (char *args)
 {
     LINE confsname, confname;
     char *exp_confname, *buf, *nbuf, *oldbuf, *tmpbuf;
@@ -1350,8 +1350,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_add_rights(args)
-char *args;
+int
+cmd_add_rights (char *args)
 {
     char *user, *buf, *nbuf;
     LINE confrcfile, newuid;
@@ -1417,8 +1417,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_sub_rights(args)
-char *args;
+int
+cmd_sub_rights (char *args)
 {
     char *user, *buf, *nbuf;
     struct USER_LIST *saved;
@@ -1489,8 +1489,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_read_text(args)
-char *args;
+int
+cmd_read_text (char *args)
 {
     long textnum;
 
@@ -1509,8 +1509,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_whole_text(args)
-char *args;
+int
+cmd_whole_text (char *args)
 {
     long textnum;
 
@@ -1531,8 +1531,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_next_comment(args)
-char *args;
+int
+cmd_next_comment (char *args)
 {
     long textnum;
 
@@ -1556,8 +1556,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_next_text(args)
-char *args;
+int
+cmd_next_text (char *args)
 {
     long textnum;
 
@@ -1584,8 +1584,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_next_conf(args)
-char *args;
+int
+cmd_next_conf (char *args)
 {
     int conf;
 
@@ -1611,8 +1611,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_jump_over(args)
-char *args;
+int
+cmd_jump_over (char *args)
 {
     long textnum;
     int count;
@@ -1643,8 +1643,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_jump_tree(args)
-char *args;
+int
+cmd_jump_tree (char *args)
 {
     long textnum;
     int count;
@@ -1683,8 +1683,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_goto_text(args)
-char *args;
+int
+cmd_goto_text (char *args)
 {
     LINE fname;
     long textnum;
@@ -1728,8 +1728,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_unread_tree(args)
-char *args;
+int
+cmd_unread_tree (char *args)
 {
     long textnum;
     int count;
@@ -1778,8 +1778,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_only(args)
-char *args;
+int
+cmd_only (char *args)
 {
     int fd;
     long textnum, last, first, age;
@@ -1879,8 +1879,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_mail(args)
-char *args;
+int
+cmd_mail (char *args)
 {
     LINE fname, tmpstr;
     LONG_LINE cmdline, tmp;
@@ -2057,8 +2057,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_personal(args)
-char *args;
+int
+cmd_personal (char *args)
 {
     LINE fname, mr, cmdline, tmpstr;
     LONG_LINE tmp;
@@ -2288,8 +2288,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_post_text(args)
-char *args;
+int
+cmd_post_text (char *args)
 {
     LINE fname, cname;
     char *confname, *un, *inbuf;
@@ -2420,8 +2420,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_comment(args)
-char *args;
+int
+cmd_comment (char *args)
 {
     LINE fname, newline, cname, mr, cmdline, uname, refname, reference, tmpstr;
     LONG_LINE group, tmp;
@@ -2780,8 +2780,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_display_commented(args)
-char *args;
+int
+cmd_display_commented (char *args)
 {
     strcpy(args, MSG_REPLIED);
     cmd_read_text(args);
@@ -2794,8 +2794,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_display_last(args)
-char *args;
+int
+cmd_display_last (char *args)
 {
     sprintf(args, "%ld", Last_text);
     cmd_read_text(args);
@@ -2808,8 +2808,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_display_rot13(args)
-char *args;
+int
+cmd_display_rot13 (char *args)
 {
     sprintf(args, "%ld", Last_text);
     Rot13 = 1;
@@ -2823,8 +2823,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_mod_pinfo (args)
-char *args;
+int
+cmd_mod_pinfo (char *args)
 {
     char u_name[255];
     struct SKLAFFRC *rc;
@@ -2897,8 +2897,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_show_status (args)
-char *args;
+int
+cmd_show_status (char *args)
 {
     int i_tmp, flag, num;
     char *u_name, *c_name, *tmpname;
@@ -2938,10 +2938,7 @@ char *args;
  */
 
 int
-	cmd_say(args)
-
-char
-	*args;
+cmd_say (char *args)
 
 {
     char
@@ -3017,10 +3014,7 @@ char
  */
 
 int
-	cmd_yell(args)
-
-char
-	*args;
+cmd_yell (char *args)
 
 {
     int
@@ -3134,8 +3128,8 @@ int cmd_mod_note(char *args)
  * ret: ok (0) or error (-1)
  */
 
-int cmd_mod_sig (args)
-char *args;
+int
+cmd_mod_sig (char *args)
 {
     int u_num, j;
     char u_name[255];
@@ -3199,8 +3193,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_mod_timeout (args)
-char *args;
+int
+cmd_mod_timeout (char *args)
 {
     struct SKLAFFRC *rc;
     LINE subba;
@@ -3240,8 +3234,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_mod_login (args)
-char *args;
+int
+cmd_mod_login (char *args)
 {
     int u_num, j;
     char u_name[255];
@@ -3307,8 +3301,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_delete_text(args)
-char *args;
+int
+cmd_delete_text (char *args)
 {
     LINE fname;
     int fd;
@@ -3368,8 +3362,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_unread_text(args)
-char *args;
+int
+cmd_unread_text (char *args)
 {
     long textnum;
     LINE cname;
@@ -3415,8 +3409,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_list_member(args)
-char *args;
+int
+cmd_list_member (char *args)
 {
     int fd, count, x, confnum;
     struct UEL *ue_list, *top;
@@ -3548,9 +3542,7 @@ char *args;
  */
 
 int
-	cmd_list_subj(args)
-char
-	*args;
+cmd_list_subj (char *args)
 {
     return(list_subj(args));
 }
@@ -3561,8 +3553,8 @@ char
  * ret: ok (0) or error (-1)
  */
 
-int cmd_change_cname (args)
-char *args;
+int
+cmd_change_cname (char *args)
 {
     int fd, c_num;
     char *buf, *tmpbuf, *origbuf, *expanded_name;
@@ -3644,8 +3636,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_change_comc (args)
-char *args;
+int
+cmd_change_comc (char *args)
 {
     int fd, c_num, n_num;
     char *buf, *tmpbuf, *origbuf, *expanded_name;
@@ -3747,8 +3739,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_delete_conf(args)
-char *args;
+int
+cmd_delete_conf (char *args)
 {
     int fd, c_num;
     char *buf, *origbuf, *tmpbuf, *mbuf, *oldmbuf;
@@ -3866,8 +3858,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_list_flags(args)
-char *args;
+int
+cmd_list_flags (char *args)
 {
     if (args && *args) {
 	output("\n%s\n\n", MSG_NOARG);
@@ -3920,8 +3912,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_on_flag(args)
-char *args;
+int
+cmd_on_flag (char *args)
 {
     turn_flag(1, args);
     return 0;
@@ -3933,8 +3925,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_off_flag(args)
-char *args;
+int
+cmd_off_flag (char *args)
 {
     turn_flag(0, args);
     return 0;
@@ -3946,8 +3938,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_info (args)
-char *args;
+int
+cmd_info (char *args)
 {
     int fd;
     char *buf;
@@ -3979,8 +3971,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_long_help (args)
-char *args;
+int
+cmd_long_help (char *args)
 {
     static LINE tmp, fname;
     char *tmp2;
@@ -4087,8 +4079,8 @@ int cmd_change_passwd(char *args)
  * ret: ok (0) or error (-1)
  */
 
-int	cmd_cls(args)
-char	*args;
+int
+cmd_cls (char *args)
 {
   printf("%c[H%c[J", 27, 27);
   fflush(stdout);
@@ -4102,8 +4094,8 @@ char	*args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_grep(args)
-char *args;
+int
+cmd_grep (char *args)
 {
     LINE search;
 
@@ -4134,8 +4126,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_global_grep(args)
-char *args;
+int
+cmd_global_grep (char *args)
 {
     LINE search, confname, confsname;
     int fd, length, res, foundany, cnum;
@@ -4230,8 +4222,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_licens(args)
-char *args;
+int
+cmd_licens (char *args)
 {
     int fd;
     char *buf;
@@ -4260,8 +4252,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_upload(args)
-char *args;
+int
+cmd_upload (char *args)
 {
     LINE cwd, filed;
     int fd;
@@ -4302,8 +4294,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_download(args)
-char *args;
+int
+cmd_download (char *args)
 {
     LINE fname, cwd, filed;
     sigset_t sigmask, oldsigmask;
@@ -4370,8 +4362,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_list_files(args)
-char *args;
+int
+cmd_list_files (char *args)
 {
     LINE fn;
     struct FILE_ENTRY fe;
@@ -4430,8 +4422,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_describe(args)
-char *args;
+int
+cmd_describe (char *args)
 {
     LINE fn, fname;
     int fd, i;
@@ -4548,8 +4540,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_unlink(args)
-char *args;
+int
+cmd_unlink (char *args)
 {
     LINE fn, fname;
 
@@ -4596,8 +4588,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_prio(args)
-char *args;
+int
+cmd_prio (char *args)
 {
     LINE confname;
     LONG_LINE confsname;
@@ -4693,8 +4685,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_deprio(args)
-char *args;
+int
+cmd_deprio (char *args)
 {
     LINE confname;
     LONG_LINE confsname;
@@ -4792,8 +4784,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_back_text(args)
-char *args;
+int
+cmd_back_text (char *args)
 {
     long textnum, backed, numtexts;
     int conf;
@@ -4835,8 +4827,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_readall(args)
-char *args;
+int
+cmd_readall (char *args)
 {
     int oldlines, conf;
     long textnum, counter;
@@ -4880,8 +4872,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_readsome(args)
-char *args;
+int
+cmd_readsome (char *args)
 {
     int oldlines, conf;
     long textnum, counter;
@@ -4919,8 +4911,8 @@ char *args;
     return 0;
 }
 
-int cmd_nethack(args)
-char *args;
+int
+cmd_nethack (char *args)
 {
     sigset_t sigmask, oldsigmask;
 
@@ -4957,8 +4949,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_unreadsub(args)
-char *args;
+int
+cmd_unreadsub (char *args)
 {
     char *buf, *oldbuf, *ptr, *save;
     LONG_LINE cname;
@@ -5035,8 +5027,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_jumpsub(args)
-char *args;
+int
+cmd_jumpsub (char *args)
 {
     struct UR_STACK *start, *ptr, *saved;
     char *buf, *oldbuf;
@@ -5115,8 +5107,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_jumpuser(args)
-char *args;
+int
+cmd_jumpuser (char *args)
 {
     struct UR_STACK *start, *ptr, *saved;
     char *buf, *oldbuf;
@@ -5204,8 +5196,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_answermsg(args)
-char *args;
+int
+cmd_answermsg (char *args)
 {
     LINE msg;
     int xit, uid;
@@ -5259,8 +5251,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_I(args)
-char *args;
+int
+cmd_I (char *args)
 {
   rtrim(args);
   output("\n");
@@ -5278,8 +5270,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_my(args)
-char *args;
+int
+cmd_my (char *args)
 {
   rtrim(args);
   output("\n");
@@ -5292,8 +5284,8 @@ char *args;
 }
 
 
-int cmd_alias(args)
-char *args;
+int
+cmd_alias (char *args)
 {
     static LINE tmp, cmd, tmp2;
     int (*fcn) (), i, j;
@@ -5339,8 +5331,8 @@ char *args;
     return 0;
 }
 
-int cmd_from(args)
-char *args;
+int
+cmd_from (char *args)
 {
   char newfrom[FROM_FIELD_LEN];
 
@@ -5366,8 +5358,8 @@ char *args;
     return 0;
 }
 
-int cmd_list_says(args)
-char *args;
+int
+cmd_list_says (char *args)
 {
     int max;
 
@@ -5377,8 +5369,8 @@ char *args;
     return 0;
 }
 
-int cmd_list_yells(args)
-char *args;
+int
+cmd_list_yells (char *args)
 {
     int max;
 
@@ -5394,8 +5386,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_post_survey(args)
-char *args;
+int
+cmd_post_survey (char *args)
 {
     LINE fname, cname;
     char *confname, *un;
@@ -5558,8 +5550,8 @@ char *args;
 
 
 
-int cmd_read_last_text(args)
-char *args;
+int
+cmd_read_last_text (char *args)
 {
     strcpy(args, MSG_LASTREAD);
     cmd_read_text(args);
@@ -5573,8 +5565,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_survey_result(args)
-char *args;
+int
+cmd_survey_result (char *args)
 {
     long textnum;
 
@@ -5590,8 +5582,8 @@ char *args;
  * ret: ok (0) or error (-1)
  */
 
-int cmd_reclaim_unread(args)
-char *args;
+int
+cmd_reclaim_unread (char *args)
 {
     long textnum;
     int conf, first_conf = -1, only_in_conf = -1;

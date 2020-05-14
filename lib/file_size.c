@@ -25,8 +25,9 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "sklaff.h"
 #include <sys/stat.h>
+
+#include "sklaff.h"
 
 /*
  * file_size - returns size of file in bytes
@@ -34,8 +35,8 @@
  * ret: size of file
  */
 
-off_t file_size (fildes)
-int fildes;
+off_t
+file_size (int fildes)
 {
     struct stat buf;
 

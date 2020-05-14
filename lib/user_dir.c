@@ -33,9 +33,8 @@
  * ret: pointer to string or NULL
  */
 
-char *user_dir(uid, dir)
-int uid;
-char *dir;
+char *
+user_dir (int uid, char *dir)
 {
     sprintf(dir, "%s/%d", USER_DB, uid);
     return dir;

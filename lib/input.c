@@ -25,17 +25,18 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include <signal.h>
+
 #include "sklaff.h"
 #include "ext_globals.h"
-#include <signal.h>
 
 /*
  * haffo - handle interrupted input
  * args: type of interrupt (tmp)
  */
 
-void haffo(tmp)
-int tmp;
+void
+haffo(int tmp)
 {
     int x, y;
     LINE oldprompt;
@@ -72,8 +73,8 @@ int tmp;
  * args: type of interrupt (tmp)
  */
 
-void baffo(tmp)
-int tmp;
+void
+baffo (int tmp)
 {
     sigset_t sigmask, oldsigmask;
 
@@ -93,12 +94,8 @@ int tmp;
  * ret:	pointer to input string
  */
 
-char *input(in_str, out_str, max_len, noecho, wrap, hist)
-char *in_str, *out_str;
-int max_len;
-int noecho;
-int wrap;
-int hist;
+char *
+input (char *in_str, char *out_str, int max_len, int noecho, int wrap, int hist)
 {
     int len, hptr, ltop;
     char *p, *i, *space, *ptr;
@@ -275,13 +272,8 @@ int hist;
  * ret:	pointer to input string
  */
 
-int input_extended(in_str, out_str, max_len, noecho, wrap, hist, low, hi)
-char *in_str, *out_str;
-int max_len;
-int noecho;
-int wrap;
-int hist;
-int low, hi;
+int
+input_extended (char *in_str, char *out_str, int max_len, int noecho, int wrap, int hist, int low, int hi)
 {
     int len, hptr, ltop;
     unsigned char c, outc;
