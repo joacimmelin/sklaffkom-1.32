@@ -3,7 +3,7 @@
 /*
  *   SklaffKOM, a simple conference system for UNIX.
  *
- *   Copyright (C) 1993-1994  Torbj|rn B}}th, Peter Forsberg, Peter Lindberg, 
+ *   Copyright (C) 1993-1994  Torbj|rn B}}th, Peter Forsberg, Peter Lindberg,
  *                            Odd Petersson, Carl Sundbom
  *
  *   Program dedicated to the memory of Staffan Bergstr|m.
@@ -14,12 +14,12 @@
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 2, or (at your option)
  *   any later version.
- *    
+ *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU General Public License for more details.
- *   
+ *
  *   You should have received a copy of the GNU General Public License
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
@@ -29,7 +29,7 @@
 #include "ext_globals.h"
 #include <stdarg.h>
 
-/* 
+/*
  * output - outputs string
  * args: same as for printf
  * ret:	success (0), stop output (-1)
@@ -39,7 +39,7 @@
 int output(char * fmt,...)
 {
     va_list args;
-    
+
     va_start( args, fmt );
     vfprintf( stdout, fmt, args );
     va_end( args );
@@ -55,7 +55,7 @@ int output(char *fmt,...)
     char *p1, *p2;
     char fmt2[HUGE_LINE_LEN], outline[HUGE_LINE_LEN];
     char tmpline[LONG_LINE_LEN];
-    
+
     va_start( args, fmt );
     vsprintf( fmt2, fmt, args );
     va_end( args );
@@ -100,9 +100,9 @@ int output(char *fmt,...)
             tmp++;
         }
     }
-    
+
     *tmp2 = '\0';
-    
+
     p2 = outline;
     while (*p2 != '\0') {
         p1 = tmpline;
@@ -110,11 +110,11 @@ int output(char *fmt,...)
             *p1 = *p2;
             if (Rot13 && (*p1 >= 'A') && (*p1 <= 'z')) {
                 if ((*p1 >= 'A') && (*p1 <= 'Z')) {
-                    *p1 = *p1 - 13; 
+                    *p1 = *p1 - 13;
                     if (*p1 < 'A') *p1 = 'Z' - ('A' - *p1 - 1);
                 }
                 else if ((*p1 >= 'a') && (*p1 <= 'z')) {
-                    *p1 = *p1 - 13; 
+                    *p1 = *p1 - 13;
                     if (*p1 < 'a') *p1 = 'z' - ('a' - *p1 - 1);
                 }
             }
@@ -129,7 +129,7 @@ int output(char *fmt,...)
         }
         *p1 = '\0';
         if ((Lines >= Numlines) && Numlines && !Cont) {
-            printf(MSG_MORE); 
+            printf(MSG_MORE);
             do {
                 if (Timeout) {
                     alarm(60 * Timeout);
@@ -140,12 +140,12 @@ int output(char *fmt,...)
                 Warning = 0;
             } while ((c != 'q') && (c != 'Q') && (c !=' ') && (c != '\r')
                      && (c != '\n') && (c != 3) && (c != 'c') && (c != 'C'));
-            printf("\r       \r"); 
+            printf("\r       \r");
             make_activity_note();
             Lines = 1;
             if ((c == 'c') || (c == 'C')) Cont = 1;
             if ((c == 'q') || (c == 'Q') || (c == 3)
-                || ((c == ' ') && (!Space || Special))) {  
+                || ((c == ' ') && (!Space || Special))) {
                 if ((strlen(tmpline) == 2) &&
                     (tmpline[0] == '\r') &&
                     (tmpline[1] == '\n')) {
@@ -156,7 +156,7 @@ int output(char *fmt,...)
         }
         fputs(tmpline, stdout);
     }
-    
+
     return 0;
 }
 
@@ -166,7 +166,7 @@ int output(char *fmt,...)
 int outputex(char *fmt,...)
 {
     va_list args;
-    
+
     va_start( args, fmt );
     vfprintf( stdout, fmt, args );
     va_end( args );

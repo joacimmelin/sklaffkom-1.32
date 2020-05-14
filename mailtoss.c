@@ -13,19 +13,19 @@
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 2, or (at your option)
  *   any later version.
- *    
+ *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU General Public License for more details.
- *   
+ *
  *   You should have received a copy of the GNU General Public License
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
 #include "sklaff.h"
-#include "globals.h" 
+#include "globals.h"
 #include <pwd.h>
 #include <fcntl.h>
 #include <signal.h>
@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
 
     pw = getpwnam(SKLAFF_ACCT);
     if (pw == NULL) exit(1);
-    
+
     if ((uid == 0) || (user_name(uid, username) == NULL))
 	exit(0);
 
@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
     free(oldbuf);
 
     if (user_is_active(uid)) notify_user(uid, SIGNAL_NEW_TEXT);
-    
+
     exit(0);
 }
 
@@ -97,7 +97,7 @@ int send_mail(int uid, char *mbuf, int ouid, int ogrp)
     struct TEXT_HEADER th;
     int fd, fdo;
     char *buf, *oldbuf, *nbuf, *ptr, *tmp, *fbuf;
-    
+
     mbox_dir(uid, home);
     sprintf(conffile, "%s%s", home, MAILBOX_FILE);
     sprintf(confdir, "%s/", home);
@@ -181,7 +181,7 @@ int send_mail(int uid, char *mbuf, int ouid, int ogrp)
     strcat(fbuf, th.subject);
     strcat(fbuf, "\n");
     strcat(fbuf, mbuf);
-    
+
     if (write_file(fdo, fbuf) == -1) return -1;
     if (close_file(fdo) == -1) return -1;
 

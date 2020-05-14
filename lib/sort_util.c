@@ -3,7 +3,7 @@
 /*
  *   SklaffKOM, a simple conference system for UNIX.
  *
- *   Copyright (C) 1993-1994  Torbj|rn B}}th, Peter Forsberg, Peter Lindberg, 
+ *   Copyright (C) 1993-1994  Torbj|rn B}}th, Peter Forsberg, Peter Lindberg,
  *                            Odd Petersson, Carl Sundbom
  *
  *   Program dedicated to the memory of Staffan Bergstr|m.
@@ -14,12 +14,12 @@
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 2, or (at your option)
  *   any later version.
- *    
+ *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU General Public License for more details.
- *   
+ *
  *   You should have received a copy of the GNU General Public License
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
@@ -37,7 +37,7 @@ char *order_name(instr, outstr)
 char *instr, *outstr;
 {
     char *ptr, *tmp;
-    
+
     ptr = strchr(instr, ' ');
     if (ptr) {
 	if (*(ptr + 1) == '(') {
@@ -70,7 +70,7 @@ char *reorder_name(instr, outstr)
 char *instr, *outstr;
 {
     char *ptr, *tmp;
-    
+
     ptr = strrchr(instr, ' ');
     if (ptr) {
 	if (*(ptr + 1) == '(') {
@@ -103,7 +103,7 @@ char *fake_string(string)
 char *string;
 {
     char *ptr;
-    
+
     ptr = string;
     while (ptr && *ptr) {
 	if (*ptr == '}') *ptr = '{';
@@ -127,7 +127,7 @@ char *real_string(string)
 char *string;
 {
     char *ptr;
-    
+
     ptr = string;
     while (ptr && *ptr) {
 	if (*ptr == '{') *ptr = '}';

@@ -3,7 +3,7 @@
 /*
  *   SklaffKOM, a simple conference system for UNIX.
  *
- *   Copyright (C) 1993-1994  Torbj|rn B}}th, Peter Forsberg, Peter Lindberg, 
+ *   Copyright (C) 1993-1994  Torbj|rn B}}th, Peter Forsberg, Peter Lindberg,
  *                            Odd Petersson, Carl Sundbom
  *
  *   Program dedicated to the memory of Staffan Bergstr|m.
@@ -14,12 +14,12 @@
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 2, or (at your option)
  *   any later version.
- *    
+ *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU General Public License for more details.
- *   
+ *
  *   You should have received a copy of the GNU General Public License
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
@@ -46,9 +46,9 @@ char *mailrec;
     int i, uid, right, nc, fd;
     char *ptr, *tmp, *buf, *oldbuf;
     struct CONF_ENTRY *ce;
-    
+
     if (mailrec && type && (th->author == 0)) {
-	strcpy(username, mailrec);	
+	strcpy(username, mailrec);
     }
     else {
 	user_name(th->author, username);
@@ -83,19 +83,19 @@ char *mailrec;
 	    }
 	}
     }
-    if (th->num == 0) {	      
+    if (th->num == 0) {
 	output ("%s %s\n", MSG_WRITTENBY, username);
     }
     else {
 	time_string (th->time, time_val, (dtype | Date));
-           output ("%s %d; %s %s; %s;", 
-                   (th->type == TYPE_TEXT) ? MSG_TEXTNAME : MSG_SURVEYNAME, 
+           output ("%s %d; %s %s; %s;",
+                   (th->type == TYPE_TEXT) ? MSG_TEXTNAME : MSG_SURVEYNAME,
                    th->num, MSG_WRITTENBY, username, time_val);
     }
     switch (th->size) {
     case 0:
 	if (th->num)
-		output (" %s\n", 
+		output (" %s\n",
                    (th->type == TYPE_TEXT) ? MSG_EMPTYTEXT : MSG_EMPTYSURVEY);
 	break;
     case 1:
@@ -198,7 +198,7 @@ char *mailrec;
     if (edit_subject) {
 	output (MSG_SUBJECT);
 	input (th->subject, th->subject, SUBJECT_LEN, 0, 0, 0);
-    } else 
+    } else
 	    output ("%s%s\n", MSG_SUBJECT, th->subject);
     for (i = 0; i < (strlen(th->subject) + 8); i++)
 	    c[i] = '-';
@@ -217,28 +217,28 @@ int conf;
 long num;
 {
     struct UR_STACK *tmp, *saved;
-    
+
     tmp = ustack;
     saved = NULL;
-    
+
     while (tmp) {
 	saved = tmp;
 	tmp = tmp->next;
     }
-    
+
     if ((tmp = (struct UR_STACK *)
 	 malloc(sizeof(struct UR_STACK))) == NULL) {
 	sys_error("push_unread", 1, "malloc");
 	return -1;
     }
-    
+
     tmp->num = num;
     tmp->conf = conf;
     tmp->next = NULL;
-    
+
     if (!saved) ustack = tmp;
     else saved->next = tmp;
-    
+
     return 0;
 }
 
@@ -253,15 +253,15 @@ int *conf;
 {
     struct UR_STACK *tmp, *saved, *tmp2;
     long num;
-    
+
     tmp = ustack;
     saved = NULL;
-    
+
     while (tmp) {
 	saved = tmp;
 	tmp = tmp->next;
     }
-    
+
     if (!saved) return -1;
     else {
 	num = saved->num;
@@ -292,28 +292,28 @@ int conf;
 long num;
 {
     struct UR_STACK *tmp, *saved;
-    
+
     tmp = ustack2;
     saved = NULL;
-    
+
     while (tmp) {
 	saved = tmp;
 	tmp = tmp->next;
     }
-    
+
     if ((tmp = (struct UR_STACK *)
 	 malloc(sizeof(struct UR_STACK))) == NULL) {
 	sys_error("push_unread", 1, "malloc");
 	return -1;
     }
-    
+
     tmp->num = num;
     tmp->conf = conf;
     tmp->next = NULL;
-    
+
     if (!saved) ustack2 = tmp;
     else saved->next = tmp;
-    
+
     return 0;
 }
 
@@ -328,15 +328,15 @@ int *conf;
 {
     struct UR_STACK *tmp, *saved, *tmp2;
     long num;
-    
+
     tmp = ustack2;
     saved = NULL;
-    
+
     while (tmp) {
 	saved = tmp;
 	tmp = tmp->next;
     }
-    
+
     if (!saved) return -1;
     else {
 	num = saved->num;
@@ -366,27 +366,27 @@ int push_comment(num)
 long num;
 {
     struct COM_STACK *tmp, *saved;
-    
+
     tmp = cstack;
     saved = NULL;
-    
+
     while (tmp) {
 	saved = tmp;
 	tmp = tmp->next;
     }
-    
+
     if ((tmp = (struct COM_STACK *)
 	 malloc(sizeof(struct COM_STACK))) == NULL) {
 	sys_error("push_comment", 1, "malloc");
 	return -1;
     }
-    
+
     tmp->num = num;
     tmp->next = NULL;
-    
+
     if (!saved) cstack = tmp;
     else saved->next = tmp;
-    
+
     return 0;
 }
 
@@ -399,15 +399,15 @@ long pop_comment()
 {
     struct COM_STACK *tmp, *saved, *tmp2;
     long num;
-    
+
     tmp = cstack;
     saved = NULL;
-    
+
     while (tmp) {
 	saved = tmp;
 	tmp = tmp->next;
     }
-    
+
     if (!saved) return -1;
     else {
 	num = saved->num;
@@ -433,7 +433,7 @@ long pop_comment()
 void clear_comment()
 {
     long textnum;
-    
+
     textnum = pop_comment();
     while (textnum != -1) {
 	textnum = pop_comment();
@@ -451,28 +451,28 @@ int conf;
 long num;
 {
     struct UR_STACK *tmp, *saved;
-    
+
     tmp = rstack;
     saved = NULL;
-    
+
     while (tmp) {
 	saved = tmp;
 	tmp = tmp->next;
     }
-    
+
     if ((tmp = (struct UR_STACK *)
 	 malloc(sizeof(struct UR_STACK))) == NULL) {
 	sys_error("push_unread", 1, "malloc");
 	return -1;
     }
-    
+
     tmp->num = num;
     tmp->conf = conf;
     tmp->next = NULL;
-    
+
     if (!saved) rstack = tmp;
     else saved->next = tmp;
-    
+
     return 0;
 }
 
@@ -487,15 +487,15 @@ int *conf;
 {
     struct UR_STACK *tmp, *saved, *tmp2;
     long num;
-    
+
     tmp = rstack;
     saved = NULL;
-    
+
     while (tmp) {
 	saved = tmp;
 	tmp = tmp->next;
     }
-    
+
     if (!saved) return -1;
     else {
 	num = saved->num;
@@ -530,30 +530,30 @@ int conf;
     struct INT_LIST *int_list_next, *int_list_sav, *saved, *tmpsav;
     char *buf, *oldbuf, *nbuf;
     LINE fname;
-    
+
     strcpy(fname, Home);
     strcat(fname, CONFS_FILE);
-    
+
     if ((fd = open_file(fname, 0)) == -1) {
 	sys_error("mark_as_read", 1, "open_file");
 	return -1;
     }
-    
+
     if ((buf = read_file(fd)) == NULL) {
 	sys_error("mark_as_read", 2, "read_file");
 	return -1;
     }
-    
+
     oldbuf = buf;
-    
+
     /* find confs-entry */
-    
+
     while (buf) {
 	buf = get_confs_entry(buf, &cse);
 	if (cse.num == conf) break;
 	free_confs_entry(&cse);
     }
-    
+
     buf = oldbuf;
     if (cse.num == conf) {
 	int_list_sav = cse.il;
@@ -566,7 +566,7 @@ int conf;
 	    cse.il = cse.il->next;
 	}
 	cse.il = int_list_sav;
-	
+
 	if (found) {
 	    free_confs_entry(&cse);
 	    if (close_file(fd) == -1) {
@@ -576,12 +576,12 @@ int conf;
 	    free(oldbuf);
 	    return 0;
 	}
-	
+
 	bound = 0;
-	
+
 	/* kolla hur m}nga intervall som h{nger ihop med den aktuella
 	   texten (text) */
-	
+
 	while (cse.il) {
 	    if ((cse.il->from == (text+1L)) || (cse.il->to == (text-1L))) {
 		bound++;
@@ -589,10 +589,10 @@ int conf;
 	    cse.il = cse.il->next;
 	}
 	cse.il = int_list_sav;
-	
+
 	/* om inget intervall h{nger ihop s} allokerar vi ett nytt
 	   intervall */
-	
+
 	if (bound == 0) {
 	    if (cse.il) {
 		if (cse.il->from > text) {
@@ -614,7 +614,7 @@ int conf;
 			cse.il = cse.il->next;
 			if (cse.il && (saved->to < text) &&
 			    (cse.il->from > text)) break;
-		    }	
+		    }
 		    if (cse.il) {
 			tmpsav = (struct INT_LIST *)
 				malloc(sizeof(struct INT_LIST));
@@ -655,13 +655,13 @@ int conf;
 		int_list_sav = cse.il;
 	    }
 	}
-	
+
 	/* om ett intervall h{nger ihop s} {ndrar vi p} det intervallet */
-	
+
 	else if (bound == 1) {
-	    
+
 	    /* find and modify interval */
-	    
+
 	    while (cse.il) {
 		if (cse.il->from == text+1L) {
 		    cse.il->from = text;
@@ -675,13 +675,13 @@ int conf;
 	    }
 	    cse.il = int_list_sav;
 	}
-	
+
 	/* om tv} intervall h{nger ihop, sl} ihop dem till ett */
-	
+
 	else if (bound == 2) {
-	    
+
 	    /* find and remove higher interval */
-	    
+
 	    while (cse.il) {
 		if (cse.il->to == (text-1L)) {
 		    int_list_next = cse.il->next;
@@ -693,9 +693,9 @@ int conf;
 		cse.il = cse.il->next;
 	    }
 	}
-	
+
 	cse.il = int_list_sav;
-	
+
 	nbuf = replace_confs(&cse, buf);
 
 	critical();
@@ -703,7 +703,7 @@ int conf;
 	    sys_error("mark_as_read", 4, "write_file");
 	    return -1;
 	}
-	
+
 	if (close_file(fd) == -1) {
 	    sys_error("mark_as_read", 5, "close_file");
 	    return -1;
@@ -733,29 +733,29 @@ int conf;
     struct CONFS_ENTRY cse;
     char *buf, *oldbuf;
     LINE fname;
-    
+
     strcpy(fname, Home);
     strcat(fname, CONFS_FILE);
-    
+
     if ((fd = open_file(fname, 0)) == -1) {
 	sys_error("check_if_read", 1, "open_file");
 	return -1;
     }
-    
+
     if ((buf = read_file(fd)) == NULL) {
 	sys_error("check_if_read", 2, "read_file");
 	return -1;
     }
-    
+
     oldbuf = buf;
-    
+
     if (close_file(fd) == -1) {
 	sys_error("check_if_read", 3, "close_file");
 	return -1;
     }
-    
+
     /* find confs-entry */
-    
+
     while (buf) {
 	buf = get_confs_entry(buf, &cse);
 	if (cse.num == conf)
@@ -763,7 +763,7 @@ int conf;
 	free_confs_entry(&cse);
     }
     free(oldbuf);
-    
+
     if (cse.num == conf) {
 	found = 0;
 	while (cse.il) {
@@ -775,7 +775,7 @@ int conf;
 	}
 	free_confs_entry(&cse);
 	return found;
-    }	
+    }
     free_confs_entry(&cse);
     return 0;
 }
@@ -794,7 +794,7 @@ int conf;
     struct CONFS_ENTRY cse;
     char *buf, *oldbuf, *nbuf, *tmpbuf, saved;
     LINE fname, textname, confsname;
-    
+
     strcpy(fname, Home);
     strcat(fname, CONFS_FILE);
 
@@ -803,32 +803,32 @@ int conf;
     flag = 0;
     first = 0L;
     high = 0L;
-    
+
     while (deleted) {
 	if ((fd = open_file(fname, 0)) == -1) {
 	    sys_error("next_text", 1, "open_file");
 	    return -1L;
 	}
-	
+
 	if ((buf = read_file(fd)) == NULL) {
 	    sys_error("next_text", 2, "read_file");
 	    return -1L;
 	}
-	
+
 	oldbuf = buf;
-    
+
 	if (close_file(fd) == -1) {
 	    sys_error("next_text", 3, "close_file");
 	    return -1L;
 	}
-    
+
 	while (buf) {
 	    buf = get_confs_entry(buf, &cse);
 	    if (cse.num == conf)
 		break;
 	    free_confs_entry(&cse);
 	}
-	
+
 	if (cse.num == conf) {
 	    if (cse.il == NULL) {
 		text = 1L;
@@ -848,9 +848,9 @@ int conf;
 	else {
 	    return -1L;
 	}
-	
+
 	free_confs_entry(&cse);
-	
+
 	if ((text == 0L) || (conf == 0)) {
 	    deleted = 0;
 	}
@@ -871,9 +871,9 @@ int conf;
 		    bzero(nbuf, i);
 		    tmpbuf = buf;
 		    tmpbuf--;
-		    while ((tmpbuf > oldbuf) && (*tmpbuf == '\n')) 
+		    while ((tmpbuf > oldbuf) && (*tmpbuf == '\n'))
 			tmpbuf--;
-		    while ((tmpbuf > oldbuf) && (*tmpbuf != '\n')) 
+		    while ((tmpbuf > oldbuf) && (*tmpbuf != '\n'))
 			tmpbuf--;
 		    if (tmpbuf > oldbuf) tmpbuf++;
 		    saved = *tmpbuf;
@@ -916,42 +916,42 @@ int conf;
     struct CONFS_ENTRY cse;
     char *buf, *oldbuf, *nbuf;
     LINE fname;
-    
+
     struct INT_LIST
 	    *int_list_sav,
 	    *saved,
 	    *tmpsav;
-    
+
     strcpy(fname, Home);
     strcat(fname, CONFS_FILE);
-    
+
     if ((fd = open_file(fname, 0)) == -1) {
 	sys_error("mark_as_unread", 1, "open_file");
 	return -1;
     }
-    
+
     if ((buf = read_file(fd)) == NULL) {
 	sys_error("mark_as_unread", 2, "read_file");
 	return -1;
     }
-    
+
     oldbuf = buf;
-    
+
     /* find confs-entry */
-    
+
     while (buf) {
 	buf = get_confs_entry(buf, &cse);
 	if (cse.num == conf)
 		break;
 	free_confs_entry(&cse);
     }
-    
+
     buf = oldbuf;
-    
+
     if (cse.num == conf) {
-	
+
 	/* look if already marked as unread */
-	
+
 	int_list_sav = cse.il;
 	found = 0;
 	while (cse.il) {
@@ -961,9 +961,9 @@ int conf;
 	    }
 	    cse.il = cse.il->next;
 	}
-	
+
 	cse.il = int_list_sav;
-	
+
 	if (!found) {
 	    free_confs_entry(&cse);
 	    if (close_file(fd) == -1) {
@@ -973,7 +973,7 @@ int conf;
 	    free(oldbuf);
 	    return 0;
 	}
-	
+
 	saved = cse.il;
 	while (cse.il) {
 	    if ((cse.il->from <= text) && (cse.il->to >= text)) {
@@ -1016,29 +1016,29 @@ int conf;
 	    saved = cse.il;
 	    cse.il = cse.il->next;
 	}
-	
+
 	cse.il = int_list_sav;
 	nbuf = replace_confs(&cse, buf);
-	
+
 	critical();
 	if (write_file(fd, nbuf) == -1) {
 	    sys_error("mark_as_unread", 5, "write_file");
 	    return -1;
 	}
-	
+
 	free_confs_entry(&cse);
-	
+
 	if (close_file(fd) == -1) {
 	    sys_error("mark_as_unread", 6, "close_file");
 	    return -1;
 	}
 	non_critical();
 	return 1;
-    }	
+    }
     if (close_file(fd) == -1) {
 	sys_error("mark_as_unread", 7, "close_file");
 	return -1;
-    }	
+    }
     return 0;
 }
 
@@ -1071,7 +1071,7 @@ int dtype;
 	output("\n%s\n\n", MSG_NOTEXTNUM);
 	return -1;
     }
-    
+
     if (conf > 0) {
 	sprintf(fname, "%s/%d/%ld", SKLAFF_DB, conf, num);
     }
@@ -1092,18 +1092,18 @@ int dtype;
 	output("\n%s\n\n", MSG_NOTEXT);
 	return -1;
     }
-    
+
     if ((buf = read_file(fd)) == NULL) {
 	output("\n%s\n\n", MSG_NOREAD);
 	return -1;
     }
-    
+
     oldbuf = buf;
-    
+
     if (close_file(fd) == -1) {
 	return -1;
     }
-    
+
     buf = get_text_entry(buf, &te);
     free(oldbuf);
     output("\n");
@@ -1119,7 +1119,7 @@ int dtype;
 	type = Uid - (Uid * 2);
     }
     if (Clear) cmd_cls(home);
-    
+
     bypass = 0;
     if (th->author) {
 	display_header(th, 0, type, dtype, NULL);
@@ -1156,7 +1156,7 @@ int dtype;
 
     if (th->type == TYPE_SURVEY) {
       survey_flag = 0;
-      if(!check_if_survey_taken(num, conf) && Numlines > 0 && time(0) < th->sh.time) { 
+      if(!check_if_survey_taken(num, conf) && Numlines > 0 && time(0) < th->sh.time) {
 	survey_flag = TAKE_SURVEY;
 	survey_valid=1;
 	survey_reply = (char *) malloc(LINE_LEN * th->sh.n_questions);
@@ -1175,7 +1175,7 @@ int dtype;
 	    Lines = Numlines;
 	  }
 	  if (th->type == TYPE_SURVEY) {
-	    if (make_survey(survey_reply + quest*LINE_LEN, &quest, 
+	    if (make_survey(survey_reply + quest*LINE_LEN, &quest,
 			    tb->line, survey_flag) == -1) {
 	      survey_valid=0;
 	      break;
@@ -1207,8 +1207,8 @@ int dtype;
 	    if (!endwritten) {
 		if ((th->size >= (Numlines - 6)) || Author) {
 		    if (th->author) user_name(th->author, aname);
-		    output("\n%s %ld %s %s\n", 
-               (th->type == TYPE_TEXT) ? MSG_EOT : MSG_EOSURVEY, 
+		    output("\n%s %ld %s %s\n",
+               (th->type == TYPE_TEXT) ? MSG_EOT : MSG_EOSURVEY,
 			   th->num, MSG_BY, aname);
 		}
 		else output("\n-------\n");
@@ -1242,7 +1242,7 @@ int dtype;
 		strcpy(username, ptr);
 		free_text_entry(&te2);
 	    }
-	    else {	    
+	    else {
 		user_name(cl->comment_author, username);
 	    }
 	    if (output("%s %ld %s %s\n", MSG_REPLYIN, cl->comment_num,
@@ -1250,16 +1250,16 @@ int dtype;
 	}
 	cl = cl->next;
     }
-    
+
     if (!endwritten && ((th->size >= (Numlines - 6)) || Author)) {
 	if (th->author) user_name(th->author, aname);
-	output("\n%s %ld %s %s\n", 
-               (th->type == TYPE_TEXT) ? MSG_EOT : MSG_EOSURVEY, 
+	output("\n%s %ld %s %s\n",
+               (th->type == TYPE_TEXT) ? MSG_EOT : MSG_EOSURVEY,
                th->num, MSG_BY, aname);
     }
-    
+
     output("\n");
-    
+
     if (te.cl) {
 	cl = te.cl;
 	while (cl) {
@@ -1278,7 +1278,7 @@ int dtype;
     }
 
     if (th->type == TYPE_SURVEY && (survey_flag & TAKE_SURVEY)) {
-      if (survey_valid) 
+      if (survey_valid)
 	if (save_survey_result(num, conf, survey_reply, th->sh.n_questions))
 	  mark_survey_as_taken(num, conf);
       free(survey_reply);
@@ -1306,7 +1306,7 @@ char *args;
     struct TEXT_HEADER *th;
     struct CONF_ENTRY *ce;
     struct USER_LIST *ul;
-    
+
     if (!args || (*args == '\0')) {
 	Rot13 = 0;
 	output("\n%s\n\n", MSG_ERRTNUM);
@@ -1333,7 +1333,7 @@ char *args;
 	    output("\n%s\n\n", MSG_NOLASTTEXT);
 	    return 0;
 	}
-	
+
 	if (Last_conf > 0) {
 	    sprintf(fname, "%s/%d/%ld", SKLAFF_DB, Last_conf, Last_text);
 	}
@@ -1347,28 +1347,28 @@ char *args;
 	    mbox_dir(uid, home);
 	    sprintf(fname, "%s/%ld", home, Last_text);
 	}
-	
+
 	if ((fd = open_file(fname, OPEN_QUIET)) == -1) {
 	    Rot13 = 0;
 	    output("\n%s\n\n", MSG_NOTEXT);
 	    return 0;
 	}
-	
+
 	if ((buf = read_file(fd)) == NULL) {
 	    Rot13 = 0;
 	    output("\n%s\n\n", MSG_NOREAD);
 	    return 0;
 	}
-	
+
 	oldbuf = buf;
-	
+
 	if (close_file(fd) == -1) {
 	    Rot13 = 0;
 	    return 0;
 	}
-	
+
 	buf = get_text_entry(buf, &te);
-	
+
 	free(oldbuf);
 	th = &te.th;
 	textnum = th->comment_num;
@@ -1393,7 +1393,7 @@ char *args;
 	}
 
 	free_text_entry(&te);
-	
+
 	if (!textnum) {
 	    Rot13 = 0;
 	    output("\n%s\n\n", MSG_NOREPLY);
@@ -1425,23 +1425,23 @@ long num;
     char *buf, *oldbuf;
     struct TEXT_ENTRY te;
     struct COMMENT_LIST *cl, *tmpcl, *savedcl;
-    
+
     sprintf(fname, "%s/%d/%ld", SKLAFF_DB, Current_conf, num);
-    
+
     if ((fd = open_file(fname, OPEN_QUIET)) == -1) {
 	return -1;
     }
-    
+
     if ((buf = read_file(fd)) == NULL) {
 	return -1;
     }
-    
+
     oldbuf = buf;
-    
+
     if (close_file(fd) == -1) {
 	return -1;
     }
-    
+
     buf = get_text_entry(buf, &te);
     free(oldbuf);
 
@@ -1455,7 +1455,7 @@ long num;
 	}
 	cl = cl->next;
     }
-    
+
     if (te.cl) {
 	cl = te.cl;
 	while (cl) {
@@ -1490,28 +1490,28 @@ long text;
     char *buf, *oldbuf;
     struct TEXT_ENTRY te;
     struct TEXT_HEADER *th;
-    
+
     top = text;
     while (text) {
 	sprintf(fname, "%s/%d/%ld", SKLAFF_DB, Current_conf, text);
-	
+
 	if ((fd = open_file(fname, OPEN_QUIET)) == -1) {
 	    return top;
 	}
-	
+
 	if ((buf = read_file(fd)) == NULL) {
 	    return 0;
 	}
-	
+
 	oldbuf = buf;
-	
+
 	if (close_file(fd) == -1) {
 	    return 0;
 	}
-	
+
 	buf = get_text_entry(buf, &te);
 	free(oldbuf);
-	
+
 	th = &te.th;
 	if (th->comment_num && !th->comment_conf) {
 	    text = th->comment_num;
@@ -1524,7 +1524,7 @@ long text;
 	if (file_exists(fname) != -1) {
 	    top = text;
 	}
-	
+
 	free_text_entry(&te);
     }
     return top;
@@ -1565,14 +1565,14 @@ char
 	    *tb;
     struct TEXT_HEADER
 	    *th;
-    
+
     if (Current_conf)
 	output("\n%7s  %-30s    %s\n\n", MSG_TEXTNAME, MSG_WRITTENBY,
 	       MSG_SUBJECT2);
     else
 	output("\n%7s  %-30s  %s\n\n", MSG_TEXTNAME, MSG_TOFROM,
 	       MSG_SUBJECT2);
-    
+
     rtrim(str);
     up_string(str);
     strlgth = strlen(str);
@@ -1581,7 +1581,7 @@ char
     xit = 0;
     wait_count = 0;
     dot_count = 0;
-    
+
     do {
 	if (Current_conf) {
 	    sprintf(fname, "%s/%d/%ld", SKLAFF_DB, Current_conf, current_text);
@@ -1602,7 +1602,7 @@ char
 	    oldbuf = buf;
 	    buf = get_text_entry(buf, &te);
 	    free(oldbuf);
-	    
+
 	    th = &te.th;
 
 	    from = 0;
@@ -1652,28 +1652,28 @@ char
 			*ptr3 = '\0';
 			strcpy(author, ptr2);
 			*ptr3 = sav;
-		    }	
+		    }
 		    else strcpy(author, ptr2);
 		}
 	    }
 
 	    strcpy(subject, th->subject);
 	    up_string(subject);
-	    
+
 	    if (strlen(author) > 30) {
 		author[30] = 0;
 	    }
 	    if (strlen(th->subject) > 36) {
 		th->subject[36] = 0;
 	    }
-	    
+
 	    if (strncmp(subject, str, strlgth) == 0) {
 		while (dot_count > 0) {
 		    output("\b \b");
 		    dot_count--;
 		}
 		wait_count = 0;
-		
+
 		if (Current_conf) {
 		    if (th->comment_num) c = ' ';
 		    else c = '*';
@@ -1752,11 +1752,11 @@ long
 	    te;
     struct TEXT_HEADER
 	    *th;
-    
+
     LINE fname;
     now = time(NULL);
 
-    current_text  = last_text(Current_conf, Uid);    
+    current_text  = last_text(Current_conf, Uid);
     firsttext = first_text(Current_conf, Uid);
 
     textno = -1;
@@ -1781,7 +1781,7 @@ long
 	    oldbuf = buf;
 	    buf = get_text_entry(buf, &te);
 	    free(oldbuf);
-	    
+
 	    th = &te.th;
 	    texttime = th->time;
 
@@ -1810,7 +1810,7 @@ int conf;
     char *buf, *oldbuf, *nbuf, *inbuf, *fbuf;
     LINE conffile, confdir, textfile, home;
     struct CONF_ENTRY ce;
-    
+
     oldconf = conf;
     ml = 0;
     if (conf < 0) {
@@ -1825,21 +1825,21 @@ int conf;
 	strcpy(conffile, CONF_FILE);
 	sprintf(confdir, "%s/%d/", SKLAFF_DB, conf);
     }
-    
+
     if ((fd = open_file(conffile, 0)) == -1) {
 	return -1L;
     }
-    
+
     if ((buf = read_file(fd)) == NULL) {
 	return -1L;
     }
 
     oldbuf = buf;
-    
+
     while ((buf = get_conf_entry(buf, &ce))) {
 	if (ce.num == conf) break;
     }
-    
+
     if (ce.num == conf) {
 	ce.last_text++;
 	nbuf = replace_conf(&ce, oldbuf);
@@ -1852,22 +1852,22 @@ int conf;
 	output("\n%s\n\n", MSG_CONFMISSING);
 	return -1L;
     }
-    
+
     sprintf(textfile, "%s%ld", confdir, ce.last_text);
-    
+
     if ((fdoutfile = open_file(textfile, OPEN_QUIET | OPEN_CREATE)) == -1) {
 	output("\n%s\n\n", MSG_ERRCREATET);
 	return -1L;
     }
-    
+
     if ((fdinfile = open_file(fname, 0)) == -1) {
 	return -1L;
     }
-    
+
     if ((inbuf = read_file(fdinfile)) == NULL) {
 	return -1L;
     }
-    
+
     if (close_file(fdinfile) == -1) {
 	return -1L;
     }
@@ -1893,48 +1893,48 @@ int conf;
     strcat(fbuf, inbuf);
 
     free(inbuf);
-    
+
     critical();
     if (write_file(fdoutfile, fbuf) == -1) {
 	return -1L;
     }
-    
+
     if (close_file(fdoutfile) == -1) {
 	return -1L;
     }
-    
+
     if (write_file(fd, nbuf) == -1) {
 	return -1L;
     }
-    
+
     if (close_file(fd) == -1) {
 	return -1L;
     }
 
     non_critical();
-    
+
     /* Save copy if flag set and in mailbox */
-    
+
     usernum = oldconf - (oldconf * 2);
     if ((oldconf < 0) && Copy && (usernum != Uid)) {
 	sprintf(conffile, "%s%s", Mbox, MAILBOX_FILE);
 	sprintf(confdir, "%s/", Mbox);
 	oldconf = 0;
-    
+
 	if ((fd = open_file(conffile, 0)) == -1) {
 	    return -1L;
 	}
-    
+
 	if ((buf = read_file(fd)) == NULL) {
 	    return -1L;
 	}
-    
+
 	oldbuf = buf;
-    
+
 	while ((buf = get_conf_entry(buf, &ce))) {
 	    if (!ce.num) break;
 	}
-    
+
 	if (!ce.num) {
 	    ce.last_text++;
 	    nbuf = replace_conf(&ce, oldbuf);
@@ -1947,27 +1947,27 @@ int conf;
 	    output("\n%s\n\n", MSG_CONFMISSING);
 	    return -1L;
 	}
-    
+
 	sprintf(textfile, "%s%ld", confdir, ce.last_text);
-    
+
 	if ((fdoutfile = open_file(textfile,
 				   OPEN_QUIET | OPEN_CREATE)) == -1) {
 	    output("\n%s\n\n", MSG_ERRCREATET);
 	    return -1L;
 	}
-    
+
 	if ((fdinfile = open_file(fname, 0)) == -1) {
 	    return -1L;
 	}
-    
+
 	if ((inbuf = read_file(fdinfile)) == NULL) {
 	    return -1L;
 	}
-    
+
 	if (close_file(fdinfile) == -1) {
 	    return -1L;
 	}
-    
+
 	fbuf = (char *)malloc(strlen(inbuf) + LONG_LINE_LEN);
 	if (fbuf == NULL) {
 	    sys_error("save_text", 1, "malloc");
@@ -1988,20 +1988,20 @@ int conf;
 	strcat(fbuf, inbuf);
 
 	free(inbuf);
-    
+
 	critical();
 	if (write_file(fdoutfile, fbuf) == -1) {
 	    return -1L;
 	}
-    
+
 	if (close_file(fdoutfile) == -1) {
 	    return -1L;
 	}
-    
+
 	if (write_file(fd, nbuf) == -1) {
 	    return -1L;
 	}
-    
+
 	if (close_file(fd) == -1) {
 	    return -1L;
 	}
@@ -2009,11 +2009,11 @@ int conf;
 	non_critical();
 
 	mark_as_read(ce.last_text, 0);
-	
+
     }
 
     /* End of save-copy section */
-    
+
     unlink(fname);
     if (ml) {
 	if (user_is_active(ml)) notify_user(ml, SIGNAL_NEW_TEXT);
@@ -2060,7 +2060,7 @@ struct TEXT_ENTRY *te;
 {
     struct TEXT_BODY *tmptb;
     struct COMMENT_LIST *tmpcl;
-    
+
     while (te->body) {
 	tmptb = te->body->next;
 	free (te->body);
@@ -2089,7 +2089,7 @@ char *rec, *subject, *inbuf;
     int fd, fd2;
     struct TEXT_HEADER th;
     struct CONF_ENTRY ce;
-    
+
     sprintf(conffile, "%s%s", Mbox, MAILBOX_FILE);
     sprintf(confdir, "%s/", Mbox);
 
@@ -2097,7 +2097,7 @@ char *rec, *subject, *inbuf;
     if ((buf = read_file(fd)) == NULL) return -1L;
     oldbuf = buf;
     while ((buf = get_conf_entry(buf, &ce))) if (!ce.num) break;
-    
+
     if (!ce.num) {
 	ce.last_text++;
 	nbuf = replace_conf(&ce, oldbuf);
@@ -2110,21 +2110,21 @@ char *rec, *subject, *inbuf;
 	output("\n%s\n\n", MSG_CONFMISSING);
 	return -1L;
     }
-    
+
     sprintf(textfile, "%s%ld", confdir, ce.last_text);
-    
+
     if ((fd2 = open_file(textfile, OPEN_QUIET | OPEN_CREATE)) == -1) {
 	output("\n%s\n\n", MSG_ERRCREATET);
 	return -1L;
     }
-    
+
     fbuf = (char *)malloc(strlen(inbuf) + 240);
     if (fbuf == NULL) {
 	sys_error("save_mailcopy", 1, "malloc");
 	return -1L;
     }
     bzero(fbuf, strlen(inbuf) + 240);
-    
+
     th.author = Uid;
     th.time = time(0);
     th.comment_num = 0;
@@ -2269,7 +2269,7 @@ long num;
 	output("\n%s\n\n", MSG_NOTEXTNUM);
 	return -1;
     }
-    
+
     if (conf > 0) {
 	sprintf(fname, "%s/%d/%ld", SKLAFF_DB, conf, num);
     }
@@ -2277,23 +2277,23 @@ long num;
 	output("\nInga enk{ter i brevl}dan\n\n");
 	return 0;
     }
-    
+
     if ((fd = open_file(fname, OPEN_QUIET)) == -1) {
 	output("\n%s\n\n", MSG_NOTEXT);
 	return -1;
     }
-    
+
     if ((buf = read_file(fd)) == NULL) {
 	output("\n%s\n\n", MSG_NOREAD);
 	return -1;
     }
-    
+
     oldbuf = buf;
-    
+
     if (close_file(fd) == -1) {
 	return -1;
     }
-    
+
     buf = get_text_entry(buf, &te);
     free(oldbuf);
     output("\n");
@@ -2313,12 +2313,12 @@ long num;
     user_name(th->author, username);
 
     if (Clear) cmd_cls(home);
-    
+
     /* Get survey results */
 
     sprintf(confdir, "%s/%d/", SKLAFF_DB, conf);
     sprintf(resfile, "%s%ld.result", confdir, num);
-    
+
     if ((fd = open_file(resfile, OPEN_QUIET)) == -1) {
       n=0;
       buf = NULL;
@@ -2328,20 +2328,20 @@ long num;
 	sys_error("display_survey_result", 1, "read_file");
 	return 0;
       }
-	
+
       if (close_file(fd) == -1) {
 	sys_error("display_survey_result", 1, "close_file");
 	return 0;
       }
 
       /* Get number of replies */
-      
+
       s = buf; i=0; s2 = strchr(s, '\n'); n=0;
       while (s2) {
 	i++;
 	if ((i % th->sh.n_questions) == 0)
 	  n++;
-	s = s2+1; s2 = strchr(s, '\n'); 
+	s = s2+1; s2 = strchr(s, '\n');
       }
     }
     /* Display header */
@@ -2369,7 +2369,7 @@ long num;
     output ("%s\n", c);
 
     if (n>0) {
-      s = buf; i=0; s2 = strchr(s, '\n'); 
+      s = buf; i=0; s2 = strchr(s, '\n');
       while (s2) {
 	*s2 = '\0';
 	if (output("%s\n", s) == -1)
@@ -2378,14 +2378,14 @@ long num;
 	if ((i % th->sh.n_questions) == 0)
 	  if (output("%s\n", MSG_SURVDELIMIT2) == -1)
 	    break;
-	s = s2+1; s2 = strchr(s, '\n'); 
+	s = s2+1; s2 = strchr(s, '\n');
       }
       free(buf);
     }
 
     output("\n%s %ld %s %s\n\n", MSG_EORESULT,
 	   th->num, MSG_BY, username);
-    free_text_entry(&te); 
+    free_text_entry(&te);
 
     return 0;
 }

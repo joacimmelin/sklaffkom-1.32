@@ -3,7 +3,7 @@
 /*
  *   SklaffKOM, a simple conference system for UNIX.
  *
- *   Copyright (C) 1993-1994  Torbj|rn B}}th, Peter Forsberg, Peter Lindberg, 
+ *   Copyright (C) 1993-1994  Torbj|rn B}}th, Peter Forsberg, Peter Lindberg,
  *                            Odd Petersson, Carl Sundbom
  *
  *   Program dedicated to the memory of Staffan Bergstr|m.
@@ -14,12 +14,12 @@
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 2, or (at your option)
  *   any later version.
- *    
+ *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU General Public License for more details.
- *   
+ *
  *   You should have received a copy of the GNU General Public License
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
@@ -77,7 +77,7 @@ int cmp_strings(char *s1, char *s2)
 {
     static LINE tmp1, tmp2;
     int p1 = 0, p2 = 0;
-    
+
     rtrim (s1);
     rtrim (s2);
     strcpy (tmp1, s1);
@@ -85,12 +85,12 @@ int cmp_strings(char *s1, char *s2)
     up_string (tmp1);
     up_string (tmp2);
     for (;;) {
-	if (tmp1[p1] == '(') 
+	if (tmp1[p1] == '(')
 		skip_beyond_rpar (tmp1, &p1);
 	if (tmp2[p2] == '(')
 		skip_beyond_rpar (tmp2, &p2);
 	if (tmp1[p1] != tmp2[p2])
-		return 0; 
+		return 0;
 	while ((tmp1[p1] == tmp2[p2]) && (tmp1[p1] != '\0') && (tmp2[p2] != '\0')) {
 	    if (isspace (tmp2[p2]) || (tmp2[p2] == '.')) {
 		skip_beyond_space (tmp1, &p1);
@@ -100,7 +100,7 @@ int cmp_strings(char *s1, char *s2)
 		p2++;
 	    }
 	}
-	if (tmp1[p1] == '(') 
+	if (tmp1[p1] == '(')
 		skip_beyond_rpar (tmp1, &p1);
 	if (tmp2[p2] == '(')
 		skip_beyond_rpar (tmp2, &p2);
@@ -113,7 +113,7 @@ int cmp_strings(char *s1, char *s2)
 		    return 1; /* strings did match */
 	    else
 		    return 0; /* s2 longer than s1, no match */
-	} 
+	}
 	if (tmp2[p2] == '\0')
 		return 1; /* if we got this far, the strings match */
     }

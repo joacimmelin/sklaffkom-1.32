@@ -1,5 +1,5 @@
 #include "sklaff.h"
-#include "globals.h" 
+#include "globals.h"
 #include <pwd.h>
 #include <fcntl.h>
 #include <signal.h>
@@ -19,8 +19,8 @@ int main(int argc, char *argv[])
     if (conf == -1) exit(1);
 
     pw = getpwnam(SKLAFF_ACCT);
-    if (pw == NULL) exit(1); 
-    
+    if (pw == NULL) exit(1);
+
     if ((fd = open_file(argv[1], 0)) == -1) exit(1);
     if ((buf = read_file(fd)) == NULL) exit(1);
     oldbuf = buf;
@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
     free(oldbuf);
 
     notify_all_processes(SIGNAL_NEW_TEXT);
-    
+
     exit(0);
 }
 
@@ -66,7 +66,7 @@ int ouid, ogrp;
     struct TEXT_HEADER th;
     int fd, fdo;
     char *buf, *oldbuf, *nbuf, *ptr, *tmp, *fbuf;
-    
+
     strcpy(conffile, CONF_FILE);
     sprintf(confdir, "%s/%d/", SKLAFF_DB, conf);
 
@@ -151,7 +151,7 @@ int ouid, ogrp;
     strcat(fbuf, th.subject);
     strcat(fbuf, "\n");
     strcat(fbuf, mbuf);
-    
+
     if (write_file(fdo, fbuf) == -1) return -1;
     if (close_file(fdo) == -1) return -1;
 

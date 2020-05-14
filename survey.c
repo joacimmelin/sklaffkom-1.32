@@ -3,7 +3,7 @@
 /*
  *   SklaffKOM, a simple conference system for UNIX.
  *
- *   Copyright (C) 1993-1994  Torbj|rn B}}th, Peter Forsberg, Peter Lindberg, 
+ *   Copyright (C) 1993-1994  Torbj|rn B}}th, Peter Forsberg, Peter Lindberg,
  *                            Odd Petersson, Carl Sundbom
  *
  *   Program dedicated to the memory of Staffan Bergstr|m.
@@ -14,12 +14,12 @@
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 2, or (at your option)
  *   any later version.
- *    
+ *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU General Public License for more details.
- *   
+ *
  *   You should have received a copy of the GNU General Public License
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
@@ -63,14 +63,14 @@ int flag;
 
 
 
-static int 
+static int
 resshowcompare(r1, r2)
 struct RESSHOW *r1, *r2;
 {
   return(r1->val - r2->val);
 }
 
-int 
+int
 save_survey_result(survey, conf, survey_result, n_quest)
 long survey;
 int conf;
@@ -88,7 +88,7 @@ int n_quest;
 #endif
 
   ret = 0;
-  
+
   /* Show answers and ask for confirmation */
 
   output("%s:\n\n", MSG_SURVEYANS);
@@ -97,9 +97,9 @@ int n_quest;
     output("%d. %s\n", i+1, survey_result + i*LINE_LEN);
   output("\n%s (%c/n):", MSG_SAVESURVANS, MSG_YESANSWER);
   input("", saveanswer, 4, 0, 0, 0);
-      
+
   if (tolower(*saveanswer) == MSG_YESANSWER) {
-    
+
     /* Save answers */
 
     if (conf >= 0) {
@@ -111,7 +111,7 @@ int n_quest;
 	  sys_error("save_survey_result", 1, "open_file");
 	  return -1L;
 	}
-	
+
 	/* First answer */
 
 	fbuf = (char *) malloc(n_quest*LINE_LEN);
@@ -120,7 +120,7 @@ int n_quest;
 	  sys_error("save_survey_result", 1, "malloc");
 	  return -1;
 	}
-	
+
 	bzero(fbuf, n_quest*LINE_LEN);
 
 	for (i=0; i<n_quest; i++) {
@@ -144,18 +144,18 @@ int n_quest;
 
 	for (n=0, t=strchr(buf,'\n'); t; t = strchr(t+1, '\n'), n++)
 	  ;
-	
+
 	n = (n+0.25) / n_quest + 1;
-	
+
 	resbuf = (struct RESSHOW *) malloc(n * sizeof(struct RESSHOW));
 	if (resbuf == NULL) {
 	  sys_error("save_survey_result", 1, "malloc");
 	  return 0;
 	}
-	
+
 	resbuf[0].entry = survey_result;
 	resbuf[0].val = rand();
-	
+
 	t=buf;
 	for (i=1; i<n; i++) {
 	  resbuf[i].entry = t;
@@ -166,7 +166,7 @@ int n_quest;
 	}
 
 	/* Sort to get random order of results */
-	
+
 	qsort(resbuf, n, sizeof(struct RESSHOW), resshowcompare);
 	bzero(fbuf, strlen(buf) + n_quest*LINE_LEN);
 
@@ -191,16 +191,16 @@ int n_quest;
       memcpy(debugbuf, fbuf, strlen(fbuf));
 #endif
 
-      critical(); 
+      critical();
 
       if (write_file(fd, fbuf) == -1) {
 	return -1L;
       }
-      
+
       if (close_file(fd) == -1) {
 	return -1L;
       }
-      
+
       non_critical();
 
 #ifdef SURVEYDEBUG
@@ -209,23 +209,23 @@ int n_quest;
       time_string(time(0), tist, 1);
       strcat(debugbuf, tist);
       strcat(debugbuf, "\n");
-      sprintf(tist, "n=%d, n_quest=%d", n, n_quest); 
+      sprintf(tist, "n=%d, n_quest=%d", n, n_quest);
       strcat(debugbuf, tist);
       strcat(debugbuf, "\n");
       if ((fd = open_file(debfile, OPEN_CREATE)) == -1) {
 	sys_error("save_survey_result", 1, "open_file");
 	return -1L;
       }
-      critical(); 
+      critical();
 
       if (write_file(fd, debugbuf) == -1) {
 	return -1L;
       }
-      
+
       if (close_file(fd) == -1) {
 	return -1L;
       }
-      
+
       non_critical();
 #endif
 
@@ -238,8 +238,8 @@ int n_quest;
   return ret;
 }
 
- 
-static int 
+
+static int
 repbufcompare(r1, r2)
 double *r1, *r2;
 {
@@ -247,7 +247,7 @@ double *r1, *r2;
   return(rr);
 }
 
-double 
+double
 my_atof(s)
 char *s;
 {
@@ -264,7 +264,7 @@ char *s;
      We hence know apriori that no spaces, commas, etc. are present. */
 
   t = strchr(tmp+1, '-');      /* Check for "2-3" constructions */
-  
+
   if (t == NULL) {
     t = strchr(tmp+1, '/');      /* Check for "2/3" constructions */
     if (t == NULL)
@@ -294,7 +294,7 @@ LINE lin;
 long *totlen;
 {
   if (tb != NULL) {
-    strcpy(tb->line, lin); 
+    strcpy(tb->line, lin);
     tb->next = (struct TEXT_BODY *) malloc (sizeof (struct TEXT_BODY));
     if (tb->next != NULL)
       tb->next->next = NULL;
@@ -345,10 +345,10 @@ int n_quest;
       sys_error("show_survey_result", 3, "close_file");
       return NULL;
     }
-    
+
     for (n=0, t=strchr(buf,'\n'); t; t = strchr(t+1, '\n'), n++)
       ;
-    
+
     n = (n+0.25) / n_quest;
 
     /* Consistency check start */
@@ -383,7 +383,7 @@ int n_quest;
       sys_error("show_survey_result", 1, "malloc");
       return NULL;
     }
-    
+
     t=buf;
     for (i=0; i<n; i++) {
       resbuf[i].entry = t;
@@ -402,7 +402,7 @@ int n_quest;
       tb->line[0] = '\0';
       Lines = Numlines;
     }
-    
+
     qtype = parse_survey_line(tb->line);
     if (qtype >= 0) {
       sprintf(utlinje, "%s\n", MSG_SURVDELIMIT1);
@@ -416,12 +416,12 @@ int n_quest;
 	  for (i=0; i<nalt; i++)
 	    repbuf[i] = 0;
 	}
-	
+
 	switch (qtype) {
 	case SURVEY_FREETEXT:
 	  for (i=0; i<n; i++) {
 	    t = resbuf[i].entry;
-	    for (j=0; j<quest; j++) 
+	    for (j=0; j<quest; j++)
 	      t = t + strlen(t)+1;
 	    sprintf(utlinje, "%s\n", t);
 	    tbut = outline(tbut, utlinje, &totlen);
@@ -430,10 +430,10 @@ int n_quest;
 	case SURVEY_SINGLECHOICE:
 	  for (i=0; i<n; i++) {
 	    t = resbuf[i].entry;
-	    for (j=0; j<quest; j++) 
+	    for (j=0; j<quest; j++)
 	      t = t + strlen(t)+1;
 	    repi = atol(t);
-	    if (repi>0) 
+	    if (repi>0)
 	      repbuf[repi-1]++;
 	  }
 	  j=0;
@@ -451,7 +451,7 @@ int n_quest;
 	case SURVEY_MULTIPLECHOICE:
 	  for (i=0; i<n; i++) {
 	    t = resbuf[i].entry;
-	    for (j=0; j<quest; j++) 
+	    for (j=0; j<quest; j++)
 	      t = t + strlen(t)+1;
 	    for (j=0; j<nalt; j++)
 	      if (strchr(t, 'a'+j))
@@ -468,7 +468,7 @@ int n_quest;
 	  mn = 1e10; mx = -mn; sm=0.0; sm2=0.0; nalt=n;
 	  for (i=0; i<n; i++) {
 	    t = resbuf[i].entry;
-	    for (j=0; j<quest; j++) 
+	    for (j=0; j<quest; j++)
 	      t = t + strlen(t)+1;
 	    if (strlen(t) != 0) {
 	      rep = my_atof(t);
@@ -492,16 +492,16 @@ int n_quest;
 	    k=0;
 	    for (i=0; i<n; i++) {
 	      t = resbuf[i].entry;
-	      for (j=0; j<quest; j++) 
+	      for (j=0; j<quest; j++)
 		t = t + strlen(t)+1;
 	      if (strlen(t) != 0) {
 		repbufd[k]= my_atof(t);
 		k++;
-	      } 
+	      }
 	    }
 
 	    qsort(repbufd, nalt, sizeof(double), repbufcompare);
-	    
+
 	    sprintf(utlinje, "%s:\n", MSG_ANSWER2);
 	    tbut = outline(tbut, utlinje, &totlen);
 	    utlinje[0]='\0';
@@ -520,9 +520,9 @@ int n_quest;
 	    }
 	    sprintf(utlinje, "\nMin: %g,  Max: %g\n", mn, mx);
 	    tbut = outline(tbut, utlinje, &totlen);
-	    sprintf(utlinje, "%s: %.4g,  Median: %.4g\n", 
+	    sprintf(utlinje, "%s: %.4g,  Median: %.4g\n",
 		    MSG_MEAN, (double) sm / nalt,
-		    (double) (((nalt % 2) == 0) ? 
+		    (double) (((nalt % 2) == 0) ?
 			      (repbufd[nalt/2]+repbufd[nalt/2-1])/2 :
 			      repbufd[(nalt-1)/2]));
 	    tbut = outline(tbut, utlinje, &totlen);
@@ -568,7 +568,7 @@ int n_quest;
   return utbuf;
 }
 
-int 
+int
 mark_survey_as_taken(survey, conf)
 long survey;
 int conf;
@@ -599,12 +599,12 @@ int conf;
       bzero(fbuf, 10);
       sprintf(fbuf, "[%d]", Uid);
     } else {
-      
+
       if ((buf = read_file(fd)) == NULL) {
 	sys_error("mark_survey_as_taken", 2, "read_file");
 	return -1;
       }
-      
+
       fbuf = (char *) malloc(strlen(buf) + 10);
       if (fbuf == NULL) {
 	sys_error("mark_survey_as_taken", 1, "malloc");
@@ -622,12 +622,12 @@ int conf;
       memcpy(debugbuf, fbuf, strlen(fbuf));
 #endif
 
-    critical(); 
+    critical();
 
     if (write_file(fd, fbuf) == -1) {
 	return -1L;
     }
-    
+
     if (close_file(fd) == -1) {
 	return -1L;
     }
@@ -645,23 +645,23 @@ int conf;
 	sys_error("mark_survey_as_taken", 1, "open_file");
 	return -1L;
       }
-      critical(); 
+      critical();
 
       if (write_file(fd, debugbuf) == -1) {
 	return -1L;
       }
-      
+
       if (close_file(fd) == -1) {
 	return -1L;
       }
-      
+
       non_critical();
 #endif
-  }    
+  }
   return -1;
 }
 
-int 
+int
 check_if_survey_taken(survey, conf)
 long survey;
 int conf;
@@ -681,36 +681,36 @@ int conf;
       /*	sys_error("check_if_survey_taken", 1, "open_file"); */
 	return 0;
     }
-    
+
     if ((buf = read_file(fd)) == NULL) {
 	sys_error("check_if_survey_taken", 2, "read_file");
 	return -1;
     }
-    
+
     if (close_file(fd) == -1) {
 	sys_error("check_if_survey_taken", 3, "close_file");
 	return -1;
     }
 
     sprintf(uidbuf, "[%d]", Uid);
-    
+
 
     if (strstr(buf, uidbuf) == NULL) /* Uid not found in file */
         ret = 0;
-    
+
     free(buf);
-  }    
+  }
   return ret;
 }
 
 
-time_t 
+time_t
 get_survey_time(cur_tim)
 time_t  cur_tim;
 {
   int ok,  days, hours, minutes;
   LINE repl;
-  
+
   /*
   struct tm ts;
   memcpy(&ts, localtime(&def_tim), sizeof(struct tm));
@@ -747,12 +747,12 @@ char *fname;
     sys_error("get_no_survey_questions", 1, "open_file");
     return -1;
   }
-  
+
   if ((buf = read_file(fd)) == NULL) {
     sys_error("get_no_survey_questions", 2, "read_file");
     return -1;
   }
-  
+
   if (close_file(fd) == -1) {
     sys_error("get_no_survey_questions", 3, "close_file");
     return -1;
@@ -764,7 +764,7 @@ char *fname;
       n++;
     sb = strtok(NULL, "\n");
   }
-  
+
   free(buf);
 
   return n;
@@ -778,13 +778,13 @@ char *lin;
   char *s, *s2, *s3;
   long n;
 
-  if (strncmp(lin, "##", 2)) 
+  if (strncmp(lin, "##", 2))
     return -1;
 
   s=lin+2;
   while (*s == ' ')
     s++;
-  
+
   if (tolower(*s) == 't')
     return SURVEY_FREETEXT;
 
@@ -795,17 +795,17 @@ char *lin;
 
   if (s2 == NULL)
     return -1;
-  
+
   n = atol(s2+1);
-  
+
   s3 = strchr(s2+1, ':');
 
   if (s3 != NULL) {
-    if (tolower(*s) == 'i' && n < atol(s3+1)) 
+    if (tolower(*s) == 'i' && n < atol(s3+1))
       return SURVEY_INTERVAL;
   }
 
-  /*   if (s3 == NULL && (n < 2 || n > 26))      Obsolete 
+  /*   if (s3 == NULL && (n < 2 || n > 26))      Obsolete
     return -1;  */
 
   if (n < 2 || n > 26)
@@ -876,7 +876,7 @@ int qtype, flag;
     break;
   case SURVEY_INTERVAL:
     s = strtok(NULL, ":");
-    n1 = atol(s); 
+    n1 = atol(s);
     s = strtok(NULL, ":");
     n2 = atol(s);
     output("(%ld - %ld)? ", n1, n2);
@@ -896,7 +896,7 @@ int qtype, flag;
       while ((atol(reply)< 1 || atol(reply) > i)  && *reply != '\0' && ret!=-1) {
 	output("(1 - %d)? ", i);
 	ret=input_extended("", reply, LINE_LEN, 0, 0, 0, '0', '9');
-      } 
+      }
       break;
     case SURVEY_MULTIPLECHOICE:
       ret=input_extended("", reply, LINE_LEN, 0, 0, 0, 'a', 'a'+i-1);
@@ -921,7 +921,7 @@ int qtype, flag;
       while ((atol(reply)< n1 || atol(reply) > n2) && *reply != '\0' && ret!=-1) {
 	output("(%ld - %ld)? ", n1, n2);
 	ret=input_extended("", reply, LINE_LEN, 0, 0, 0, '0', '9');
-      } 
+      }
       break;
     }
   } else

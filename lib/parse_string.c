@@ -3,7 +3,7 @@
 /*
  *   SklaffKOM, a simple conference system for UNIX.
  *
- *   Copyright (C) 1993-1994  Torbj|rn B}}th, Peter Forsberg, Peter Lindberg, 
+ *   Copyright (C) 1993-1994  Torbj|rn B}}th, Peter Forsberg, Peter Lindberg,
  *                            Odd Petersson, Carl Sundbom
  *
  *   Program dedicated to the memory of Staffan Bergstr|m.
@@ -14,12 +14,12 @@
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 2, or (at your option)
  *   any later version.
- *    
+ *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU General Public License for more details.
- *   
+ *
  *   You should have received a copy of the GNU General Public License
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
@@ -84,7 +84,7 @@ char *parm;
 {
     static LINE tmp1, tmp2, orig;
     int p1 = 0, p2 = 0, words = 0;
-    
+
     rtrim (s1);
     rtrim (s2);
     strcpy (tmp1, s1);
@@ -93,7 +93,7 @@ char *parm;
     up_string (tmp1);
     up_string (tmp2);
     for (;;) {
-	if (tmp1[p1] == '(') 
+	if (tmp1[p1] == '(')
 		skip_beyond_rpar (tmp1, &p1);
 	if (tmp2[p2] == '(')
 		skip_beyond_rpar (tmp2, &p2);
@@ -116,7 +116,7 @@ char *parm;
 		p2++;
 	    }
 	}
-	if (tmp1[p1] == '(') 
+	if (tmp1[p1] == '(')
 		skip_beyond_rpar (tmp1, &p1);
 	if (tmp2[p2] == '(')
 		skip_beyond_rpar (tmp2, &p2);
@@ -131,7 +131,7 @@ char *parm;
 		    return words + 1; /* strings did match */
 	    else
 		    break;
-	} 
+	}
 	if (tmp2[p2] == '\0')
 		return words + 1; /* if we got this far, the strings match */
 	if (words == wcnt) {
@@ -145,7 +145,7 @@ char *parm;
     }
     if (parm != NULL) {
 	p1 = 0;
-	while (orig[p2] != '\0') 
+	while (orig[p2] != '\0')
 		tmp1[p1++] = orig[p2++];
 	tmp1[p1++] = '\0';
 	strcpy (parm, tmp1);

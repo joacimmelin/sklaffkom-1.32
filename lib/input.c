@@ -3,7 +3,7 @@
 /*
  *   SklaffKOM, a simple conference system for UNIX.
  *
- *   Copyright (C) 1993-1994  Torbj|rn B}}th, Peter Forsberg, Peter Lindberg, 
+ *   Copyright (C) 1993-1994  Torbj|rn B}}th, Peter Forsberg, Peter Lindberg,
  *                            Odd Petersson, Carl Sundbom
  *
  *   Program dedicated to the memory of Staffan Bergstr|m.
@@ -14,12 +14,12 @@
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 2, or (at your option)
  *   any later version.
- *    
+ *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU General Public License for more details.
- *   
+ *
  *   You should have received a copy of the GNU General Public License
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
@@ -76,7 +76,7 @@ void baffo(tmp)
 int tmp;
 {
     sigset_t sigmask, oldsigmask;
-    
+
     sigemptyset(&sigmask);
     sigaddset(&sigmask, SIGNAL_NEW_TEXT);
     sigprocmask(SIG_BLOCK, &sigmask, &oldsigmask);
@@ -85,7 +85,7 @@ int tmp;
     sigprocmask(SIG_UNBLOCK, &oldsigmask, NULL);
 }
 
-/* 
+/*
  * input - inputs string
  * args: default string (in_str), input string (out_str), max number
  *       of characters allowed (max_len), don't echo output (noecho)
@@ -103,7 +103,7 @@ int hist;
     int len, hptr, ltop;
     char *p, *i, *space, *ptr;
     unsigned char c, outc;
-    
+
     Lines = 1;
     hptr = Comtop;
     ltop = Comtop;
@@ -126,7 +126,7 @@ int hist;
 	if((len == 0) && (Interrupt_input != 0)) {
 	    signal(SIGNAL_NEW_MSG, haffo);
 	    signal(SIGNAL_NEW_TEXT, haffo);
-	} 
+	}
  	if (Timeout) {
 	    alarm(60 * Timeout);
 	}
@@ -266,7 +266,7 @@ int hist;
 }
 
 
-/* 
+/*
  * input_extended - inputs string
  * args: default string (in_str), input string (out_str), max number
  *       of characters allowed (max_len), don't echo output (noecho)
@@ -286,7 +286,7 @@ int low, hi;
     int len, hptr, ltop;
     unsigned char c, outc;
     char *p, *i, *space, *ptr;
-    
+
     Lines = 1;
     hptr = Comtop;
     ltop = Comtop;
@@ -309,7 +309,7 @@ int low, hi;
 	if((len == 0) && (Interrupt_input != 0)) {
 	    signal(SIGNAL_NEW_MSG, haffo);
 	    signal(SIGNAL_NEW_TEXT, haffo);
-	} 
+	}
  	if (Timeout) {
 	    alarm(60 * Timeout);
 	}

@@ -3,7 +3,7 @@
 /*
  *   SklaffKOM, a simple conference system for UNIX.
  *
- *   Copyright (C) 1993-1994  Torbj|rn B}}th, Peter Forsberg, Peter Lindberg, 
+ *   Copyright (C) 1993-1994  Torbj|rn B}}th, Peter Forsberg, Peter Lindberg,
  *                            Odd Petersson, Carl Sundbom
  *
  *   Program dedicated to the memory of Staffan Bergstr|m.
@@ -14,19 +14,19 @@
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 2, or (at your option)
  *   any later version.
- *    
+ *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU General Public License for more details.
- *   
+ *
  *   You should have received a copy of the GNU General Public License
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
 #include "sklaff.h"
-#include "globals.h" 
+#include "globals.h"
 #include <pwd.h>
 #include <signal.h>
 #include <sys/stat.h>
@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
     struct SKLAFFRC *rc;
     struct stat fs;
     struct passwd *pw;
-    
+
     tty_raw();		/* Setup tty		   */
     if ((argc > 1) && !strcmp(argv[1], "userlist")) {
 	if (argc > 2) pdate = atoi(argv[2]);
@@ -273,10 +273,10 @@ int main(int argc, char *argv[])
 				free(oldbuf);
 				free_text_entry(&te);
 				if ((te.th.time + (ce2->life * 86400)) <
-				    time(0)) { 
+				    time(0)) {
 				  if (te.th.type == TYPE_TEXT) { /* Don't delete surveys */
 				    ttext++;
-				    unlink(fname); 
+				    unlink(fname);
 				  }
 				}
 				else break;

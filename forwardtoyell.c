@@ -1,5 +1,5 @@
 #include "sklaff.h"
-#include "globals.h" 
+#include "globals.h"
 #include <pwd.h>
 #include <fcntl.h>
 #include <signal.h>
@@ -8,7 +8,7 @@ void
 get_phoneno(char *inbuf, char *utbuf)
 {
   int c, d, i;
-  
+
   utbuf[0]=0;
 
   c = strlen(inbuf)-1;
@@ -51,9 +51,9 @@ int main(int argc, char *argv[])
     if (close_file(fd) == -1) exit(1);
     /*    unlink(argv[1]);  */
 
-      
+
     ptr = strstr(buf, "\n\n");
-    
+
     if (ptr) {
       ptr = ptr+2;
       get_phoneno(ptr, phone);
@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
       c = 0;
       do {
 	ptr2 = strchr(ptr, '\n');
-	if (!ptr2) 
+	if (!ptr2)
 	  len = strlen(ptr);
 	else
 	  len = ptr2-ptr;
@@ -91,14 +91,14 @@ int main(int argc, char *argv[])
 	    if (*mpt < 32)
 	      *mpt = '*';
 
-	  if (send_msg_to_all(MSG_SMS, msg) == -1) exit(1);  
+	  if (send_msg_to_all(MSG_SMS, msg) == -1) exit(1);
 	  /*	  printf("%d %ld %ld [%s]\n", len, ptr, ptr2,msg);   */
 	  c++;
 	}
 	ptr = ptr2;
-      } while (*(ptr2-1) != 0 && c < 5);     
+      } while (*(ptr2-1) != 0 && c < 5);
     }
-    free(oldbuf); 
-    
+    free(oldbuf);
+
     exit(0);
 }

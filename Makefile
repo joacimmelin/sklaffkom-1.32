@@ -22,7 +22,7 @@ CFLAGS=-O2 -pipe -Wall -Werror
 LIBS=-lsklaff -ltermcap -lm
 
 # uncomment for SOLARIS
-#CFLAGS=-g -I/usr/ucbinclude 
+#CFLAGS=-g -I/usr/ucbinclude
 #LIBS=-L/usr/ucblib -lm -lsklaff -ltermcap -lucb -lsocket -lnsl -lelf -laio
 
 # uncomment for LINUXELF
@@ -111,11 +111,11 @@ install: sklaffkom sklaffadm sklaffacct survreport sklaffwho
 	-mkdir $(SKLAFFDIR)
 	-mkdir $(SKLAFFDIR)/etc
 	@echo Installing SklaffKOM
-	-mv $(SKLAFFBIN)/sklaffkom $(SKLAFFBIN)/sklaffkom.old 
+	-mv $(SKLAFFBIN)/sklaffkom $(SKLAFFBIN)/sklaffkom.old
 	chown sklaff $(SKLAFFBIN)/sklaffkom.old
 	chmod u+s $(SKLAFFBIN)/sklaffkom.old
 	cp sklaffkom sklaffadm sklaffwho sklaffacct $(SKLAFFBIN)/
-	cp survreport $(SKLAFFBIN)/srep 
+	cp survreport $(SKLAFFBIN)/srep
 	-chown sklaff $(SKLAFFBIN)/sklaffkom $(SKLAFFBIN)/sklaffadm $(SKLAFFBIN)/sklaffwho \
 		      $(SKLAFFBIN)/sklaffacct
 	-chown root   $(SKLAFFBIN)/srep
@@ -155,7 +155,7 @@ installdb:
 	chmod og-rwx $(SKLAFFDIR)/etc
 	mkdir $(SKLAFFDIR)/etc/help.swe
 	chown sklaff $(SKLAFFDIR)/etc/help.swe
-	chmod og-rxw $(SKLAFFDIR)/etc/help.swe 
+	chmod og-rxw $(SKLAFFDIR)/etc/help.swe
 	mkdir $(SKLAFFDIR)/etc/help.eng
 	chown sklaff $(SKLAFFDIR)/etc/help.eng
 	chmod og-rxw $(SKLAFFDIR)/etc/help.eng

@@ -3,7 +3,7 @@
 /*
  *   SklaffKOM, a simple conference system for UNIX.
  *
- *   Copyright (C) 1993-1994  Torbj|rn B}}th, Peter Forsberg, Peter Lindberg, 
+ *   Copyright (C) 1993-1994  Torbj|rn B}}th, Peter Forsberg, Peter Lindberg,
  *                            Odd Petersson, Carl Sundbom
  *
  *   Program dedicated to the memory of Staffan Bergstr|m.
@@ -14,12 +14,12 @@
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 2, or (at your option)
  *   any later version.
- *    
+ *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU General Public License for more details.
- *   
+ *
  *   You should have received a copy of the GNU General Public License
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
@@ -38,7 +38,7 @@ char *buf;
 struct USER_ENTRY *ue;
 {
     char *ptr, *str;
-    
+
     bzero (ue->name, LINE_LEN);
     ue->num = (int)strtol(buf, &str, 10);
     if (str == buf) {
@@ -50,7 +50,7 @@ struct USER_ENTRY *ue;
     str = strchr(ptr, '\n');
     *str = 0;
     strcpy(ue->name, ptr);
-    *str = '\n';  
+    *str = '\n';
     rtrim (ue->name);
     buf = str;
     buf++;
@@ -81,7 +81,7 @@ struct FILE_ENTRY *fe;
     buf = ptr;
     while (*buf && (*buf == '\n'))
 	buf++;
-    return buf;			
+    return buf;
 }
 
 /*
@@ -95,7 +95,7 @@ char *buf;
 struct CONF_ENTRY *ce;
 {
     char *ptr, *str;
-    
+
     ce->num = strtol(buf, &str, 10);
     if (str == buf) {
 	return NULL;
@@ -130,7 +130,7 @@ char *get_parse_entry(char *buf, struct PARSE_ENTRY *pe)
 {
     int res;
     LINE tmpline;
-    
+
     bzero (pe->cmd, LINE_LEN);
     bzero (pe->func, LINE_LEN);
     bzero (pe->help, LINE_LEN);
@@ -150,7 +150,7 @@ char *get_parse_entry(char *buf, struct PARSE_ENTRY *pe)
 	    while (buf && (*buf == '\n'))
 		    buf++;
 	    if (res || (buf == NULL))
-		    return buf;			
+		    return buf;
 	}
     }
 }
@@ -167,7 +167,7 @@ char *buf;
     int itmp;
     struct USER_LIST *tmp, *top;
     char *ptr;
-    
+
     tmp = NULL;
     top = NULL;
     for (;;) {
@@ -190,14 +190,14 @@ char *buf;
 		malloc	(sizeof (struct USER_LIST));
 	    if (tmp->next == NULL) {
 		sys_error ("get_confrc_entry", 2, "malloc");
-		return NULL;	
-	    }	
+		return NULL;
+	    }
 	    tmp = tmp->next;
 	    tmp->num = itmp;
 	    tmp->next = NULL;
 	}
 	buf = ptr + 1;
-    }	
+    }
     return top;
 }
 
@@ -216,7 +216,7 @@ struct TEXT_ENTRY *te;
     char *run, *str, *ptr, triplet[4], *eol1;
     struct TEXT_BODY *tmp_body;
     struct COMMENT_LIST *tmp_cl;
-    
+
     te->th.num = atol(buf);
     ptr = strchr(buf, ':') + 1;
     te->th.author = atoi(ptr);
@@ -372,7 +372,7 @@ struct TEXT_ENTRY *te;
 	if (te->body->next == NULL) {
 	  sys_error ("get_text_entry", 2, "malloc");
 	  return NULL;
-	}	
+	}
 	te->body = te->body->next;
 	te->body->next = NULL;
       }
@@ -432,7 +432,7 @@ char *buf;
 struct ACTIVE_ENTRY *ae;
 {
     char *ptr, *str;
-    
+
     for (;;) {
 	bzero(ae->from, 17); /* Ugly! But it works... */
 	ae->user = (int)strtol(buf, &str, 10);
@@ -483,7 +483,7 @@ struct CONFS_ENTRY *ce;
     char *oldbuf, *t1, *t2;
     long  tmpfrom, tmpto;
     struct INT_LIST *int_list_sav;
-    
+
     ce->il = NULL;
     if (!buf) return NULL;
     int_list_sav = NULL;
@@ -495,7 +495,7 @@ struct CONFS_ENTRY *ce;
     oldbuf = buf;
     ce->num = atol(buf);
     buf = strchr(buf, ':');
-    
+
     buf++;
     for (;;) {
 	if (*buf == '\n') break;
@@ -559,9 +559,9 @@ struct MSG_ENTRY
     bzero(me->msg, LINE_LEN);
 
     me->direct = 0;  /* Default is always uid=sender */
-    
+
     for (;;) {
-	
+
 	ptr2 = buf;
 
 
@@ -572,7 +572,7 @@ struct MSG_ENTRY
 	*ptr = 0;
 	me->num = atoi(ptr2);
 	*ptr = ':';
-	
+
 	ptr2 = ptr + 1;
 	ptr = strchr(ptr2, ':');
 	if (ptr == NULL) {
@@ -581,7 +581,7 @@ struct MSG_ENTRY
 	*ptr = 0;
 	me->type = atoi(ptr2);
 	*ptr = ':';
-	
+
 	ptr2 = ptr + 1;
 	ptr = strchr(ptr2, '\n');
 	if (ptr == NULL) {

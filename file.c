@@ -3,7 +3,7 @@
 /*
  *   SklaffKOM, a simple conference system for UNIX.
  *
- *   Copyright (C) 1993-1994  Torbj|rn B}}th, Peter Forsberg, Peter Lindberg, 
+ *   Copyright (C) 1993-1994  Torbj|rn B}}th, Peter Forsberg, Peter Lindberg,
  *                            Odd Petersson, Carl Sundbom
  *
  *   Program dedicated to the memory of Staffan Bergstr|m.
@@ -14,12 +14,12 @@
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 2, or (at your option)
  *   any later version.
- *    
+ *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU General Public License for more details.
- *   
+ *
  *   You should have received a copy of the GNU General Public License
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
@@ -46,9 +46,9 @@ int rebuild_index_file()
     remo = 1;
     sprintf(fn, "%s/%d%s", FILE_DB, Current_conf, INDEX_FILE);
     sprintf(fn3, "%s/%d%s", FILE_DB, Current_conf, NEWINDEX_FILE);
-    
+
     critical();
-    
+
     if ((fd = open_file(fn, OPEN_CREATE)) == -1) {
 	return -1;
     }
@@ -61,7 +61,7 @@ int rebuild_index_file()
     getwd(cwd);
 #else
     getcwd(cwd, LINE_LEN);
-#endif    
+#endif
 
     sprintf(filed, "%s/%d", FILE_DB, Current_conf);
     chdir(filed);
@@ -80,7 +80,7 @@ int rebuild_index_file()
     }
 
     chdir(cwd);
-    
+
     if ((oldbuf = read_file(fd)) == NULL) {
 	return -1;
     }
@@ -123,7 +123,7 @@ int rebuild_index_file()
 	    *buf2 = '\0';
 	}
     }
-    
+
     close_file(fd3);
     close_file(fd2);
     close_file(fd);
@@ -133,7 +133,7 @@ int rebuild_index_file()
 
     copy_file(fn3, fn);
     unlink(fn3);
-    
+
     unlink(fn2);
     if (remo) unlink(fn);
     non_critical();

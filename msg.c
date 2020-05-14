@@ -3,7 +3,7 @@
 /*
  *   SklaffKOM, a simple conference system for UNIX.
  *
- *   Copyright (C) 1993-1994  Torbj|rn B}}th, Peter Forsberg, Peter Lindberg, 
+ *   Copyright (C) 1993-1994  Torbj|rn B}}th, Peter Forsberg, Peter Lindberg,
  *                            Odd Petersson, Carl Sundbom
  *
  *   Program dedicated to the memory of Staffan Bergstr|m.
@@ -14,12 +14,12 @@
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 2, or (at your option)
  *   any later version.
- *    
+ *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU General Public License for more details.
- *   
+ *
  *   You should have received a copy of the GNU General Public License
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
@@ -80,7 +80,7 @@ int type_filter;
 	     r = output("->%s: %s\n", name, me[i]->msg); /* Receiver name */
 	    break;
 	case MSG_YELL:
-	    r = output("%s %s %s\n", name, MSG_YELLS, 
+	    r = output("%s %s %s\n", name, MSG_YELLS,
 		   me[i]->msg);
 	    break;
 	case MSG_I:
@@ -138,7 +138,7 @@ int display_msg(int num)
     sigset_t sigmask, oldsigmask;
     LINE name, msgfile;
     struct MSG_ENTRY me;
-    
+
     if (!Change_msg) return 0;
 
     sprintf(name, "enters display_msg()");    debuglog(name, 30);
@@ -150,34 +150,34 @@ int display_msg(int num)
 
     strcpy(msgfile, Home);
     strcat(msgfile, MSG_FILE);
-    
+
     if ((fd = open_file(msgfile, 0)) == -1) {
 	sys_error("display_msg", 1, "open_file");
 	return -1;
     }
-    
+
     if ((buf = read_file(fd)) == NULL) {
 	sys_error("display_msg", 2, "read_file");
 	return -1;
     }
-    
+
     oldbuf = buf;
-    
+
     /* Truncate file */
-    
+
     critical();
-    
+
     if (ftruncate(fd,(off_t)0L) == -1) {
 	sys_error("display_,msg",3,"ftruncate");
 	return -1;
     }
-    
+
     if (close_file(fd) == -1) {
 	sys_error("display_msg", 4, "close_file");
 	return -1;
     }
     non_critical();
-    
+
     nl = 0;
     while ((buf = get_msg_entry(buf, &me))) {
 
@@ -275,14 +275,14 @@ int display_msg(int num)
 	}
 
     }
-    
+
     if (nl) {
 	output("\n");
     }
     free (oldbuf);
     Change_msg = 0;
     sigprocmask(SIG_UNBLOCK, &oldsigmask, NULL);
-    sprintf(name, "exits display_msg()");    debuglog(name, 30); 
+    sprintf(name, "exits display_msg()");    debuglog(name, 30);
 
     return nl;
 }
@@ -309,16 +309,16 @@ int confirm;
     int
 	    b,
 	    fd, res;
-    
+
     char
 	    *newbuf,
 	    *buf;
-    
+
     LINE
 	    name,
             tmpname,
 	    msgfile;
-    
+
     LONG_LINE
 	    msgbuf;
     struct SKLAFFRC *rc;
@@ -336,7 +336,7 @@ int confirm;
 	    return -1;
 	}
     }
-    
+
     if (type == MSG_YELL || type == MSG_I || type == MSG_SMS || type == MSG_MY) {
 	res = check_flag(rc->flags, "shout");
 	if (res == -1) res = 1;
@@ -347,25 +347,25 @@ int confirm;
 	  return -1;
 	}
     }
-    
+
     free (rc);
 
     if (!user_is_avail(uid)) {
-	if ((type != MSG_LOGIN) && (type != MSG_LOGOUT) && (type != MSG_SMS)) 
+	if ((type != MSG_LOGIN) && (type != MSG_LOGOUT) && (type != MSG_SMS))
 	    output("%s %s\n",user_name(uid, msgfile), MSG_BUSY);
 	return 0;
     }
-    
+
     user_dir(uid, msgfile);
     strcat(msgfile, MSG_FILE);
-    
+
     critical();
 
     if ((fd = open_file(msgfile, OPEN_QUIET)) == -1) {
 	output("%s %s\n", user_name(uid, msgfile), MSG_NOACTIVE);
 	return -1;
     }
-    
+
     if ((buf = read_file(fd)) == NULL) {
 	sys_error("send_msg", 2, "read_file");
 	return -1;
@@ -387,13 +387,13 @@ int confirm;
 	strcpy(me.msg, &msg[b]);
 	add_to_mlist(&me);
     }
-    
+
     newbuf = (char *)malloc(strlen(buf) + strlen(msgbuf) + 1);
     if (newbuf == NULL) {
 	sys_error("send_msg", 3, "malloc");
 	return -1;
     }
-    
+
     strcpy(newbuf, buf);
     strcat(newbuf, msgbuf);
     free (buf);
@@ -405,16 +405,16 @@ int confirm;
 	sys_error("send_msg", 4, "write_file");
 	return -1;
     }
-    
+
     if (close_file(fd) == -1) {
 	sys_error("send_msg", 5, "close_file");
 	return -1;
     }
     non_critical();
-    
+
     notify_user(uid, SIGNAL_NEW_MSG);
-    
-    if (((type == MSG_SAY) || (type == MSG_YELL) || (type == MSG_I) || (type == MSG_MY)) && 
+
+    if (((type == MSG_SAY) || (type == MSG_YELL) || (type == MSG_I) || (type == MSG_MY)) &&
 	confirm>0) {
 	itime = idle_time(uid);
 	if (confirm == 1) {
@@ -437,7 +437,7 @@ int confirm;
 	    output("%-25s ", user_name(uid, name));
 	}
     }
-    
+
     return 0;
 }
 
@@ -460,22 +460,22 @@ char
     char
 	    *buf,
 	    *oldbuf;
-    
+
     struct ACTIVE_ENTRY
 	    ae;
     int b;
     struct MSG_ENTRY me;
-    
+
     if ((ActiveFD = open_file(ACTIVE_FILE, 0)) == -1) {
 	return -1;
     }
-    
+
     if ((buf = read_file(ActiveFD)) == NULL) {
 	return -1;
     }
-    
+
     oldbuf = buf;
-    
+
     if (close_file(ActiveFD) == -1) {
 	return -1;
     }
@@ -501,7 +501,7 @@ char
 	  send_msg(ae.user, type, msg, 1);
 	}
       }
-    }    
+    }
 
     b = 0;
     while (msg[b] == ' ') {
@@ -511,7 +511,7 @@ char
     me.type = type;
     strcpy(me.msg, &msg[b]);
     add_to_mlist(&me);
-    
+
     free (oldbuf);
     return 0;
 }
@@ -526,19 +526,19 @@ int	sig;
 
 {
     char	*buf, *oldbuf;
-    
+
     struct ACTIVE_ENTRY ae;
-    
+
     if ((ActiveFD = open_file(ACTIVE_FILE, 0)) == -1) {
 	return;
     }
-    
+
     if ((buf = read_file(ActiveFD)) == NULL) {
 	return ;
     }
-    
+
     oldbuf = buf;
-    
+
     if (close_file(ActiveFD) == -1) {
 	free (buf);
 	return ;
@@ -562,30 +562,30 @@ void notify_user(uid, sig)
 int	uid;
 int	sig;
 {
-    
+
     char	  *buf, *oldbuf;
     struct ACTIVE_ENTRY  ae;
-    
+
     if ((ActiveFD = open_file(ACTIVE_FILE, 0)) == -1) {
 	return ;
     }
-    
+
     if ((buf = read_file(ActiveFD)) == NULL) {
 	return ;
     }
-    
+
     if (close_file(ActiveFD) == -1) {
 	return ;
-    }  
+    }
     ActiveFD=-1;
 
     oldbuf = buf;
-    
+
     while ((buf = get_active_entry(buf, &ae))) {
 	if (ae.user == uid) {
-	  (void) kill (ae.pid, sig); 
+	  (void) kill (ae.pid, sig);
 	}
     }
-    
+
     free (oldbuf);
 }

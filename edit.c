@@ -3,7 +3,7 @@
 /*
  *   SklaffKOM, a simple conference system for UNIX.
  *
- *   Copyright (C) 1993-1994  Torbj|rn B}}th, Peter Forsberg, Peter Lindberg, 
+ *   Copyright (C) 1993-1994  Torbj|rn B}}th, Peter Forsberg, Peter Lindberg,
  *                            Odd Petersson, Carl Sundbom
  *
  *   Program dedicated to the memory of Staffan Bergstr|m.
@@ -14,12 +14,12 @@
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 2, or (at your option)
  *   any later version.
- *    
+ *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU General Public License for more details.
- *   
+ *
  *   You should have received a copy of the GNU General Public License
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
@@ -69,8 +69,8 @@ char *mailrec;
     if ((Start = (struct EDIT_BUF *)malloc(sizeof(struct EDIT_BUF))) == NULL) {
 	sys_error("line_ed", 1, "malloc");
 	return NULL;
-    } 
-    
+    }
+
     ptr = Start;
     ptr->previous = NULL;
     ptr->next = NULL;
@@ -79,7 +79,7 @@ char *mailrec;
     numlines = 1;
     Size = 1;
     c = 0;
-    
+
     if ((fd = open(fname, O_RDONLY)) != -1) {
 	close(fd);
 	fd = open_file(fname, 0);
@@ -114,7 +114,7 @@ char *mailrec;
 	*space = '\0';
 	close_file(fd);
     }
-    
+
     lastchar = '\0';
     Globalth = th;
     if (allow_abort) signal(SIGHUP, abort_edit);
@@ -122,7 +122,7 @@ char *mailrec;
 	len = strlen(ptr->line);
 	if (allow_say) display_msg(0);
 	output("%3d:%s", numlines, ptr->line);
-	
+
 	for (;;) {
 	    lastchar = c;
  	    if (Timeout) {
@@ -145,7 +145,7 @@ char *mailrec;
 	    else if (c == 246) c = '|';
 	    else if (c == 197) c = ']';
 	    else if (c == 196) c = '[';
-	    else if (c == 214) c = 0x05c;      
+	    else if (c == 214) c = 0x05c;
 	    if (c == 140) c = '}';
 	    else if (c == 138) c = '{';
 	    else if (c == 154) c = '|';
@@ -154,7 +154,7 @@ char *mailrec;
 	    else if (c == 133) c = 0x05c;
 
 	    Lines = 1;
-	    
+
 	    if (c >= ' ' && c <= '~') {
 		if (len < 74) {
 		    ptr->line[len] = (char)c;
@@ -178,7 +178,7 @@ char *mailrec;
 		    output("\n");
 		    break;
 		}
-	    } 
+	    }
 	    else if (c == 9) {
 		if (len < 72) {
 		    i = 8 - (len % 8);
@@ -233,12 +233,12 @@ char *mailrec;
 		    }
 		}
 	    }
-	    
+
 	    else if ((c == 24 || c == 21) && len > 0) {
 		for(; len > 0; len--) output("\b \b");
 		ptr->line[0] = '\0';
 	    }
-	    
+
 	    else if (c == '\r' || (c == '\n' && lastchar != '\r')) {
 		ptr->line[len] = '\0';
 		output("\n");
@@ -246,7 +246,7 @@ char *mailrec;
 		make_activity_note();
 		break;
 	    }
-	    
+
 	    else if (c == 12) {
 		output("\n\n");
 		make_activity_note();
@@ -263,7 +263,7 @@ char *mailrec;
 		}
 		output("%3d:%s", numlines, ptr->line);
 	    }
-	    
+
 	    else if (c == 3) {
 		make_activity_note();
 		if (numlines > 1) {
@@ -323,7 +323,7 @@ char *mailrec;
 		}
 	    }
 	}
-	
+
 	if (ptr->line[0] == '!') {
 	    space = strchr(ptr->line, ' ');
 	    arg[0] = '\0';
@@ -481,7 +481,7 @@ char *mailrec;
 			    output("%3d:%s\n", edit_line, tmpptr->line);
 			    output("%3d:", edit_line);
 			    input(tmpptr->line, tmpptr->line, 77, 0, 0, 0);
-			} 
+			}
 			else {
 			    output("\n%s\n\n", MSG_BADLINE);
 			}
@@ -590,7 +590,7 @@ char *mailrec;
 			    if (newconf == -1) {
 				output("\n%s\n\n", MSG_NONEWS);
 			    }
-			    
+
 			    else if (!newconf) {
 				output("\n%s\n\n", MSG_NOPOSTMBOX);
 			    }
@@ -714,10 +714,10 @@ char *mailrec;
 		      output(MSG_SURVHELP5);
 		      output(MSG_SURVHELP6);
 		    }
-		} 
+		}
 	    }
 	}
-	
+
 	else {
 	    numlines++;
 	    Size++;
@@ -734,7 +734,7 @@ char *mailrec;
 	    waste[0] = '\0';
 	}
     }
-    
+
  save:
     output("\n");
     signal(SIGHUP, logout);
@@ -758,7 +758,7 @@ char *mailrec;
 	return NULL;
     }
     non_critical();
-    th->time = time(&save_time); 
+    th->time = time(&save_time);
     th->size = numlines;
     return th;
 }
@@ -774,13 +774,13 @@ int tmp;
     struct EDIT_BUF *ptr, *tmpptr;
     LINE fname;
     int fd;
-    
+
     strcpy(fname, Home);
     strcat(fname, EDIT_FILE);
-    
+
     if ((fd = create_file(fname)) == -1) {
 	sys_error("abort_edit", 1, "create_file");
-    }	
+    }
     ptr = Start;
     while (ptr && (Size > 0)) {
         if (Size == 1) {
@@ -798,20 +798,20 @@ int tmp;
     if (close_file(fd) == -1) {
 	sys_error("abort_edit", 2, "close_file");
     }
-    
+
     strcpy(fname, Home);
     strcat(fname, DEAD_FILE);
     if ((fd = create_file(fname)) == -1) {
 	sys_error("abort_edit", 1, "create_file");
-    }	
-    
+    }
+
     write(fd, &Current_conf, sizeof(int));
     write(fd, Globalth, sizeof(struct TEXT_HEADER));
-    
+
     if (close_file(fd) == -1) {
 	sys_error("abort_edit", 2, "close_file");
     }
-    
+
     logout(tmp);
 }
 
@@ -826,7 +826,7 @@ int resume_aborted_edit()
     int fd, tmp, oldconf, result;
     struct TEXT_HEADER th;
     LINE fname;
-    
+
     result = 0;
     oldconf = Current_conf;
     strcpy(fname, Home);
@@ -845,10 +845,10 @@ int resume_aborted_edit()
 		  2, "read");
 	result = -1;
 	goto bad;
-    } 
-    
+    }
+
     if (set_conf(tmp) == -1) result = -1;
-    
+
  bad:
     close_file(fd);
     unlink(fname);

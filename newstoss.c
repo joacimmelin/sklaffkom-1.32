@@ -13,19 +13,19 @@
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 2, or (at your option)
  *   any later version.
- *    
+ *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU General Public License for more details.
- *   
+ *
  *   You should have received a copy of the GNU General Public License
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
 #include "sklaff.h"
-#include "globals.h" 
+#include "globals.h"
 #include <pwd.h>
 #include <fcntl.h>
 #include <sys/stat.h>
@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
 	printf("\n%s\n\n", MSG_NOGROUP);
 	exit(1);
     }
-    
+
     ptr2 = strchr(ptr, ' ');
     if (ptr2) last = atol(ptr2 + 1);
     else {
@@ -94,10 +94,10 @@ int main(int argc, char *argv[])
 	exit(1);
     }
     free(buf);
-    
+
     pw = getpwnam(SKLAFF_ACCT);
     if (pw == NULL) exit(1);
-    
+
     sprintf(newslib, "%s/%s", NEWS_SPOOL, argv[1]);
     for(;;) {
 	ptr = strchr(newslib, '.');
@@ -299,7 +299,7 @@ long send_news(int confid, char *mbuf, int ouid, int ogrp, long com)
     strcat(fbuf, th.subject);
     strcat(fbuf, "\n");
     strcat(fbuf, mbuf);
-    
+
     if (write_file(fdo, fbuf) == -1) return -1;
     if (close_file(fdo) == -1) return -1;
 
@@ -315,31 +315,31 @@ long send_news(int confid, char *mbuf, int ouid, int ogrp, long com)
 	if ((fd = open_file(cname, OPEN_QUIET)) == -1) {
 	    output("\n%s\n\n", MSG_NOTEXT);
 	    return 0;
-	}	
-	
+	}
+
 	if ((buf = read_file(fd)) == NULL) {
 	    output("\n%s\n\n", MSG_NOREAD);
 	    return 0;
 	}
-	
+
 	i = strlen(buf) + LONG_LINE_LEN;
 	nbuf = (char *)malloc(i);
 	if (!nbuf) {
 	    return -1;
 	}
 	bzero(nbuf, i);
-	
+
 	sprintf(newline, "%ld:%d\n", ce.last_text, 0);
 	strcpy(nbuf, buf);
 	strcat(nbuf, newline);
 	free(buf);
-	
+
 	critical();
 	if (write_file(fd, nbuf) == -1) {
 	    output("\n%s\n\n", MSG_NOREPPTR);
 	    return 0;
 	}
-	
+
 	if (close_file(fd) == -1) {
 	    return 0;
 	}
@@ -353,7 +353,7 @@ long first_news(char *newslib, long last)
 {
     LINE fname;
     long first, ptr;
-    
+
     first = 1L;
     ptr = 1L;
     while (last > first) {
@@ -420,7 +420,7 @@ int add_text()
 long find_ref(char *refer)
 {
     struct REFLIST *look;
-    
+
     if (!strlen(refer)) return 0;
     look = top;
     while (look) {

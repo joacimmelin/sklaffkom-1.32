@@ -3,7 +3,7 @@
 /*
  *   SklaffKOM, a simple conference system for UNIX.
  *
- *   Copyright (C) 1993-1994  Torbj|rn B}}th, Peter Forsberg, Peter Lindberg, 
+ *   Copyright (C) 1993-1994  Torbj|rn B}}th, Peter Forsberg, Peter Lindberg,
  *                            Odd Petersson, Carl Sundbom
  *
  *   Program dedicated to the memory of Staffan Bergstr|m.
@@ -14,12 +14,12 @@
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 2, or (at your option)
  *   any later version.
- *    
+ *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU General Public License for more details.
- *   
+ *
  *   You should have received a copy of the GNU General Public License
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
@@ -44,7 +44,7 @@ char *name;
     int fd;
     char *buf, *oldbuf;
     struct CONF_ENTRY ce;
-    
+
     if (num == 0) {
 	strcpy (name, MSG_MAILBOX);
 	return name;
@@ -86,7 +86,7 @@ char *name;
     char *buf, *oldbuf;
     struct CONF_ENTRY ce;
     LINE mboxname;
-    
+
     if (name == NULL)
 	    return -1;
     strcpy (mboxname, MSG_MAILBOX);
@@ -138,9 +138,9 @@ int num;
 	sys_error("get_conf_struct", 2, "read_file");
 	return NULL;
     }
-    
+
     oldbuf = buf;
-    
+
     if (close_file(fd) == -1) {
 	sys_error("get_conf_struct", 3, "close_file");
 	return NULL;
@@ -169,7 +169,7 @@ int num;
     char *buf, *oldbuf;
     LINE file_name;
     struct USER_LIST *ul;
-    
+
     if (num <= 0) {
 	return NULL;
     }
@@ -185,7 +185,7 @@ int num;
     }
 
     oldbuf = buf;
-    
+
     if (close_file(fd) == -1) {
 	sys_error("get_confrc_struct", 3, "close_file");
 	return NULL;
@@ -205,7 +205,7 @@ int is_conf_creator (u_num, c_num)
 int u_num, c_num;
 {
     struct CONF_ENTRY *ce;
-    
+
     if (!c_num) return 1;
     if ((ce = get_conf_struct (c_num)) == NULL) {
 	return 0;
@@ -250,8 +250,8 @@ char *buf;
 {
     LINE intbuf;
     struct INT_LIST *int_list_sav;
-    
-    sprintf(buf, "%d:", cse->num); 
+
+    sprintf(buf, "%d:", cse->num);
     int_list_sav = cse->il;
     while (cse->il) {
 	sprintf(intbuf, "%ld-%ld", cse->il->from, cse->il->to);
@@ -295,7 +295,7 @@ struct USER_LIST *ul;
 {
     struct USER_LIST
 	    *tul;
-    
+
     while (ul) {
 	tul = ul->next;
 	free(ul);
@@ -322,37 +322,37 @@ char *buf;
     i = strlen(buf) + LINE_LEN;
     nbuf = (char *)malloc(i); /* Jaja... */
     bzero(nbuf, i);
-    
+
     /* Find confs-entry */
-    
+
     while (buf) {
 	buf = get_confs_entry(buf, &tcse);
 	if (cse->num == tcse.num)
 		break;
 	free_confs_entry(&tcse);
     }
-    
+
     if (cse->num == tcse.num) {
-	
+
 	/* Scan until beginning of confs-entry in buf */
-	
+
 	tbuf = buf;
-	
+
 	if (tbuf > obuf)
 		tbuf--;
-	
+
 	while ((tbuf > obuf) && (*tbuf == '\n'))
 		tbuf--;
-	
+
 	while ((tbuf > obuf) && (*tbuf != '\n'))
 		tbuf--;
-	
+
 	if (tbuf > obuf)
 		tbuf++;
-	
+
 	temp = *tbuf;
 	*tbuf = '\0';	/* Set 'length' of obuf */
-	
+
 	strcpy(nbuf, obuf);
 	*tbuf = temp;
 	strcat(nbuf, stringify_confs_struct(cse, tmpbuf));
@@ -384,44 +384,44 @@ char
 	    *obuf;
 
     int         i;
-    
+
     LONG_LINE	newline;
-    
+
     struct CONF_ENTRY
 	    tce;	/* Temporary confs-entry */
-    
+
     obuf = buf;
 
     i = strlen(buf) + LINE_LEN;
     nbuf = (char *)malloc(i); /* Jaja... */
     bzero(nbuf, i);
-    
+
     /* Find conf-entry */
-    
+
     while (buf) {
 	buf = get_conf_entry(buf, &tce);
 	if (ce->num == tce.num)
 		break;
     }
-    
+
     if (ce->num == tce.num) {
-	
+
 	tbuf = buf;
-	
+
 	if (tbuf > obuf)
 		tbuf--;
-	
+
 	while ((tbuf > obuf) && (*tbuf == '\n'))
 		tbuf--;
-	
+
 	while ((tbuf > obuf) && (*tbuf != '\n'))
 		tbuf--;
-	
+
 	if (tbuf > obuf)
 		tbuf++;
-	
+
 	*tbuf = '\0';	/* Set 'length' of obuf */
-	
+
 	sprintf(newline, "%d:%ld:%d:%lld:%d:%d:%d:%s\n", ce->num, ce->last_text,
 		ce->creator, (long long)ce->time, ce->type, ce->life, ce->comconf,
 		ce->name);
@@ -505,20 +505,20 @@ int uid, all;
     struct CONFS_ENTRY cse;
     struct CEL *ce_list, *top;
     struct CEN *topconf, *conflist;
-    
+
     user_dir(uid, confsname);
     strcat(confsname, CONFS_FILE);
-    
+
     if ((fd = open_file(confsname, 0)) == -1) {
 	return -1;
     }
-    
+
     if ((mbuf = read_file(fd)) == NULL) {
 	return -1;
     }
-    
+
     oldmbuf = mbuf;
-    
+
     if (close_file(fd) == -1) {
 	return -1;
     }
@@ -526,38 +526,38 @@ int uid, all;
     /*
      *	Mailbox
      */
-    
+
     mbox_dir(uid, mboxname);
     strcat(mboxname, MAILBOX_FILE);
-    
+
     if ((fd = open_file(mboxname, 0)) == -1) {
 	sys_error("list_confs", 1, "open_file");
 	return -1;
     }
-    
+
     if ((buf = read_file(fd)) == NULL) {
 	sys_error("list_confs", 2, "read_file");
 	return -1;
     }
-    
+
     oldbuf = buf;
-    
+
     if (close_file(fd) == -1) {
 	sys_error("list_confs", 3, "close_file");
 	return -1;
     }
-    
+
     output("\n");
     if ((buf = get_conf_entry(buf, &ce))) {
 	output("%6ld       %s\n", ce.last_text, ce.name);
     }
-    
+
     free(oldbuf);
-    
+
     /*
      *	Conferences
      */
-    
+
     ce_list = NULL;
     count = 0;
     top = NULL;
@@ -565,22 +565,22 @@ int uid, all;
 	sys_error("list_confs", 1, "open_file");
 	return -1;
     }
-	
+
     if ((buf = read_file(fd)) == NULL) {
 	sys_error("list_confs", 2, "read_file");
 	return -1;
     }
-	
+
     oldbuf = buf;
-	
+
     if (close_file(fd) == -1) {
 	sys_error("list_confs", 3, "close_file");
 	return -1;
     }
-	
+
     while (buf) {
 	buf = get_conf_entry(buf, &ce);
-	if (ce.creator != -1) { /* Only list confs that aren't erased */	
+	if (ce.creator != -1) { /* Only list confs that aren't erased */
 	if (buf) {
 	    if (ce_list) {
 		ce_list->next = (struct CEL *)malloc
@@ -607,7 +607,7 @@ int uid, all;
 	    ce_list->unreads = ce.last_text;
 	    ce_list->creator = ce.creator;
 	    ce_list->num = ce.num;
-	    ce_list->type = ce.type;	
+	    ce_list->type = ce.type;
 	}
 	}
     }
@@ -623,11 +623,11 @@ int uid, all;
 	}
 	else {
 	    creator = ' ';
-	    if ((rights == SECRET_CONF) && 
+	    if ((rights == SECRET_CONF) &&
 		(can_see_conf(Uid, conflist->num, conflist->type,
 			      conflist->creator)))
 		rights = 0;
-	}	
+	}
 
 	if (rights < 2) {
 	    strcpy(confname, conflist->name);
@@ -659,13 +659,13 @@ int uid, all;
 	    }
 	    if (output("%6ld  %c %c %c%s\n", conflist->unreads,
 		       creator, filarea, member, confname) == -1) {
-		break;	
+		break;
 	    }
 	}
 	conflist++;
     }
     output("\n");
-    free(topconf);	
+    free(topconf);
     free(oldmbuf);
     return 0;
 }
@@ -693,7 +693,7 @@ int uid, type, cr_num;
 	    if (ul->num == uid) break;
 	    else ul = ul->next;
 	}
-	
+
 	if (ul && (ul->num == uid)) {
 	    if ((type == OPEN_CONF) || (type == NEWS_CONF)) xit = 1;
 	    else xit = 0;
@@ -718,49 +718,49 @@ long	last;
 {
     long
 	    unread;
-    
+
     int
 	    fd;
-    
+
     char
 	    *buf, *oldbuf;
-    
-    LINE	
+
+    LINE
 	    confsname;
-    
+
     struct CONFS_ENTRY
 	    cse;
-    
+
     struct INT_LIST
 	    *int_list_sav;
-    
+
     user_dir(uid, confsname);
     strcat(confsname, CONFS_FILE);
-    
+
     if ((fd = open_file(confsname, 0)) == -1) {
 	sys_error("num_unread", 1, "open_file");
 	return -1L;
     }
-    
+
     if ((buf = read_file(fd)) == NULL) {
 	sys_error("num_unread", 2, "read_file");
 	return -1L;
     }
-    
+
     oldbuf = buf;
-    
+
     if (close_file(fd) == -1) {
 	sys_error("num_unread", 3, "close_file");
 	return -1L;
     }
-    
+
     unread = 0;
-    
+
     while ((buf = get_confs_entry(buf, &cse))) {
 	if (cse.num == conf) break;
 	free_confs_entry(&cse);
     }
-    
+
     if (cse.num == conf) {
 	unread = last;
 	int_list_sav = cse.il;
@@ -770,7 +770,7 @@ long	last;
 	}
 	cse.il = int_list_sav;
     }
-    
+
     free_confs_entry(&cse);
     free(oldbuf);
     return unread;
@@ -789,20 +789,20 @@ int uid, conf;
     char *buf, *oldbuf;
     struct CONFS_ENTRY cse;
     LINE confsname;
-    
+
     user_dir(uid, confsname);
     strcat(confsname, CONFS_FILE);
-    
+
     if ((fd = open_file(confsname, 0)) == -1) {
 	return -1L;
     }
-    
+
     if ((buf = read_file(fd)) == NULL) {
 	return -1L;
     }
-    
+
     oldbuf = buf;
-    
+
     if (close_file(fd) == -1) {
 	return -1L;
     }
@@ -836,7 +836,7 @@ int more_conf()
 
     flag = 0;
     high = 0L;
-	
+
     /* get mailbox */
 
     strcpy(fname, Mbox);
@@ -854,7 +854,7 @@ int more_conf()
     if ((buf = read_file(fd)) == NULL) return -1;
     oldbuf = buf;
     if (close_file(fd) == -1) return -1;
-    
+
     /* get user conference list */
 
     strcpy(fname, Home);
@@ -866,12 +866,12 @@ int more_conf()
 
 
     /* check in mailbox */
-    
+
     buf2 = get_confs_entry(buf2, &cse);
     if (cse.il == NULL) text = 1L;
     else if (cse.il->from > 1L) text = 1L;
     else text = (cse.il->to + 1L);
-    if (text > mbox.last_text) text = 0L;    
+    if (text > mbox.last_text) text = 0L;
     free_confs_entry(&cse);
     if (text > 0) {
 	free(oldbuf);
@@ -883,7 +883,7 @@ int more_conf()
     /* check current number of conferences */
 	buf = oldbuf;
 	ce.num = 0;
-	
+
 	for (;;) {
 	    confnum = ce.num;
 	    buf = get_conf_entry(buf, &ce);
@@ -933,7 +933,7 @@ int more_conf()
 
 	      while (buf = get_conf_entry(buf, &ce))
 		if (ce.num == cse.num) break;
-	      
+
 	      		sprintf(fname, "%s/%d/%ld", SKLAFF_DB, ce.num, text); */
 		sprintf(fname, "%s/%d/%ld", SKLAFF_DB, cse.num, text);
 		if (file_exists(fname) == -1) {
@@ -972,7 +972,7 @@ int more_conf()
 			non_critical();
 			high = 0L;
 		    }
-		    else 
+		    else
 		      mark_as_read(text, cse.num);
 		    /*		      mark_as_read(text, ce.num);*/
 		    free(oldbuf2);
@@ -1115,68 +1115,68 @@ int
 {
     int
 	    fd;
-    
+
     char
 	    *buf, *oldbuf;
-    
+
     LINE	mboxname;
-    
+
     struct CONF_ENTRY
 	    ce;
-    
+
     if (conf == 0) {
-	
+
 	/*
 	 *	Mailbox
 	 */
-	
+
 	mbox_dir(uid, mboxname);
 	strcat(mboxname, MAILBOX_FILE);
-	
+
 	if ((fd = open_file(mboxname, 0)) == -1) {
 	    sys_error("next_text", 1, "open_file");
 	    return -1L;
 	}
-	
+
 	if ((buf = read_file(fd)) == NULL) {
 	    sys_error("next_text", 2, "read_file");
 	    return -1L;
 	}
-	
+
 	oldbuf = buf;
-	
+
 	if (close_file(fd) == -1) {
 	    sys_error("next_text", 3, "close_file");
 	    return -1L;
 	}
-	
+
 	if ((buf = get_conf_entry(buf, &ce))) {
 	    free(oldbuf);
 	    return ce.last_text;
 	}
     }
-    
+
     /*
      *	Conferences
      */
-    
+
     if ((fd = open_file(CONF_FILE, 0)) == -1) {
 	sys_error("next_text", 1, "open_file");
 	return -1L;
     }
-    
+
     if ((buf = read_file(fd)) == NULL) {
 	sys_error("next_text", 2, "read_file");
 	return -1L;
     }
-    
+
     oldbuf = buf;
-    
+
     if (close_file(fd) == -1) {
 	sys_error("next_text", 3, "close_file");
 	return -1L;
     }
-    
+
     while ((buf = get_conf_entry(buf, &ce))) {
 	if (ce.num == conf) {
 	    free(oldbuf);
@@ -1198,7 +1198,7 @@ int uid;
 {
     LINE fname, fhome;
     long first, last, ptr;
-    
+
     if (!conf) mbox_dir(uid, fhome);
     last = last_text(conf, uid);
     first = 1L;
@@ -1274,24 +1274,24 @@ int force_unsubscribe()
     struct CONF_ENTRY *allconfs;
     struct INT_LIST *intlist;
     struct USER_LIST *ul;
-    
+
     strcpy(confsname, Home);
     strcat(confsname, CONFS_FILE);
-    
+
     if ((fd = open_file(confsname, 0)) == -1) {
 	return -1L;
     }
-    
+
     if ((buf = read_file(fd)) == NULL) {
 	return -1L;
     }
-    
+
     oldbuf = buf;
-    
+
     if (close_file(fd) == -1) {
 	return -1L;
     }
-    
+
     allconfs = get_all_confs();
 
     while ((buf = get_confs_entry(buf, &ce))) {
@@ -1302,13 +1302,13 @@ int force_unsubscribe()
 	}
 	if (ce.num) {
 	    ul = get_confrc_struct(ce.num);
-	    rights = conf_right(ul, Uid, 
-				allconfs[ce.num].type, 
+	    rights = conf_right(ul, Uid,
+				allconfs[ce.num].type,
 				allconfs[ce.num].creator);
 	    free_userlist(ul);
 	    if (rights != 0) {
 	       conf_name(ce.num, confname);
-	       cmd_unsubscribe(confname); 
+	       cmd_unsubscribe(confname);
 	    }
 	}
     }
@@ -1330,7 +1330,7 @@ int count;
     int x;
     struct CEL *saved;
     struct CEN *namelist, *topname;
-    
+
     if (!ce_list) {
 	return NULL;
     }
@@ -1348,11 +1348,11 @@ int count;
 	strcpy(namelist->name, ce_list->name);
 	fake_string(namelist->name);
 	saved = ce_list;
-	ce_list = ce_list->next; 
+	ce_list = ce_list->next;
 	free(saved);
 	namelist++;
     }
-    qsort(topname, count, sizeof(struct CEN), (int(*)())strcmp); 
+    qsort(topname, count, sizeof(struct CEN), (int(*)())strcmp);
     namelist = topname;
     for (x = 0; x < count; x++) {
 	real_string(namelist->name);
@@ -1373,17 +1373,17 @@ struct CONF_ENTRY *get_all_confs(void)
     int fd, confnum;
     char *buf, *oldbuf;
     struct CONF_ENTRY ce, *allconfs;
-    
+
     /* get conference list */
 
     if ((fd = open_file(CONF_FILE, 0)) == -1) return NULL;
     if ((buf = read_file(fd)) == NULL) return NULL;
     oldbuf = buf;
     if (close_file(fd) == -1) return NULL;
-    
+
     buf = oldbuf;
     ce.num = 0;
-	
+
     for (;;) {
       confnum = ce.num;
       buf = get_conf_entry(buf, &ce);
@@ -1424,7 +1424,7 @@ int uid;
     struct CONFS_ENTRY cse;
     struct CONF_ENTRY ce, mbox, *allconfs;
     struct INT_LIST *int_list_sav;
-    
+
     xit = 0;
     unreads = 0L;
     user_dir(uid, confsname);

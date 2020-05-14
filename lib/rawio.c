@@ -3,7 +3,7 @@
 /*
  *   SklaffKOM, a simple conference system for UNIX.
  *
- *   Copyright (C) 1993-1994  Torbj|rn B}}th, Peter Forsberg, Peter Lindberg, 
+ *   Copyright (C) 1993-1994  Torbj|rn B}}th, Peter Forsberg, Peter Lindberg,
  *                            Odd Petersson, Carl Sundbom
  *
  *   Program dedicated to the memory of Staffan Bergstr|m.
@@ -14,12 +14,12 @@
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 2, or (at your option)
  *   any later version.
- *    
+ *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU General Public License for more details.
- *   
+ *
  *   You should have received a copy of the GNU General Public License
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
@@ -42,23 +42,23 @@ int write_file(int fildes, char *buf)
 
     if (fildes == -1)
 	    return -1;
-        
+
     if ((off_t)lseek(fildes, 0L, 0) == -1) {
 	sys_error(func_name,1,"lseek");
 	return -1;
     }
-    
+
     length = strlen(buf);
     if (write(fildes,buf,length) == -1) {
 	sys_error(func_name,2,"write");
 	return -1;
     }
-    
+
     if (ftruncate(fildes,(off_t)length) == -1) {
 	sys_error(func_name,3,"ftruncate");
 	return 1;
     }
-    
+
     free(buf);
 
     return 0;
@@ -75,7 +75,7 @@ int fildes;
 {
     struct stat s;
     char *buf;
-    
+
     fstat(fildes, &s);
     buf = (char *) malloc (s.st_size + 1);
     bzero(buf, s.st_size + 1);
@@ -110,7 +110,7 @@ int	flag;
     if ((flag & OPEN_CREATE) == OPEN_CREATE) {
 	mode |= O_CREAT;
     }
-    
+
     if ((tmp_filedesc = open(filename, mode, NEW_FILE_MODE))  == -1) {
 	if ((flag & OPEN_QUIET) != OPEN_QUIET) {
 	    sys_error(function_name, 1, "open");
@@ -137,7 +137,7 @@ int	flag;
     }
 
     return tmp_filedesc;
-    
+
 }
 
 /*
@@ -159,7 +159,7 @@ int	flag;
     if ((flag & OPEN_CREATE) == OPEN_CREATE) {
 	mode |= O_CREAT;
     }
-    
+
     if ((tmp_filedesc = open(filename, mode, NEW_FILE_MODE))  == -1) {
 	if ((flag & OPEN_QUIET) != OPEN_QUIET) {
 	    sys_error(function_name, 1, "open");
@@ -170,7 +170,7 @@ int	flag;
     }
 
     return tmp_filedesc;
-    
+
 }
 */
 
@@ -185,11 +185,11 @@ int close_file(filedesc)
 int	filedesc;
 
 {
-    
+
     unlock(filedesc); /** Error checking ! **/
-    
+
     return(close(filedesc));
-    
+
 }
 
 /*
@@ -202,16 +202,16 @@ int create_file(filename)
 char *filename;
 
 {
-    
+
     int	tmp_filedesc;
     char	*function_name = "open_file";
-    
+
     /** O_SYNC might be used for some files?**/
-    if ((tmp_filedesc = open(filename,O_RDWR|O_CREAT|O_TRUNC,NEW_FILE_MODE)) == -1) 
+    if ((tmp_filedesc = open(filename,O_RDWR|O_CREAT|O_TRUNC,NEW_FILE_MODE)) == -1)
 	    sys_error(function_name,1,"open");
     else
 	    lock(tmp_filedesc); /** Error checking ! **/
-    
+
     return tmp_filedesc;
-    
+
 }

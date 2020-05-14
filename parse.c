@@ -3,7 +3,7 @@
 /*
  *   SklaffKOM, a simple conference system for UNIX.
  *
- *   Copyright (C) 1993-1994  Torbj|rn B}}th, Peter Forsberg, Peter Lindberg, 
+ *   Copyright (C) 1993-1994  Torbj|rn B}}th, Peter Forsberg, Peter Lindberg,
  *                            Odd Petersson, Carl Sundbom
  *
  *   Program dedicated to the memory of Staffan Bergstr|m.
@@ -14,12 +14,12 @@
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 2, or (at your option)
  *   any later version.
- *    
+ *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU General Public License for more details.
- *   
+ *
  *   You should have received a copy of the GNU General Public License
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
@@ -49,7 +49,7 @@ char *buf, *args;
     struct hitlist hl[MAX_COMMANDS];
     int	i, found, full_hit, arg_hit, part_hit, max_words,
     full_ind, arg_ind, part_ind;
-    
+
     if (atol(buf)) {
 	sprintf(buf, "%s %ld", MSG_TEXTPROMPT2, atol(buf));
     }
@@ -64,13 +64,13 @@ char *buf, *args;
 					    found, NULL);
 	i++;
     }
-    
+
     /*DBG	output("Found: %d\n", found);  */
     /*DBG	output("   Kommando             Wanted M-wanted M-found\n"); */
     /*DBG	i = 0; while (Par_ent[i].func[0] != '\0') { */
     /*DBG	output("%2d %-20.20s %6d %8d %7d\n",i,Par_ent[i].cmd, hl[i].wanted, */
     /*DBG	       hl[i].matched_wanted, hl[i].matched_found); i++; } */
-    
+
     i = 0;
     full_hit = 0;
     arg_hit = 0;
@@ -91,23 +91,23 @@ char *buf, *args;
 	}
 	i++;
     }
-    
+
     /*DBG	output("full_hit: %d arg_hit: %d part_hit: %d\n", */
     /*DBG      full_hit, arg_hit, part_hit); */
-    
+
     if (full_hit == 1) {
-	
+
     /*DBG		output("cmd: [%s] func: [%s] addr: [%ld]\n", */
     /*DBG	  Par_ent[full_ind].cmd, Par_ent[full_ind].func, */
     /*DBG	  Par_ent[full_ind].addr); */
-	
+
 	return Par_ent[full_ind].addr;
     }
     else if (full_hit > 1) {
 	max_words = find_max_match(hl);
-	
+
 	/*DBG			output("max_words: %d\n", max_words); */
-	    
+
 	output("\n%s \"%s\". %s\n", MSG_MULTICOM, buf, MSG_CHOSECOM);
 	i = 0;
 	while (Par_ent[i].func[0] != '\0') {
@@ -121,20 +121,20 @@ char *buf, *args;
 	return (int (*)()) 0;
 
     } else if (arg_hit == 1) {
-	
+
 	parse_strings(Par_ent[arg_ind].cmd, buf, hl[arg_ind].wanted,
 		      args);
-	
+
 	/*DBG*		output("cmd: [%s] func: [%s] addr: [%ld] args: [%s]\n",
 	  Par_ent[arg_ind].cmd, Par_ent[arg_ind].func,
 	  Par_ent[arg_ind].addr, args); */
-	
+
 	return Par_ent[arg_ind].addr;
     } else if (arg_hit > 1) {
 	max_words = find_max_match(hl);
-	
+
 	/*DBG*		output("max_words: %d\n", max_words); */
-	
+
 	i = 0;
 	arg_hit = 0;
 	while (Par_ent[i].func[0] != '\0') {
@@ -148,18 +148,18 @@ char *buf, *args;
 	if (arg_hit == 1) {
 	    parse_strings(Par_ent[arg_ind].cmd, buf,
 			  hl[arg_ind].wanted, args);
-	    
+
     /*DBG	    			output("cmd: [%s] func: [%s] addr: [%ld] args: [%s]\n", */
     /*DBG	      Par_ent[arg_ind].cmd, Par_ent[arg_ind].func, */
     /*DBG	      Par_ent[arg_ind].addr, args); */
-	    
+
 	    return Par_ent[arg_ind].addr;
 	}
 	else {
 	    max_words = find_max_match(hl);
-	    
+
     /*DBG	    			output("max_words: %d\n", max_words);  */
-	    
+
 	    output("\n%s \"%s\". %s\n", MSG_MULTICOM, buf, MSG_CHOSECOM);
 	    i = 0;
 	    while (Par_ent[i].func[0] != '\0') {
@@ -173,17 +173,17 @@ char *buf, *args;
 	    return (int (*)()) 0;
 	}
     } else if (part_hit == 1) {
-	
+
     /*DBG			output("cmd: [%s] func: [%s] addr: [%ld] args: [%s]\n", */
     /*DBG	  Par_ent[part_ind].cmd, Par_ent[part_ind].func, */
     /*DBG	  Par_ent[part_ind].addr, args);  */
-	
+
 	return Par_ent[part_ind].addr;
     } else if ((full_hit > 1) || (arg_hit > 1) || (part_hit > 1)) {
 	max_words = find_max_match(hl);
-	
+
     /*DBG			output("max_words: %d\n", max_words); */
-	
+
 	output("\n%s \"%s\". %s\n", MSG_MULTICOM, buf, MSG_CHOSECOM);
 	i = 0;
 	while (Par_ent[i].func[0] != '\0') {
@@ -211,7 +211,7 @@ int find_max_match(struct hitlist *hl)
 {
     int	i = 0;
     static int max_words;
-    
+
     max_words = 0;
     while (Par_ent[i].func[0] != '\0') {
 	max_words = (max_words > hl[i].matched_wanted ?
@@ -233,7 +233,7 @@ char	*program_name;
     int	i = 0, pf;
     char	*buf;
     struct nlist commands[MAX_COMMANDS];
-    
+
     if ((pf = open_file(PARSE_FILE, OPEN_DEFAULT)) == -1) {
 	sys_error("parse_init", 1, "open_file");
 	return -1;
@@ -252,7 +252,7 @@ char	*program_name;
 
     /* This strange line of code is a result of a */
     /* typedef/struct misfeature */
-    
+
     Par_ent[i].func[0] = '\0';      /* Ugly solution, huh?! */
     nlist(program_name, commands);
     i = 0;
@@ -261,7 +261,7 @@ char	*program_name;
 	if (Par_ent[i].addr == 0) {
 	    buggy_sunOS_fix(i);
 	}
-	
+
 	if (Par_ent[i].addr == 0) {
 	    output("%s[%s #%d] %s(): %s\n", program_name,
 		   "parse_init", 3, Par_ent[i].func,
@@ -285,7 +285,7 @@ void	buggy_sunOS_fix(i)
 int	i;
 {
     int	j;
-    
+
     for (j = 0; j < i; j++) {
 	if (!strcmp(Par_ent[j].func, Par_ent[i].func)) {
 	    Par_ent[i].addr = Par_ent[j].addr;
@@ -347,7 +347,7 @@ int type, quiet, *expanded_type;
     struct CONF_ENTRY ce;
     struct USER_ENTRY ue;
     static struct expand_list el[EXPLIST_SIZE];
-    
+
     if (!wc(name)) {
 	if (!quiet)
 		invalid_name (type);
@@ -376,7 +376,7 @@ int type, quiet, *expanded_type;
 		  strcpy (el[found].name, ce.name);
 		  el[found].type = CONF;
 		  found++;
-		}	  
+		}
 	      } else {
 		overflow = 1;
 	      }

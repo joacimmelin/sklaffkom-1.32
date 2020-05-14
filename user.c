@@ -3,7 +3,7 @@
 /*
  *   SklaffKOM, a simple conference system for UNIX.
  *
- *   Copyright (C) 1993-1994  Torbj|rn B}}th, Peter Forsberg, Peter Lindberg, 
+ *   Copyright (C) 1993-1994  Torbj|rn B}}th, Peter Forsberg, Peter Lindberg,
  *                            Odd Petersson, Carl Sundbom
  *
  *   Program dedicated to the memory of Staffan Bergstr|m.
@@ -14,12 +14,12 @@
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 2, or (at your option)
  *   any later version.
- *    
+ *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU General Public License for more details.
- *   
+ *
  *   You should have received a copy of the GNU General Public License
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
@@ -45,7 +45,7 @@ char *name;
     int fd;
     char *buf, *oldbuf;
     struct USER_ENTRY ue;
-    
+
     if (!uid) return NULL;
     if (uid == -2) {
 	strcpy(name, MSG_SYSOP);
@@ -88,7 +88,7 @@ int uid;
     int fd;
     char *buf, *oldbuf;
     struct USER_ENTRY ue;
-    
+
     if ((fd = open_file(USER_FILE, (OPEN_QUIET | OPEN_CREATE))) == -1) {
 	sys_error("user_name", 1, "open_file");
 	return -1;
@@ -97,9 +97,9 @@ int uid;
 	sys_error("user_name", 2, "read_file");
 	return -1;
     }
-    
+
     oldbuf = buf;
-    
+
     if (close_file(fd) == -1) {
 	sys_error("user_name", 3, "close_file");
 	return -1;
@@ -131,33 +131,33 @@ char
 	    xit,
 	    fd,
             i;
-    
+
     char
 	    *buf, *oldbuf;
-    
+
     struct USER_ENTRY
 	    ue;
-    
+
     if (name == NULL)
 	    return -1;
-    
+
     if ((fd = open_file(USER_FILE, 0)) == -1) {
 	sys_error("user_uid", 1, "open_file");
 	return -1;
     }
-    
+
     if ((buf = read_file(fd)) == NULL) {
 	sys_error("user_uid", 2, "read_file");
 	return -1;
     }
-    
+
     oldbuf = buf;
-    
+
     if (close_file(fd) == -1) {
 	sys_error("user_uid", 3, "close_file");
 	return -1;
     }
-    
+
     uid = -1;
     xit = 0;
     i = strlen(name);
@@ -173,7 +173,7 @@ char
 	}
     } while (!xit);
     free (oldbuf);
-    
+
     return uid;
 }
 
@@ -195,19 +195,19 @@ int
 	    ae;
     int
 	    found;
-    
+
     if ((ActiveFD = open_file(ACTIVE_FILE, 0)) == -1) {
 	sys_error("user_is_active", 1, "open_file");
 	return 0;
     }
-    
+
     if ((buf = read_file(ActiveFD)) == NULL) {
 	sys_error("user_is_active", 2, "read_file");
 	return 0;
     }
-    
+
     oldbuf = buf;
-    
+
     if (close_file(ActiveFD) == -1) {
 	sys_error("user_is_active", 3, "close_file");
 	free(buf);
@@ -243,25 +243,25 @@ int
 	    ae;
     int
 	    found;
-    
+
     if ((ActiveFD = open_file(ACTIVE_FILE, 0)) == -1) {
 	sys_error("user_is_active", 1, "open_file");
 	return 0;
     }
-    
+
     if ((buf = read_file(ActiveFD)) == NULL) {
 	sys_error("user_is_active", 2, "read_file");
 	return 0;
     }
-    
+
     oldbuf = buf;
-    
+
     if (close_file(ActiveFD) == -1) {
 	sys_error("user_is_active", 3, "close_file");
 	free(buf);
     }
     ActiveFD=-1;
-    
+
     found = 0;
     while ((buf = get_active_entry(buf, &ae))) {
 	if (ae.user == uid && (ae.avail == 0)) {
@@ -287,19 +287,19 @@ char *buf;
     LINE tmp;
     int i;
     struct ACTIVE_ENTRY tae;
-    
+
     obuf = buf;
     i = strlen(buf) + LINE_LEN;
     nbuf = (char *)malloc(i); /* Jaja... */
     bzero(nbuf, i);
-    
+
     /* Find active-entry */
-    
+
     while (buf) {
 	buf = get_active_entry(buf, &tae);
 	if (ae->user == tae.user) break;
     }
-    
+
     if (ae->user == tae.user) {
 	tbuf = buf;
 	if (tbuf > obuf) tbuf--;
@@ -307,7 +307,7 @@ char *buf;
 	while ((tbuf > obuf) && (*tbuf != '\n')) tbuf--;
 	if (tbuf > obuf) tbuf++;
 	*tbuf = '\0';	/* Set 'length' of obuf */
-	
+
 	sprintf(tmp, "%d:%d:%lld:%d:%s:%s:dum:dum:dum\n", ae->user, ae->pid,
 		(long long)ae->login_time, ae->avail, ae->from, ae->tty);
 	strcpy(nbuf, obuf);
@@ -330,21 +330,21 @@ int uid, value;
     char *oldbuf, *buf, *nbuf;
     struct ACTIVE_ENTRY ae;
     int found;
-    
+
     critical(); /* I'd say even here! /OR 98-07-20 */
 
     if ((ActiveFD = open_file(ACTIVE_FILE, 0)) == -1) {
 	sys_error("user_is_active", 1, "open_file");
 	return 0;
     }
-    
+
     if ((buf = read_file(ActiveFD)) == NULL) {
 	sys_error("user_is_active", 2, "read_file");
 	return 0;
     }
-    
+
     oldbuf = buf;
-    
+
     found = 0;
     while ((buf = get_active_entry(buf, &ae))) {
 	if (ae.user == uid) {
@@ -382,21 +382,21 @@ char *value;
     char *oldbuf, *buf, *nbuf;
     struct ACTIVE_ENTRY ae;
     int found;
-    
+
     critical(); /* I'd think it's even here! /OR 98-07-20 */
 
     if ((ActiveFD = open_file(ACTIVE_FILE, 0)) == -1) {
 	sys_error("user_is_active", 1, "open_file");
 	return 0;
     }
-    
+
     if ((buf = read_file(ActiveFD)) == NULL) {
 	sys_error("user_is_active", 2, "read_file");
 	return 0;
     }
-    
+
     oldbuf = buf;
-    
+
     found = 0;
     while ((buf = get_active_entry(buf, &ae))) {
 	if (ae.user == uid) {
@@ -433,7 +433,7 @@ int uid;
     int fd;
     char *buf, *oldbuf;
     static struct USER_ENTRY ue;
-    
+
     if ((fd = open_file(USER_FILE, 0)) == -1) {
 	sys_error("user_name", 1, "open_file");
 	return NULL;
@@ -442,9 +442,9 @@ int uid;
 	sys_error("user_name", 2, "read_file");
 	return NULL;
     }
-    
+
     oldbuf = buf;
-    
+
     if (close_file(fd) == -1) {
 	sys_error("user_name", 3, "close_file");
 	return NULL;
@@ -453,7 +453,7 @@ int uid;
     while ((ue.num != uid) && buf)
 	    buf = get_user_entry(buf, &ue);
     free (oldbuf);
-    if (ue.num == uid) 
+    if (ue.num == uid)
 	    return &ue;
     else
 	    return NULL;
@@ -494,24 +494,24 @@ int setup_new_user()
       sys_error("setup_new_user", 5, "copy_file");
       return -1;
     }
-    
+
     strcpy(fname, Home);
     strcat(fname, SKLAFFRC_FILE);
     if (copy_file(STD_SKLAFFRC, fname) == -1) {
       sys_error("setup_new_user", 6, "copy_file");
       return -1;
     }
-    
+
     strcpy(fname, Mbox);
     strcat(fname, MAILBOX_FILE);
     if (copy_file(STD_MAILBOX, fname) == -1) {
 	sys_error("setup_new_user", 7, "copy_file");
 	return -1;
     }
-    
+
     pw = getpwuid(Uid);
     new_user.num = Uid;
-    new_user.last_session = 0L;	
+    new_user.last_session = 0L;
     strcpy(new_user.name, pw->pw_gecos);
     buf = new_user.name;
     while ((*buf != ',') && (*buf != 0)) buf++;
@@ -563,32 +563,32 @@ char *buf;
 int add_active()
 {
     int myuid;
-    
+
     struct ACTIVE_ENTRY ae, *aep;
     char *buf, *nbuf, *oldbuf;
     char hname[FROM_FIELD_LEN];
     LINE name, tmp, tmpdir;
-    
+
     if ((ActiveFD = open_file(ACTIVE_FILE, 0)) == -1) {
 	sys_error("add_active", 1, "open_file");
 	return -1;
     }
-    
+
     if ((buf = read_file(ActiveFD)) == NULL) {
 	sys_error("add_active", 2, "read_file");
 	return -1;
     }
-    
+
     oldbuf = buf;
-    
+
     if (close_file(ActiveFD) == -1) {
 	sys_error("add_active", 4, "close_file");
 	return -1;
     }
     ActiveFD=-1;
-    
+
     myuid = Uid;
-    
+
     while ((buf = get_active_entry(buf, &ae))) {
 	Uid = ae.user;
 	if (kill(ae.pid, 0) == -1) {
@@ -605,7 +605,7 @@ int add_active()
     Uid = myuid;
 
     free(oldbuf);
-    
+
     aep = check_active(Uid, &ae);
     if (aep) {
       debuglog("user already logged in", 7);
@@ -640,7 +640,7 @@ int add_active()
 	    exit(1);
 	}
     }
-    
+
     critical(); /* Should probably be here to
                    safeguard from deadlock on active file
                    in case of a quit SIGNAL /OR 98-07-20 */
@@ -649,7 +649,7 @@ int add_active()
 	sys_error("add_active", 1, "open_file");
 	return -1;
     }
-    
+
     if ((buf = read_file(ActiveFD)) == NULL) {
 	sys_error("add_active", 2, "read_file");
 	return -1;
@@ -660,19 +660,19 @@ int add_active()
     hname[FROM_FIELD_LEN-1]=0;
     sprintf(tmp, "%d:%d:%lld:0:%s:%s:dum:dum:dum\n", Uid, getpid(),
             (long long)time(0), hname, ttyname(0));
-    
+
     nbuf = (char *)malloc(strlen(buf) + strlen(tmp) + 1);
     bzero(nbuf, strlen(buf) + strlen(tmp) + 1);
     strcpy(nbuf, buf);
     strcat(nbuf, tmp);
     free(buf);
-    
+
     /* critical(); */
     if (write_file(ActiveFD, nbuf) == -1) {
 	sys_error("add_active", 4, "write_file");
 	return -1;
     }
-    
+
     if (close_file(ActiveFD) == -1) {
 	sys_error("add_active", 5, "close_file");
 	return -1;
@@ -692,24 +692,24 @@ int remove_active()
     int found;
     struct ACTIVE_ENTRY ae;
     char *buf, *nbuf, *tmpbuf, *oldbuf;
-    
+
     critical(); /* See comment above in add_active() /OR 98-07-20 */
 
     if ((ActiveFD = open_file(ACTIVE_FILE, 0)) == -1) {
 	sys_error("remove_active", 1, "open_file");
 	return -1;
     }
-    
+
     if ((buf = read_file(ActiveFD)) == NULL) {
 	sys_error("remove_active", 2, "read_file");
 	return -1;
     }
-    
+
     oldbuf = buf;
-    
+
     nbuf = (char *)malloc(strlen(buf) + 1);
     bzero(nbuf, strlen(buf) + 1);
-    
+
     found = 0;
     while (buf != NULL) {
 	buf = get_active_entry(buf, &ae);
@@ -718,17 +718,17 @@ int remove_active()
 	    break;
 	}
     }
-    
+
     if (found) {
 	tmpbuf = buf;
-	
+
 	tmpbuf--;
-	while ((tmpbuf > oldbuf) && (*tmpbuf == '\n')) 
+	while ((tmpbuf > oldbuf) && (*tmpbuf == '\n'))
 		tmpbuf--;
-	
-	while ((tmpbuf > oldbuf) && (*tmpbuf != '\n')) 
+
+	while ((tmpbuf > oldbuf) && (*tmpbuf != '\n'))
 		tmpbuf--;
-	
+
 	if (tmpbuf > oldbuf) tmpbuf++;
 	*tmpbuf = '\0';
 	strcpy(nbuf, oldbuf);
@@ -738,8 +738,8 @@ int remove_active()
 	    sys_error("remove_active", 3, "write_file");
 	    return -1;
 	}
-    }	
-    
+    }
+
     free(oldbuf);
     if (close_file(ActiveFD) == -1) {
 	sys_error("remove_active", 4, "close_file");
@@ -762,25 +762,25 @@ struct ACTIVE_ENTRY *ae;
 {
     int found;
     char *buf, *oldbuf;
-    
+
     if ((ActiveFD = open_file(ACTIVE_FILE, 0)) == -1) {
 	sys_error("check_time", 1, "open_file");
 	return NULL;
     }
-    
+
     if ((buf = read_file(ActiveFD)) == NULL) {
 	sys_error("check_active", 2, "read_file");
 	return NULL;
     }
-    
+
     oldbuf = buf;
-    
+
     if (close_file(ActiveFD) == -1) {
 	sys_error("check_active", 4, "close_file");
 	return NULL;
     }
        ActiveFD=-1;
- 
+
     found = 0;
     while ((buf = get_active_entry(buf, ae))) {
 	if (ae->user == uid) {
@@ -788,9 +788,9 @@ struct ACTIVE_ENTRY *ae;
 	    break;
 	}
     }
-    
+
     free(oldbuf);
-    
+
     if (found) return ae;
     else return NULL;
 }
@@ -808,33 +808,33 @@ int
 
 {
     long	tim;
-    
+
     char
 	    *buf, *oldbuf;
-    
+
     struct ACTIVE_ENTRY
 	    ae;
-    
+
     if ((ActiveFD = open_file(ACTIVE_FILE, 0)) == -1) {
 	sys_error("active_time", 1, "open_file");
 	return -1L;
     }
-    
+
     if ((buf = read_file(ActiveFD)) == NULL) {
 	sys_error("active_time", 2, "read_file");
 	return -1L;
     }
-    
+
     oldbuf = buf;
-    
+
     if (close_file(ActiveFD) == -1) {
 	sys_error("active_time", 3, "close_file");
 	return -1L;
     }
     ActiveFD=-1;
-    
+
     tim = -1L;
-    
+
     while ((buf = get_active_entry(buf, &ae)) && (tim == -1)) {
 	if (ae.user == uid) {
 	    tim = (time(0) - ae.login_time) / 60L;
@@ -862,7 +862,7 @@ int uid;
 
 
   if (stat(actfile, &sb) == 0)
-    return (time(0) - sb.st_atime) / 60L; 
+    return (time(0) - sb.st_atime) / 60L;
   else
     return 0;
 }
@@ -881,7 +881,7 @@ void make_activity_note()
 
   now = time(0);
 
-  if (now - lastmod < IDLE_RESOLUTION) 
+  if (now - lastmod < IDLE_RESOLUTION)
     return;
 
   lastmod = now;
@@ -906,7 +906,7 @@ int disp_note(user)
 int user;
 {
     struct SKLAFFRC *rc;
-    
+
     rc = read_sklaffrc (user);
     if (rc != NULL) {
 	if (strlen(rc->note) && strcmp(rc->note, "note")) {
@@ -939,21 +939,21 @@ int pdate;
     struct SKLAFFRC *rc;
     LINE tstr;
     long realtime;
-    
+
     if ((fd = open_file(USER_FILE, 0)) == -1) {
 	return -1;
     }
-    
+
     if ((buf = read_file(fd)) == NULL) {
 	return -1;
     }
-    
+
     oldbuf = buf;
-    
+
     if (close_file(fd) == -1) {
 	return -1;
     }
-    
+
     output("\n");
     count = 0;
     ue_list = NULL;
@@ -999,7 +999,7 @@ int pdate;
 			else strcat(ue_list->ue.name, MSG_NOPAR);
 		    }
 		    else {
-			if (pdate && (atoi(rc->paydate) > pdate)) 
+			if (pdate && (atoi(rc->paydate) > pdate))
 			    dolink = 0;
 			else {
 			    strcat(ue_list->ue.name, " (");
@@ -1093,7 +1093,7 @@ int pdate;
 	    free(saved);
 	    timelist++;
 	}
-	qsort(toptime, count, sizeof(struct UET), (int(*)())strcmp); 
+	qsort(toptime, count, sizeof(struct UET), (int(*)())strcmp);
 	timelist = toptime;
 	for (x = 1; x < count; x++) timelist++;
 	for (x = 0; x < count; x++) {
@@ -1127,7 +1127,7 @@ int count;
     struct UEL *saved;
     struct UEN *namelist, *topname;
     LINE name;
-    
+
     if (!ue_list) {
 	return NULL;
     }
@@ -1146,7 +1146,7 @@ int count;
 	free(saved);
 	namelist++;
     }
-    qsort(topname, count, sizeof(struct UEN), (int(*)())strcmp); 
+    qsort(topname, count, sizeof(struct UEN), (int(*)())strcmp);
     namelist = topname;
     for (x = 0; x < count; x++) {
 	order_name(namelist->name, name);
@@ -1166,38 +1166,38 @@ int count;
 struct SKLAFFRC *read_sklaffrc(uid)
 int uid;
 {
-    
+
     int	fd;
     int	fusker;
     char        entry[4096];
     char	user_home[255];
     char	*func_name = "read_sklaffrc";
     struct SKLAFFRC *kaffer;
-    
+
     struct {
 	char *heading;
     } headptr[100]; /* Limits maximum of headings */
-    
+
     char *buf, *oldbuf;
     char *startptr;
     char *ptr;
     char lastchar, lasttwo;
     int state, len, i;
-    
-    if ((kaffer = (struct SKLAFFRC*)malloc(sizeof (struct SKLAFFRC))) 
+
+    if ((kaffer = (struct SKLAFFRC*)malloc(sizeof (struct SKLAFFRC)))
 	== (struct SKLAFFRC*)0) {
 	sys_error(func_name,1,"malloc");
 	return (struct SKLAFFRC *)0;
     }
 
-    headptr[1].heading = "adress"; 
-    headptr[2].heading = "postnr"; 
-    headptr[3].heading = "ort";    
-    headptr[4].heading = "tele1";  
-    headptr[5].heading = "tele2";  
-    headptr[6].heading = "tele3";  
-    headptr[7].heading = "org";    
-    headptr[8].heading = "note";   
+    headptr[1].heading = "adress";
+    headptr[2].heading = "postnr";
+    headptr[3].heading = "ort";
+    headptr[4].heading = "tele1";
+    headptr[5].heading = "tele2";
+    headptr[6].heading = "tele3";
+    headptr[7].heading = "org";
+    headptr[8].heading = "note";
     headptr[9].heading = "editor";
     headptr[10].heading = "email1";
     headptr[11].heading = "email2";
@@ -1209,7 +1209,7 @@ int uid;
     headptr[17].heading = "sig";
     headptr[18].heading = "url";
     headptr[19].heading = "";
-    
+
     bzero(kaffer->user.adress, 80);
     bzero(kaffer->user.postnr, 80);
     bzero(kaffer->user.ort, 80);
@@ -1228,7 +1228,7 @@ int uid;
     bzero(kaffer->login, 4096);
     bzero(kaffer->timeout, 80);
     bzero(kaffer->paydate, 80);
-    
+
     /* Loop two times, one time for global sklaffrc, one for users local */
     for (fusker=0;fusker != 2;fusker++) {
 	if (fusker == 0) {
@@ -1243,7 +1243,7 @@ int uid;
 		sys_error(func_name,3,"open_file (LOCAL_SKLAFFRC)");
 	    }
 	}
-	
+
 	/* Check if we got a file */
 	if (fd != -1) {
 	    if ((buf = read_file(fd)) == (char *)NULL) {
@@ -1251,41 +1251,41 @@ int uid;
 	    } else {
 		close_file(fd);
 		oldbuf = buf;
-		ptr = buf;      
+		ptr = buf;
 		startptr = buf;
 		state = 0;
 		bzero(entry, 4096);
 		lastchar = 0;
 		lasttwo = 0;
-		
+
 		for(;;) {
 		    if (state == 5) {
 			state = 6;
 			startptr = ptr;
 		    }
-		    
+
 		    /* Skip 'til newline */
 		    if ((state == 4) && ((*ptr == 0) || (*ptr == '\n')))
 			    state = 5;
-		    
+
 		    if (state == 3) state = 4;
 
 		    /* End of heading, start looking for newline */
 		    if ((*ptr == ']') && (state == 2)) state = 3;
-		    
+
 		    /* state1 -- found [, start reading heading */
 		    if (state == 1) {
 			startptr = ptr;
 			state = 2;
 		    }
-		    
+
 		    /* State3 -- found ], check for matching heading */
 		    if (state == 3) {
 			len = ptr - startptr;
 			strncpy(entry, startptr, len);
 			for (i=1;(strcmp(headptr[i].heading,entry) != 0) &&
-			     strlen(headptr[i].heading) > 0;i++) ; 
-			
+			     strlen(headptr[i].heading) > 0;i++) ;
+
 			if (strlen(headptr[i].heading) <= 0) {
 			    fprintf(stdout,"%%DEBUG: Heading not found %s \n\r"
 				    ,entry);
@@ -1296,7 +1296,7 @@ int uid;
 			fflush(stdout);
 			bzero(entry, 4096);
 		    }
-		    
+
 		    if (((*ptr == '[') && ((lastchar == '!') &&
 			 ((lasttwo == '\n') || (lasttwo == 0))))
 			|| (*ptr == 0)) {
@@ -1346,12 +1346,12 @@ int uid;
 				    strcpy(kaffer->user.email2, entry);
 			    if (strcmp(headptr[i].heading,"url") == 0)
 			            strcpy(kaffer->user.url, entry);
-			    
+
 			    bzero(entry, 4096);
 			}
 			state = 1;
 		    } /* new heading */
-		    
+
 		    if (*ptr == 0) break;
 		    lasttwo = lastchar;
 		    lastchar = *ptr;
@@ -1359,11 +1359,11 @@ int uid;
 		}
 	    }
 	}
-	
+
         free(oldbuf);
     }
     return kaffer;
-    
+
 }
 
 /*
@@ -1382,10 +1382,10 @@ struct SKLAFFRC *kaffer;
     char *function_name = "write_sklaffrc";
     struct passwd *p;
     int fd, fd2;
-    
+
     outbuf = (char *)malloc(24000); /* write_buf frees the memory,yes? */
     out2 = (char *)malloc(24000); /* write_buf frees the memory,yes? */
-    
+
     (void) user_dir(uid,user_home);
     memcpy(file1,user_home,strlen(user_home)+1);
     strcat(file1,SKLAFFRC_FILE);
@@ -1397,20 +1397,20 @@ struct SKLAFFRC *kaffer;
     }
 
     out2[0]=0;
-    
+
 #ifdef DEBUG
     printf ("rename %s = %s \r\n",file1,file2);
     printf ("create_file %s \r\n",file1);
 #endif
-    
+
     outbuf[0] = 0;
-    
+
     if (strlen(kaffer->user.adress) > 0) {
 	strcat(outbuf,"![adress]\n");
 	strcat(outbuf,kaffer->user.adress);
 	strcat(outbuf, "\n");
     }
-    
+
     if (strlen(kaffer->user.postnr) > 0) {
 	strcat(outbuf,"![postnr]\n");
 	strcat(outbuf,kaffer->user.postnr);
@@ -1419,7 +1419,7 @@ struct SKLAFFRC *kaffer;
 
     if (strlen(kaffer->user.ort) > 0) {
 	strcat(outbuf,"![ort]\n");
-	strcat(outbuf,kaffer->user.ort); 
+	strcat(outbuf,kaffer->user.ort);
 	strcat(outbuf, "\n");
     }
 
@@ -1514,11 +1514,11 @@ struct SKLAFFRC *kaffer;
 	strcat(outbuf,kaffer->paydate);
 	strcat(outbuf, "\n");
     }
-    
+
 #ifdef DEBUG
     output ("outbuf == %s\n",outbuf);
 #endif
-    
+
     critical();
     if (write_file(fd,outbuf) == -1) {
 	sys_error("function_name",2,"write_file");
@@ -1546,7 +1546,7 @@ struct SKLAFFRC *kaffer;
 	free(kaffer);
 	return -1;
     }
-    
+
     close_file(fd2);
     non_critical();
 

@@ -3,7 +3,7 @@
 /*
  *   SklaffKOM, a simple conference system for UNIX.
  *
- *   Copyright (C) 1993-1994  Torbj|rn B}}th, Peter Forsberg, Peter Lindberg, 
+ *   Copyright (C) 1993-1994  Torbj|rn B}}th, Peter Forsberg, Peter Lindberg,
  *                            Odd Petersson, Carl Sundbom
  *
  *   Program dedicated to the memory of Staffan Bergstr|m.
@@ -14,12 +14,12 @@
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 2, or (at your option)
  *   any later version.
- *    
+ *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU General Public License for more details.
- *   
+ *
  *   You should have received a copy of the GNU General Public License
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
@@ -37,7 +37,7 @@ void set_flags(flags)
 char *flags;
 {
     char *p, *i;
-    
+
     if (strlen(flags)) {
 	p = strstr(flags, "shout");
 	if (p) {
@@ -46,7 +46,7 @@ char *flags;
 	    Shout = atoi(i);
 	}
 	else Shout = 1;
-	
+
 	p = strstr(flags, "say");
 	if (p) {
 	    i = strchr(p, '=');
@@ -54,7 +54,7 @@ char *flags;
 	    Say = atoi(i);
 	}
 	else Say = 1;
-	
+
 	p = strstr(flags, "present");
 	if (p) {
 	    i = strchr(p, '=');
@@ -62,7 +62,7 @@ char *flags;
 	    Present = atoi(i);
 	}
 	else Present = 1;
-	
+
 	p = strstr(flags, "ibm");
 	if (p) {
 	    i = strchr(p, '=');
@@ -70,7 +70,7 @@ char *flags;
 	    Ibm = atoi(i);
 	}
 	else Ibm = 0;
-	
+
 	p = strstr(flags, "iso8859");
 	if (p) {
 	    i = strchr(p, '=');
@@ -78,7 +78,7 @@ char *flags;
 	    Iso8859 = atoi(i);
 	}
 	else Iso8859 = 0;
-	
+
 	p = strstr(flags, "mac");
 	if (p) {
 	    i = strchr(p, '=');
@@ -86,7 +86,7 @@ char *flags;
 	    Mac = atoi(i);
 	}
 	else Mac = 0;
-	
+
 	p = strstr(flags, "subject_change");
 	if (p) {
 	    i = strchr(p, '=');
@@ -94,7 +94,7 @@ char *flags;
 	    Subject_change = atoi(i);
 	}
 	else Subject_change = 1;
-	
+
 	p = strstr(flags, "end_default");
 	if (p) {
 	    i = strchr(p, '=');
@@ -216,7 +216,7 @@ char *flags;
 char *flag;
 {
     char *p, *i;
-    
+
     p = strstr(flags, flag);
     if (p) {
 	i = strchr(p, '=');
@@ -240,7 +240,7 @@ char *flag;
     LINE flags[18], outline, tmpline;
     static HUGE_LINE newflags;
     struct SKLAFFRC *rc;
-    
+
     strcpy(flags[0], MSG_FLAG0);
     strcpy(flags[1], MSG_FLAG1);
     strcpy(flags[2], MSG_FLAG2);
@@ -259,7 +259,7 @@ char *flag;
     strcpy(flags[15], MSG_FLAG15);
     strcpy(flags[16], MSG_FLAG16);
     strcpy(flags[17], MSG_FLAG17);
-    
+
     if (!flag || (*flag == '\0')) {
 	output("\n%s\n\n", MSG_NOFLAG);
 	return 0;
@@ -280,7 +280,7 @@ char *flag;
 	Ibm = mode;
 	strcpy(outline, MSG_FLAG0F);
     }
-    
+
     else if ((strstr(flags[1], flag) == flags[1]) && (i >= MSG_FLAG1N)) {
 	if (mode && (Ibm || Mac)) {
 	    if (Ibm) {
@@ -295,7 +295,7 @@ char *flag;
 	Iso8859 = mode;
 	strcpy(outline, MSG_FLAG1F);
     }
-    
+
     else if ((strstr(flags[2], flag) == flags[2]) && (i >= MSG_FLAG2N)) {
 	if (mode && (Ibm || Iso8859)) {
 	    if (Ibm) {
@@ -310,57 +310,57 @@ char *flag;
 	Mac = mode;
 	strcpy(outline, MSG_FLAG2F);
     }
-    
+
     else if ((strstr(flags[3], flag) == flags[3]) && (i > MSG_FLAG3N)) {
 	Present = mode;
 	strcpy(outline, MSG_FLAG3F);
     }
-    
+
     else if ((strstr(flags[4], flag) == flags[4]) && (i >= MSG_FLAG4N)) {
 	Shout = mode;
 	strcpy(outline, MSG_FLAG4F);
     }
-    
+
     else if ((strstr(flags[5], flag) == flags[5]) && (i >= MSG_FLAG5N)) {
 	End_default = mode;
 	strcpy(outline, MSG_FLAG5F);
     }
-    
+
     else if ((strstr(flags[6], flag) == flags[6]) && (i >= MSG_FLAG6N)) {
 	Say = mode;
 	strcpy(outline, MSG_FLAG6F);
     }
-    
+
     else if ((strstr(flags[7], flag) == flags[7]) && (i >= MSG_FLAG7N)) {
 	Subject_change = mode;
 	strcpy(outline, MSG_FLAG7F);
     }
-    
+
     else if ((strstr(flags[8], flag) == flags[8]) && (i >= MSG_FLAG8N)) {
 	Space = mode;
 	strcpy(outline, MSG_FLAG8F);
     }
-    
+
     else if ((strstr(flags[9], flag) == flags[9]) && (i >= MSG_FLAG9N)) {
 	Copy = mode;
 	strcpy(outline, MSG_FLAG9F);
     }
-    
+
     else if ((strstr(flags[10], flag) == flags[10]) && (i >= MSG_FLAG10N)) {
 	Author = mode;
 	strcpy(outline, MSG_FLAG10F);
     }
-    
+
     else if ((strstr(flags[11], flag) == flags[11]) && (i >= MSG_FLAG11N)) {
 	Date = mode;
 	strcpy(outline, MSG_FLAG11F);
     }
-    
+
     else if ((strstr(flags[12], flag) == flags[12]) && (i >= MSG_FLAG12N)) {
 	Beep = mode;
 	strcpy(outline, MSG_FLAG12F);
     }
-    
+
     else if ((strstr(flags[13], flag) == flags[13]) && (i >= MSG_FLAG13N)) {
 	Clear = mode;
 	strcpy(outline, MSG_FLAG13F);
@@ -370,7 +370,7 @@ char *flag;
 	Header = mode;
 	strcpy(outline, MSG_FLAG14F);
     }
-    
+
     else if ((strstr(flags[15], flag) == flags[15]) && (i >= MSG_FLAG15N)) {
 	Special = mode;
 	strcpy(outline, MSG_FLAG15F);
@@ -385,14 +385,14 @@ char *flag;
 	Old_who = mode;
 	strcpy(outline, MSG_FLAG17F);
     }
-    
+
     else {
 	output("\n%s\n\n", MSG_BADFLAG);
 	return 0;
     }
-    
+
     rc = read_sklaffrc(Uid);
-    
+
     sprintf(newflags, "say = %d\n", Say);
     sprintf(tmpline, "shout = %d\n", Shout);
     strcat(newflags, tmpline);
@@ -428,7 +428,7 @@ char *flag;
     strcat(newflags, tmpline);
     sprintf(tmpline, "oldwho = %d\n", Old_who);
     strcat(newflags, tmpline);
-    
+
     strcpy(rc->flags, newflags);
     write_sklaffrc(Uid, rc);
     output("\n%s %s ", MSG_FLAG, outline);

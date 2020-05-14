@@ -3,7 +3,7 @@
 /*
  *   SklaffKOM, a simple conference system for UNIX.
  *
- *   Copyright (C) 1993-1994  Torbj|rn B}}th, Peter Forsberg, Peter Lindberg, 
+ *   Copyright (C) 1993-1994  Torbj|rn B}}th, Peter Forsberg, Peter Lindberg,
  *                            Odd Petersson, Carl Sundbom
  *
  *   Program dedicated to the memory of Staffan Bergstr|m.
@@ -14,12 +14,12 @@
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 2, or (at your option)
  *   any later version.
- *    
+ *
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU General Public License for more details.
- *   
+ *
  *   You should have received a copy of the GNU General Public License
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
@@ -40,7 +40,7 @@ char *display_prompt(p, oldp, type)
 char *p;
 char *oldp;
 int type;
-{	
+{
     int y, x;
     if (Change_prompt) {
 	Nextconf = -1;
@@ -101,7 +101,7 @@ void display_welcome()
 #ifdef INET_GROUP
     char *hostname, *buf;
 #endif
-#endif	
+#endif
 #endif
     Uid = getuid();
     user_dir(Uid, Home);
@@ -122,7 +122,7 @@ void display_welcome()
 	    exit(1);
 	}
     }
-    
+
     /* Debugging stuff */
 /*    mempointer = 0;  */
 /*    for(fd = 0; fd < 2000; fd++) memstack[fd] = 0L; */
@@ -172,19 +172,19 @@ void display_welcome()
 	}
 	if ((strstr(rc->paid, "no") && (getgid() == MODEM_GROUP))
 	    || (getgid() == INET_GROUP)) {
-	    
+
 	    if ((fd = open_file(fname, OPEN_QUIET)) == -1) {
 		return;
 	    }
-	    
+
 	    if ((buf = read_file(fd)) == NULL) {
 		return;
 	    }
-	    
+
 	    if (close_file(fd) == -1) {
 		return;
 	    }
-	    
+
 	    output("\n%s\n", buf);
 	    free(buf);
 	    sig_reset();
@@ -194,7 +194,7 @@ void display_welcome()
     }
 #endif
 #endif
-#endif	
+#endif
     free(rc);
     if (add_active() == -1) {
 	output("%s\n", MSG_CANTADD);
@@ -202,7 +202,7 @@ void display_welcome()
 	tty_reset();
 	exit(1);
     }
-    
+
     strcpy(home, Home);
     strcat(home, MSG_FILE);
     if ((fd = create_file(home)) == -1) {
@@ -211,30 +211,30 @@ void display_welcome()
 	tty_reset();
 	exit(1);
     }
-    
+
     if (close_file(fd) == -1) {
 	output("%s\n", MSG_CLOSETELL);
 	sig_reset();
 	tty_reset();
 	exit(1);
     }
-    
+
     display_news();
 
     sprintf(name, "display_welcome(): smta");    debuglog(name, 20);
     send_msg_to_all(MSG_LOGIN, "");
-    
+
     user_name(Uid, name);
     output("\n%s, %s.\n", MSG_WELCOME, name);
-    
+
     ue = get_user_struct(Uid);
-    
+
     if (ue->last_session) {
 	time_string(ue->last_session, name, 0);
 	down_string(name);
 	output("\n%s %s\n", MSG_LASTHERE, name);
     }
-    
+
     cstack = NULL;
     ustack = NULL;
     ustack2 = NULL;
@@ -249,21 +249,21 @@ void display_news()
 {
     int fd;
     char *buf;
-    
+
     if (file_exists(NEWS_FILE) != -1) {
 
 	if ((fd = open_file(NEWS_FILE, OPEN_QUIET)) == -1) {
 	    return;
 	}
-    
+
 	if ((buf = read_file(fd)) == NULL) {
 	    return;
 	}
-    
+
 	if (close_file(fd) == -1) {
 	    return;
 	}
-    
+
 	output("%s", buf);
 	free(buf);
     }
@@ -278,21 +278,21 @@ void check_open()
 {
     int fd;
     char *buf;
-    
+
     Rot13 = 0;
 
     if ((fd = open_file(DOWN_FILE, OPEN_QUIET)) == -1) {
 	return;
     }
-    
+
     if ((buf = read_file(fd)) == NULL) {
 	return;
     }
-    
+
     if (close_file(fd) == -1) {
 	return;
     }
-    
+
     output("\n%s\n", buf);
     free(buf);
     sig_reset();
@@ -362,7 +362,7 @@ char *search;
     getwd(cwd);
 #else
     getcwd(cwd, LINE_LEN);
-#endif    
+#endif
     found = 0;
     chdir(dirname);
 
@@ -371,12 +371,12 @@ char *search;
        */
 
     strcpy(tsear, search);
-    strip_string(tsear, " {}]|[:\\");  
+    strip_string(tsear, " {}]|[:\\");
 
     /* I hope the space, pipe and backslash are ok. */
 
 
-    /* Search 100 texts at a time. This allows user to break 
+    /* Search 100 texts at a time. This allows user to break
        search after each batch, instead of having to wait for
        ALL texts.  / OR 2000-01-14 */
 
@@ -391,7 +391,7 @@ char *search;
 
       if ((pipe = (FILE *)popen(cmdline, "r")) == NULL) {
 	output("%s\n\n", MSG_NOGREP);
-	return -1; 
+	return -1;
       }
       else {
 	while (!feof(pipe)) {
@@ -407,11 +407,11 @@ char *search;
 	    }
 	  }
 	}
-	pclose(pipe); 
+	pclose(pipe);
       }
-      curtext += 100; 
+      curtext += 100;
       /* Text curtext - curtext+99 */
-      sprintf(greparg, "%ld[0-9][0-9]", (long) curtext/100);        
+      sprintf(greparg, "%ld[0-9][0-9]", (long) curtext/100);
     }
 
     chdir(cwd);
@@ -435,7 +435,7 @@ int tmp;
     char *buf, *oldbuf, *nbuf, *new_user, *tmpbuf;
     LONG_LINE tbuf;
     struct termios temp_mode;
-    
+
 #ifdef SIGXCPU
     if (tmp == SIGXCPU) {
 	output("\n\n%s\n", MSG_CPUERR);
@@ -446,19 +446,19 @@ int tmp;
     if (tmp == SIGXFSZ) {
 	output("\n\n%s\n", MSG_DISKERR);
     }
-#endif	
+#endif
     if (tmp == SIGPIPE) {
 	output("\n\n%s\n", MSG_PIPEERR);
     }
-    
+
     if (tmp == SIGTERM) {
 	output("\n\n%s\n", MSG_OP);
     }
-    
+
     if (tmp == SIGALRM) {
 	output("\n\n%s\n", MSG_TIMEOUT);
     }
-    
+
     if (tmp != 0) {
       sprintf(tmpdir, "forced logout w/ sig %d begun", tmp);
       debuglog(tmpdir, 5);
@@ -466,7 +466,7 @@ int tmp;
       sprintf(tmpdir, "controlled logout begun");
       debuglog(tmpdir, 10);
     }
-    
+
     sprintf(tmpdir, "/tmp/%d/%d.qwk", getpid(), getpid());
     if (file_exists(tmpdir) != -1) {
 	unlink(tmpdir);
@@ -479,7 +479,7 @@ int tmp;
 	textnum = pop_unread(&conf);
 	mark_as_unread(textnum, conf);
     }
-    
+
     sprintf(tmpdir, "  checking active time");  debuglog(tmpdir, 20);
 
     if (tmp != SIGHUP) {
@@ -495,42 +495,42 @@ int tmp;
     if (ActiveFD != -1)
       close_file(ActiveFD);
     remove_active();
-    
+
     sprintf(tmpdir, "  issuing logout msg");  debuglog(tmpdir, 20);
     send_msg_to_all(MSG_LOGOUT, "");
-    
+
     sprintf(tmpdir, "  updating user entry");  debuglog(tmpdir, 20);
     if ((fd = open_file(USER_FILE, 0)) == -1) {
 	sys_error("logout", 1, "open_file");
     }
-    
+
     if ((buf = read_file(fd)) == NULL) {
 	sys_error("logout", 2, "read_file");
     }
-    
+
     oldbuf = buf;
-    
+
     while (buf) {
 	buf = get_user_entry(buf, &ue);
 	if (ue.num == Uid) break;
     }
-    
+
     if (ue.num == Uid) {
 	ue.last_session = time(0);
 	new_user = stringify_user_struct(&ue, tbuf);
 	i = strlen(oldbuf) + LINE_LEN;
 	nbuf = (char *)malloc(i);
 	bzero(nbuf, i);
-	
+
 	tmpbuf = buf;
-	
+
 	tmpbuf--;
-	while ((tmpbuf > oldbuf) && (*tmpbuf == '\n')) 
+	while ((tmpbuf > oldbuf) && (*tmpbuf == '\n'))
 		tmpbuf--;
-	
-	while ((tmpbuf > oldbuf) && (*tmpbuf != '\n')) 
+
+	while ((tmpbuf > oldbuf) && (*tmpbuf != '\n'))
 		tmpbuf--;
-	
+
 	if (tmpbuf > oldbuf) tmpbuf++;
 	*tmpbuf = '\0';
 	strcpy(nbuf, oldbuf);
@@ -540,20 +540,20 @@ int tmp;
 	if (write_file(fd, nbuf) == -1) {
 	    sys_error("logout", 3, "write_file");
 	}
-    }	
-    
+    }
+
     free(oldbuf);
-    
+
     if (close_file(fd) == -1) {
 	sys_error("logout", 4, "close_file");
     }
     non_critical();
-    
+
     sprintf(tmpdir, "  removing msg-file");  debuglog(tmpdir, 20);
     strcpy(name, Home);
     strcat(name, MSG_FILE);
     unlink(name);
-    
+
     sprintf(tmpdir, "  resetting tty");  debuglog(tmpdir, 20);
     sig_reset();
     tty_reset();
@@ -580,7 +580,7 @@ void exec_login()
     int (*fcn)();
 
     Logging_in = 1;
-    
+
     rc = read_sklaffrc(Uid);
     if (rc != NULL) {
 	if (strlen(rc->login)) {
@@ -639,14 +639,14 @@ char *s;
 
   if (level < LOGLEVEL) {
     sprintf(logname, "%s/%d.%d.log", LOGDIR, Uid, getpid());
-    
+
     now = time(0);
     strcpy(tstr, ctime(&now));
     tstr[strlen(tstr)-1]=0;
     sprintf(entry, "%s : %d : %d : %s", tstr, Uid, getpid(), s);
-    
+
     fp = fopen(logname, "a");
-    fprintf(fp, "%s\n", entry); 
+    fprintf(fp, "%s\n", entry);
     fclose(fp);
   }
 }
@@ -683,7 +683,7 @@ int num, flag, st_type;
 	    if (st_type == STATUS_EXTERNAL)
 	      outputex("\n%s    %s (%s)\n", MSG_NAMECOL, u_name, pw->pw_name);
 	    if (STATUS_INTERNAL == st_type) {
-	    if (strlen (rc->user.adress) || strlen (rc->user.postnr) || 
+	    if (strlen (rc->user.adress) || strlen (rc->user.postnr) ||
 		strlen (rc->user.ort)) {
 		output (MSG_ADDRCOL);
 		first = 0;
@@ -698,7 +698,7 @@ int num, flag, st_type;
 		    output ("%s  %s\n", rc->user.postnr, up_string (rc->user.ort));
 		}
 	    }
-	    if (strlen (rc->user.tele1) || strlen (rc->user.tele2) || 
+	    if (strlen (rc->user.tele1) || strlen (rc->user.tele2) ||
 		strlen (rc->user.tele3)) {
 		output (MSG_TELECOL);
 		if (strlen (rc->user.tele1)) {
@@ -706,14 +706,14 @@ int num, flag, st_type;
 		    output ("%s\n", rc->user.tele1);
 		}
 		if (strlen (rc->user.tele2)) {
-		    if (first) 
+		    if (first)
 			    output ("         ");
 		    first = 1;
 		    output ("%s\n", rc->user.tele2);
 		}
 		if (strlen (rc->user.tele3)) {
-		    if (first) 
-			    output ("         "); 
+		    if (first)
+			    output ("         ");
 		    first = 1;
 		    output ("%s\n", rc->user.tele3);
 		}
@@ -733,19 +733,19 @@ int num, flag, st_type;
 	    }
 	    if (strlen (rc->user.url)) {
 		output ("%s%s\n", MSG_URLCOL, rc->user.url);
-	    }	      
+	    }
 	    if (strlen (rc->user.org))  {
 		output ("%s     %s\n", MSG_ORGCOL, rc->user.org);
 	    }
 	    if (strlen (rc->timeout)) {
 		first = atoi (rc->timeout);
-		if (first) 
+		if (first)
 		    output ("\n%s%s\n", MSG_INACT, rc->timeout);
 	    }
 	    pw = getpwuid(u_num);
 	    if (pw->pw_gid == MODEM_GROUP) {
 		first = atoi (rc->paydate);
-		if (first) 
+		if (first)
 		    output ("%s%s\n", MSG_PDATE, rc->paydate);
 		else
 		    output ("%s%s\n", MSG_PDATE, MSG_NOPAY);
@@ -765,7 +765,7 @@ int num, flag, st_type;
 		    return -1;
 		}
 		ActiveFD=-1;
-		oldbuf = buf;		
+		oldbuf = buf;
 		buf = get_active_entry (buf, &ae);
 		while (buf) {
 		    if (ae.user == u_num) {
@@ -815,7 +815,7 @@ int num, flag, st_type;
 	    sprintf (tmp, "%s%s", home, CONFS_FILE);
 	    if ((fd = open_file(tmp, 0)) == -1) {
 		sys_error("cmd_show_status", 1, "open_file");
-		return -1;	
+		return -1;
 	    }
 	    if ((buf = read_file(fd)) == NULL) {
 		sys_error("cmd_show_status", 2, "read_file");
@@ -832,7 +832,7 @@ int num, flag, st_type;
 		if (cse.num) {		/* We don't need to check mailbox */
 		  /*		    if ((fd = open_file(tmp, 0)) == -1) {
 			sys_error("cmd_show_status", 4, "open_file");
-			return -1;	
+			return -1;
 		    }
 		    */
 		    ce = get_conf_struct(cse.num);
@@ -882,7 +882,7 @@ int num, flag, st_type;
 		output ("%s\n", MSG_NEWS2);
 		break;
 	    }
-	    if (ce->comconf) output ("%s%s\n", MSG_CONFCOM, 
+	    if (ce->comconf) output ("%s%s\n", MSG_CONFCOM,
 				     conf_name (ce->comconf, tmp));
 	    time_string (ce->time, tmp, 0);
 	    output ("%s%s %s ", MSG_CONFCREATE, tmp, MSG_BY);
@@ -898,10 +898,10 @@ int num, flag, st_type;
 }
 
 
-static int 
+static int
 active_entry_cmp(ae1, ae2)
 struct ACTIVE_ENTRY *ae1, *ae2;
-{		
+{
   int r = idle_time(ae1->user) - idle_time(ae2->user);
   if (r == 0)
     r = active_time(ae2->user) - active_time(ae1->user);
@@ -926,24 +926,24 @@ int who_type;
 
     struct ACTIVE_ENTRY
 	    *ae, ea;
-    
+
     if ((ActiveFD = open_file(ACTIVE_FILE, 0)) == -1) {
 	return -1;
     }
-    
-    
+
+
     if ((buf = read_file(ActiveFD)) == NULL) {
 	return -1;
     }
 
     oldbuf = buf;
-    
+
     if (close_file(ActiveFD) == -1) {
 	return -1;
     }
     ActiveFD=-1;
 
-    /* Old vilka-lista 
+    /* Old vilka-lista
     char *ptr;
 
     output("\n%-25s %7s  %-12s %-8s  %s\n\n", MSG_NAME, MSG_TIME,
@@ -973,11 +973,11 @@ int who_type;
 	       MSG_TIME, MSG_ACT, MSG_FROM);
       while ((buf = get_active_entry(buf, &ea))) {
 	if (!ea.avail) {
-	  user_name(ea.user, namn); 
+	  user_name(ea.user, namn);
 	  namn[25]=0;
 	} else {
 	  namn[0]='(';
-	  user_name(ea.user, namn+1); 
+	  user_name(ea.user, namn+1);
 	  namn[24]=0;
 	  strcat(namn, ")");
 	}
@@ -1012,7 +1012,7 @@ int who_type;
       ae = (struct ACTIVE_ENTRY *) malloc(nactive*sizeof(struct ACTIVE_ENTRY));
 
       buf = oldbuf;
-    
+
       i=0;
       while ((buf = get_active_entry(buf, &(ae[i]) )))
 	i++;
@@ -1025,14 +1025,14 @@ int who_type;
       if (WHO_EXTERNAL == who_type)
       outputex("\n%-25s %-11s %4s %4s   %s\n\n", MSG_NAME, MSG_WHEN,
 	     MSG_TIME, MSG_ACT, MSG_FROM);
-      
+
       for (i=0; i<nactive; i++) {
 	if (!ae[i].avail) {
-	  user_name(ae[i].user, namn); 
+	  user_name(ae[i].user, namn);
 	  namn[25]=0;
 	} else {
 	  namn[0]='(';
-	  user_name(ae[i].user, namn+1); 
+	  user_name(ae[i].user, namn+1);
 	  namn[24]=0;
 	  strcat(namn, ")");
 	}
