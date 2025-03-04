@@ -2,6 +2,8 @@ Sklaffkom is a Swedish, command based BBS system (also known as [KOM](https://en
 
 It was never meant to be a complete, permanent BBS system but rather a temporary solution in wait for the grand new big BBS system that arrived 10+ years later in the form of [EasyKOM](https://sv.wikipedia.org/wiki/EasyKOM). 
 
+The reason for keeping this old codebase alive and working on modern operating systems is simple: it is a big part of the cultural heritage of a small BBS community in Sweden. The goal is, of course, to have Sklaffkom support a modern version of a modern operating system to be able to open this BBS system to online users again. Because we can. 
+
 This version, 1.32, is the last version released by the team behind Sklaffkom- It has later been patched to compile on the 32-bit x86 versions of FreeBSD 12 and OpenBSD 6. 
 
 At some point, this should probably also be updated again to compile on 64-bit systems and later versions of FreeBSD and OpenBSD (and hopefully Linux but who knows). Attempts has been made to compile Sklaffkom on OpenBSD 7.4 running on SPARC64 but it didn't work. 
