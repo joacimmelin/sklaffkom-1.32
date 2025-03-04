@@ -43,11 +43,7 @@ MSG_NOV, MSG_DEC};
 
 static char closedays[2][10] = {MSG_TODAY, MSG_YESTERDAY};
 
-char *
-time_string(in_time, out_time, show_date)
-    time_t in_time;
-    char *out_time;
-    int show_date;
+char *time_string(time_t in_time, char *out_time, int show_date)
 {
     struct tm ts, ts_now;
     time_t now;
