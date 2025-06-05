@@ -113,16 +113,13 @@ main(int argc, char *argv[])
 long
 post_survey_result(char *resultbuf, struct TEXT_HEADER * th, int conf, int ouid, int ogrp)
 {
-    int fd, fdoutfile, usernum, oldconf, ml, i;
+    int fd, fdoutfile, usernum, i;
     char *buf, *oldbuf, *nbuf, *fbuf, *sb;
     LINE conffile, confdir, textfile, home, cname, newline;
     struct CONF_ENTRY ce;
 
-    oldconf = conf;
-    ml = 0;
     if (conf < 0) {
         usernum = conf - (conf * 2);
-        ml = usernum;
         mbox_dir(usernum, home);
         sprintf(conffile, "%s%s", home, MAILBOX_FILE);
         sprintf(confdir, "%s/", home);
