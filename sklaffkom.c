@@ -32,7 +32,7 @@ int
 main(int argc, char *argv[])
 {
     LINE buf, args;
-    int (*fcn) ();
+    int (*fcn) (LINE);
 
 
     strcpy(Program_name, prog_name(argv[0]));

@@ -562,7 +562,7 @@ exec_login(void)
     struct SKLAFFRC *rc;
     LINE cmdline, args;
     char *buf, *run;
-    int (*fcn) ();
+    int (*fcn) (LINE);
 
     Logging_in = 1;
 

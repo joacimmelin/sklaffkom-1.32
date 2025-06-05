@@ -1672,7 +1672,7 @@ long
 age_to_textno(long age)
 {
     char *buf, *oldbuf;
-    long firsttext, textno, current_text;
+    long textno, current_text;
     time_t now, texttime;
     int fd;
     struct TEXT_ENTRY te;
@@ -1682,7 +1682,6 @@ age_to_textno(long age)
     now = time(NULL);
 
     current_text = last_text(Current_conf, Uid);
-    firsttext = first_text(Current_conf, Uid);
 
     textno = -1;
     texttime = now;
