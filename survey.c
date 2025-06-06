@@ -42,11 +42,7 @@ static int parse_survey_line(char *);
 static int input_survey_quest(char *, char *, int, int);
 
 int
-make_survey(reply, quest, ll, flag)
-    char *reply;
-    int *quest;
-    LINE ll;
-    int flag;
+make_survey(char *reply, int *quest, LINE ll, int flag)
 {
     int ret, qtype;
 
@@ -61,21 +57,16 @@ make_survey(reply, quest, ll, flag)
     return ret;
 }
 
-
-
 static int
-resshowcompare(r1, r2)
-    struct RESSHOW *r1, *r2;
+resshowcompare(const void *a, const void *b)
 {
-    return (r1->val - r2->val);
+    struct RESSHOW r1 = *(struct RESSHOW *)a;
+    struct RESSHOW r2 = *(struct RESSHOW *)b;
+    return (r1.val - r2.val);
 }
 
 int
-save_survey_result(survey, conf, survey_result, n_quest)
-    long survey;
-    int conf;
-    char *survey_result;
-    int n_quest;
+save_survey_result(long survey, int conf, char *survey_result, int n_quest)
 {
     int fd, i, j, ret, n;
     LINE confdir, resfile;
@@ -231,17 +222,17 @@ save_survey_result(survey, conf, survey_result, n_quest)
 
 
 static int
-repbufcompare(r1, r2)
-    double *r1, *r2;
+repbufcompare(const void *a, const void *b)
 {
-    int rr = (*r1 > *r2) ? 1 : ((*r1 < *r2) ? -1 : 0);
+    int r1 = *(const int*)a;
+    int r2 = *(const int*)b;
+    int rr = (r1 > r2) ? 1 : ((r1 < r2) ? -1 : 0);
 
     return (rr);
 }
 
 double
-my_atof(s)
-    char *s;
+my_atof(char *s)
 {
     char *t;
     LINE tmp;
@@ -281,10 +272,7 @@ my_atof(s)
 
 static struct TEXT_BODY
 *
-outline(tb, lin, totlen)
-    struct TEXT_BODY *tb;
-    LINE lin;
-    long *totlen;
+outline(struct TEXT_BODY *tb, LINE lin, long *totlen)
 {
     if (tb != NULL) {
         strcpy(tb->line, lin);
@@ -298,11 +286,7 @@ outline(tb, lin, totlen)
 
 
 char *
-show_survey_result(survey, conf, tbstart, n_quest)
-    long survey;
-    int conf;
-    struct TEXT_BODY *tbstart;
-    int n_quest;
+show_survey_result(long survey, int conf, struct TEXT_BODY *tbstart, int n_quest)
 {
     struct TEXT_BODY *tb, *tbut;
     struct TEXT_ENTRY te;
@@ -563,9 +547,7 @@ show_survey_result(survey, conf, tbstart, n_quest)
 }
 
 int
-mark_survey_as_taken(survey, conf)
-    long survey;
-    int conf;
+mark_survey_as_taken(long survey, int conf)
 {
     int fd;
     LINE confdir, infofile;
@@ -651,9 +633,7 @@ mark_survey_as_taken(survey, conf)
 }
 
 int
-check_if_survey_taken(survey, conf)
-    long survey;
-    int conf;
+check_if_survey_taken(long survey, int conf)
 {
     int fd, ret;
     LINE confdir, infofile;
@@ -691,8 +671,7 @@ check_if_survey_taken(survey, conf)
 
 
 time_t
-get_survey_time(cur_tim)
-    time_t cur_tim;
+get_survey_time(time_t cur_tim)
 {
     int ok, days, hours, minutes;
     LINE repl;
@@ -721,8 +700,7 @@ get_survey_time(cur_tim)
 }
 
 int
-get_no_survey_questions(fname)
-    char *fname;
+get_no_survey_questions(char *fname)
 {
     int fd, n;
     char *buf, *sb;
@@ -755,8 +733,7 @@ get_no_survey_questions(fname)
 
 
 static int
-parse_survey_line(lin)
-    char *lin;
+parse_survey_line(char *lin)
 {
     char *s, *s2, *s3;
     long n;
@@ -801,9 +778,7 @@ parse_survey_line(lin)
 }
 
 static int
-input_survey_quest(lin, reply, qtype, flag)
-    LINE lin, reply;
-    int qtype, flag;
+input_survey_quest(LINE lin, LINE reply, int qtype, int flag)
 {
     char *s, *s2;
     long n1 = 0, n2 = 0;

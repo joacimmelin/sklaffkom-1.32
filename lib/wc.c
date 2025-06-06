@@ -33,9 +33,7 @@
  */
 
 static void
-skip_beyond_rpar(s, index)
-    LINE s;
-    int *index;
+skip_beyond_rpar(LINE s, int *index)
 {
     int i;
 
@@ -54,9 +52,7 @@ skip_beyond_rpar(s, index)
  */
 
 static void
-skip_beyond_space(s, index)
-    LINE s;
-    int *index;
+skip_beyond_space(LINE s, int *index)
 {
     int i;
 

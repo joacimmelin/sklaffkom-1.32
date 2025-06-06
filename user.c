@@ -39,9 +39,7 @@
  */
 
 char *
-user_name(uid, name)
-    int uid;
-    char *name;
+user_name(int uid, char *name)
 {
     int fd;
     char *buf, *oldbuf;
@@ -85,8 +83,7 @@ user_name(uid, name)
  */
 
 time_t
-last_session(uid)
-    int uid;
+last_session(int uid)
 {
     int fd;
     char *buf, *oldbuf;
@@ -123,10 +120,7 @@ last_session(uid)
  */
 
 int
-user_uid(name)
-    char
-    *name;
-
+user_uid(char *name)
 {
     int
      uid, xit, fd, i;
@@ -180,9 +174,7 @@ user_uid(name)
  */
 
 int
-user_is_active(uid)
-    int
-     uid;
+user_is_active(int uid)
 {
     char
     *oldbuf, *buf;
@@ -225,9 +217,7 @@ user_is_active(uid)
  */
 
 int
-user_is_avail(uid)
-    int
-     uid;
+user_is_avail(int uid)
 {
     char
     *oldbuf, *buf;
@@ -270,9 +260,7 @@ user_is_avail(uid)
  */
 
 char *
-replace_active(ae, buf)
-    struct ACTIVE_ENTRY *ae;
-    char *buf;
+replace_active(struct ACTIVE_ENTRY *ae, char *buf)
 {
     char *tbuf, *nbuf, *obuf;
     LINE tmp;
@@ -321,8 +309,7 @@ replace_active(ae, buf)
  */
 
 int
-set_avail(uid, value)
-    int uid, value;
+set_avail(int uid, int value)
 {
     char *oldbuf, *buf, *nbuf;
     struct ACTIVE_ENTRY ae;
@@ -367,9 +354,7 @@ set_avail(uid, value)
  */
 
 int
-set_from(uid, value)
-    int uid;
-    char *value;
+set_from(int uid, char *value)
 {
     char *oldbuf, *buf, *nbuf;
     struct ACTIVE_ENTRY ae;
@@ -414,8 +399,7 @@ set_from(uid, value)
  */
 
 struct USER_ENTRY *
-get_user_struct(uid)
-    int uid;
+get_user_struct(int uid)
 {
     int fd;
     char *buf, *oldbuf;
@@ -531,9 +515,7 @@ setup_new_user()
  */
 
 char *
-stringify_user_struct(user_entry, buf)
-    struct USER_ENTRY *user_entry;
-    char *buf;
+stringify_user_struct(struct USER_ENTRY *user_entry, char *buf)
 {
     sprintf(buf, "%d:%lld:%s\n", user_entry->num,
         (long long) user_entry->last_session, user_entry->name);
@@ -735,9 +717,7 @@ remove_active()
  */
 
 struct ACTIVE_ENTRY *
-check_active(uid, ae)
-    int uid;
-    struct ACTIVE_ENTRY *ae;
+check_active(int uid, struct ACTIVE_ENTRY *ae)
 {
     int found;
     char *buf, *oldbuf;
@@ -781,10 +761,7 @@ check_active(uid, ae)
  */
 
 long
-active_time(uid)
-    int
-     uid;
-
+active_time(int uid)
 {
     long tim;
 
@@ -829,8 +806,7 @@ active_time(uid)
  */
 
 long
-idle_time(uid)
-    int uid;
+idle_time(int uid)
 {
     LINE actfile;
     struct stat sb;
@@ -882,8 +858,7 @@ make_activity_note()
  */
 
 int
-disp_note(user)
-    int user;
+disp_note(int user)
 {
     struct SKLAFFRC *rc;
 
@@ -906,10 +881,7 @@ disp_note(user)
  */
 
 int
-list_user(type, grp, pdate)
-    int type;
-    int grp;
-    int pdate;
+list_user(int type, int grp, int pdate)
 {
     int fd, count, x, ok, dolink;
     char *buf, *oldbuf;
@@ -1097,9 +1069,7 @@ list_user(type, grp, pdate)
  */
 
 struct UEN *
-sort_user(ue_list, count)
-    struct UEL *ue_list;
-    int count;
+sort_user(struct UEL *ue_list, int count)
 {
     int x;
     struct UEL *saved;
@@ -1142,8 +1112,7 @@ sort_user(ue_list, count)
  */
 
 struct SKLAFFRC *
-read_sklaffrc(uid)
-    int uid;
+read_sklaffrc(int uid)
 {
 
     int fd;
@@ -1349,9 +1318,7 @@ read_sklaffrc(uid)
  */
 
 int
-write_sklaffrc(uid, kaffer)
-    int uid;
-    struct SKLAFFRC *kaffer;
+write_sklaffrc(int uid, struct SKLAFFRC *kaffer)
 {
     char user_home[255];
     char file1[255];
