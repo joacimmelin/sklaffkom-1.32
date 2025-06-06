@@ -25,7 +25,7 @@
  */
 
 #include "sklaff.h"
-#include "globals.h"
+#include "ext_globals.h"
 #include <pwd.h>
 #include <fcntl.h>
 #include <sys/stat.h>
