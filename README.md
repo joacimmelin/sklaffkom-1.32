@@ -6,6 +6,6 @@ The reason for keeping this old codebase alive and working on modern operating s
 
 This version, 1.32, is the last version released by the team behind Sklaffkom- It has later been patched to compile on the 32-bit x86 versions of FreeBSD 12 and OpenBSD 6. 
 
-At some point, this should probably also be updated again to compile on 64-bit systems and later versions of FreeBSD and OpenBSD (and hopefully Linux but who knows). Attempts has been made to compile Sklaffkom on OpenBSD 7.4 running on SPARC64 but it didn't work. 
+At some point, this should probably also be updated again to compile on 64-bit systems and later versions of FreeBSD and OpenBSD (and hopefully Linux, but who knows). Attempts has been made to compile Sklaffkom on OpenBSD 7.4 running on SPARC64 but it didn't work. 
 
-Attempts are now being made to compile this code in FreeBSD 14.2-RELEASE (64-bit).  Thoughts and prayers, etc. 
+Attempts are now being made to compile this code in FreeBSD 14.2-RELEASE (64-bit) and macOS 15.5.  Thoughts and prayers, etc. 
