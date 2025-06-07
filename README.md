@@ -1,4 +1,4 @@
-Sklaffkom is a Swedish, command based BBS system (also known as [KOM](https://en.wikipedia.org/wiki/KOM_(bulletin_board_system))) written for SunOS, BSD and later (sort-of) ported to Linux. 
+Sklaffkom is a Swedish, command based BBS system (also known as [KOM](https://en.wikipedia.org/wiki/KOM_(bulletin_board_system))) written for SunOS 5.x, later ported to Interactive Unix, NetBSD, FreeBSD and later (sort-of) ported to Linux. 
 
 The BBS system was written by Torbjörn Bååth, Peter Forsberg, Peter Lindberg, Odd Petersson and Carl Sundbom in approximatly 1992-1996.  Later additions was written by Daniel Grönjord and Olof Runborg. 
 
