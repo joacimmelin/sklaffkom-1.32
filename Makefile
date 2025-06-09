@@ -36,8 +36,20 @@ LIBS=-lsklaff -ltermcap -lm
 # Change nothing below this line
 #
 
-OBJS=admin.o buf.o commands.o conf.o edit.o file.o flag.o msg.o parse.o\
-survey.o text.o user.o version.o
+OBJS = \
+	admin.o \
+	buf.o \
+	commands.o \
+	conf.o \
+	edit.o \
+	file.o \
+	flag.o \
+	msg.o \
+	parse.o\
+	survey.o \
+	text.o \
+	user.o \
+	version.o
 KOMOBJ=sklaffkom.o
 ADMOBJ=sklaffadm.o
 WHOOBJ=sklaffwho.o
