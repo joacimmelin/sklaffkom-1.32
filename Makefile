@@ -61,7 +61,7 @@ FTYOBJ=forwardtoyell.o
 
 SKLAFFLIB=lib/libsklaff.a
 
-all: sklafflib sklaffkom sklaffadm sklaffacct mailtoss survreport sklaffwho
+all: $(SKLAFFLIB) sklaffkom sklaffadm sklaffacct mailtoss survreport sklaffwho
 
 $(OBJS): sklaff.h ext_globals.h struct.h lang.h
 $(KOMOBJ): sklaff.h globals.h struct.h lang.h
@@ -117,8 +117,8 @@ forwardtoyell: $(SKLAFFLIB) $(FTYOBJ) $(OBJS)
 version.c:
 	@./version.sh
 
-sklafflib:
-	(cd lib; make CC=$(CC) CFLAGS="$(CFLAGS) -I.." )
+$(SKLAFFLIB):
+	(cd lib; $(MAKE) CC=$(CC) CFLAGS='$(CFLAGS) -I..')
 
 install: sklaffkom sklaffadm sklaffacct survreport sklaffwho
 	@echo Making libraries
