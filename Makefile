@@ -11,7 +11,7 @@ SKLAFFSYS = FREEBSD	# FreeBSD
 #SKLAFFSYS = LINUX	# Linux
 
 #CC=gcc
-CFLAGS = -D$(SKLAFFSYS) -O2 -pipe -Wall -Werror
+CFLAGS = -D$(SKLAFFSYS) -O2 -g -pipe -Wall -Werror
 
 # uncomment for SYSV
 #LIBS=-lc_s -lsklaff -ltermcap -lcposix -linet -lm
