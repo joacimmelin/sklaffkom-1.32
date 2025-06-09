@@ -32,6 +32,10 @@
 #endif
 #include <sys/ioctl.h>
 
+#ifdef LINUX
+size_t strlcpy(char *dst, const char *src, size_t siz);
+#endif
+
 extern int Uid;                 /* Uid of current user	 */
 extern LINE Home;               /* home_dir of current user */
 extern LINE Mbox;               /* mbox_dir of current user */
