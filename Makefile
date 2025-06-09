@@ -127,8 +127,6 @@ install: sklaffkom sklaffadm sklaffacct survreport sklaffwho
 	-mkdir $(SKLAFFDIR)/etc
 	@echo Installing SklaffKOM
 	-mv $(SKLAFFBIN)/sklaffkom $(SKLAFFBIN)/sklaffkom.old
-	chown $(SKLAFFUSER) $(SKLAFFBIN)/sklaffkom.old
-	chmod u+s $(SKLAFFBIN)/sklaffkom.old
 	cp sklaffkom sklaffadm sklaffwho sklaffacct $(SKLAFFBIN)/
 	cp survreport $(SKLAFFBIN)/srep
 	-chown $(SKLAFFUSER) $(SKLAFFBIN)/sklaffkom $(SKLAFFBIN)/sklaffadm $(SKLAFFBIN)/sklaffwho \
