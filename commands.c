@@ -82,7 +82,7 @@ cmd_sendbatch(char *args)
     char filler[1], msint[4];
     int offset;
     long login, msg_size;
-    fpos_t rem;
+    long rem;
     struct {
         int uid;
         char *name;
