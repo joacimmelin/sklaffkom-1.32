@@ -37,6 +37,7 @@ OBJS = \
 	admin.o \
 	buf.o \
 	commands.o \
+	command_list.o \
 	conf.o \
 	edit.o \
 	file.o \

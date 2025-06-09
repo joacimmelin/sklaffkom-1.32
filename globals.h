@@ -25,7 +25,6 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <nlist.h>
 #include <termios.h>
 #include <signal.h>
 

@@ -16,9 +16,10 @@ in a file of its own.  All user command functions reside in commands.c
 and are the only ones called by the command parser.  They all have the
 same argument type and return value type.  Look in the file commands.c
 for examples.  All functions in this file MUST begin with "cmd_".
-SklaffKOM uses the function nlist to find out where in the executable
-a function is located after matching the user input with the commands
-listed in the parse-file (etc/parse.swe and etc/parse.eng).
+All functions in commands.c MUST also be listed in command_list.c as
+this mapping table is used to find the right function after matching
+the user input with the commands listed in the parse-file
+(etc/parse.swe and etc/parse.eng).
 
 Be sure to add copyright/license information at the top to make sure
 nobody messes with your code without telling. The "cmd_" function

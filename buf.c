@@ -128,7 +128,6 @@ char *
 get_parse_entry(char *buf, struct PARSE_ENTRY * pe)
 {
     int res;
-    LINE tmpline;
 
     bzero(pe->cmd, LINE_LEN);
     bzero(pe->func, LINE_LEN);
@@ -136,21 +135,16 @@ get_parse_entry(char *buf, struct PARSE_ENTRY * pe)
     for (;;) {
         res = sscanf(buf, "%[^:#\n]:%[^#:\n]:%[^#:\n]'", pe->cmd,
             pe->func, pe->help);
-        rtrim(pe->cmd);
-        rtrim(pe->func);
-        strcpy(tmpline, pe->func);
-        strcpy(pe->func, "_");
-        strcat(pe->func, tmpline);
-        rtrim(pe->help);
         if (res == -1)
             return NULL;
-        else {
-            buf = strchr(buf, '\n');
-            while (buf && (*buf == '\n'))
-                buf++;
-            if (res || (buf == NULL))
-                return buf;
-        }
+        rtrim(pe->cmd);
+        rtrim(pe->func);
+        rtrim(pe->help);
+        buf = strchr(buf, '\n');
+        while (buf && (*buf == '\n'))
+            buf++;
+        if (res || (buf == NULL))
+            return buf;
     }
 }
 

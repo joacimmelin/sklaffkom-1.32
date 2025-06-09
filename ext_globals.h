@@ -55,6 +55,7 @@ extern int Last_conf;           /* Last conference	 */
 extern long Size;               /* size of editing buf  */
 extern struct EDIT_BUF *Start;  /* start of editing buf */
 extern struct TEXT_HEADER *Globalth;    /* Used by line_ed	 */
+extern const struct COMMAND_ENTRY command_list[];       /* Exported commands  */
 extern struct PARSE_ENTRY Par_ent[MAX_COMMANDS];        /* Parse entries      */
 extern struct COM_STACK *cstack;/* Comment stack	 */
 extern struct UR_STACK *ustack, *rstack;        /* Unread/read stack	 */

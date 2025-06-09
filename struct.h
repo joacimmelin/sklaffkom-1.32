@@ -72,11 +72,17 @@ struct CONF_ENTRY {
     LINE name;                  /* name of conf. */
 };
 
+typedef int (cmd_func_t)(char *);
+struct COMMAND_ENTRY {
+    char *name;                 /* name of function */
+    cmd_func_t *ptr;            /* pointer to function */
+};
+
 struct PARSE_ENTRY {
     LINE func;                  /* name of function to call */
     LINE cmd;                   /* specification of the command */
     LINE help;                  /* a short description of what it does */
-    int (*addr) ();             /* address of the function to call */
+    cmd_func_t *addr;           /* address of the function to call */
 };
 
 struct USER_LIST {
