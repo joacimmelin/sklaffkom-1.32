@@ -120,7 +120,7 @@ version.c:
 $(SKLAFFLIB):
 	(cd lib; $(MAKE) CC=$(CC) CFLAGS='$(CFLAGS) -I..')
 
-install: sklaffkom sklaffadm sklaffacct survreport sklaffwho
+install: sklaffkom sklaffadm sklaffacct survreport sklaffwho newstoss
 	@echo Making libraries
 	-mkdir $(SKLAFFBIN)
 	-mkdir $(SKLAFFDIR)
