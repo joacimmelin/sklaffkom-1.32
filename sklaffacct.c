@@ -31,6 +31,8 @@
 #include <pwd.h>
 #include <fcntl.h>
 
+#include "globals.h"
+
 int
 main(int argc, char *argv[])
 {

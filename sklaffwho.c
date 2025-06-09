@@ -28,6 +28,8 @@
 #include "sklaff.h"
 #include "ext_globals.h"
 
+#include "globals.h"
+
 int
 main(int argc, char *argv[])
 {

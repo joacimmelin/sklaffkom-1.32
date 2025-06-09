@@ -31,6 +31,8 @@
 #include <sys/stat.h>
 #include <signal.h>
 
+#include "globals.h"
+
 long post_survey_result(char *, struct TEXT_HEADER *, int, int, int);
 
 int
