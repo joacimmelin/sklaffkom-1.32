@@ -95,9 +95,9 @@ extern int Clear;               /* Clear screen		   */
 extern int Header;              /* email header		   */
 extern int Presbeep;            /* Beep at present msg     */
 extern struct termios Tty_mode;
-sigset_t Oldmask;
+extern sigset_t Oldmask;
 
-int ActiveFD;                   /* Global file descriptor used for the active
+extern int ActiveFD;            /* Global file descriptor used for the active
                                  * file.         */
 
 /* Calles stuff for debugging */
