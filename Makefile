@@ -5,8 +5,13 @@
 SKLAFFBIN=/usr/local/bin
 SKLAFFDIR=/usr/local/sklaff
 
+# Define target system, one of: FREEBSD, SOLARIS, LINUX
+SKLAFFSYS = FREEBSD	# FreeBSD
+#SKLAFFSYS = SOLARIS	# Solaris
+#SKLAFFSYS = LINUX	# Linux
+
 #CC=gcc
-CFLAGS=-O2 -pipe -Wall -Werror
+CFLAGS = -D$(SKLAFFSYS) -O2 -pipe -Wall -Werror
 
 # uncomment for SYSV
 #LIBS=-lc_s -lsklaff -ltermcap -lcposix -linet -lm

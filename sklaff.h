@@ -30,12 +30,6 @@
 #include <stdio.h>
 #include <time.h>
 
-/* Define target system, one of: FREEBSD, SOLARIS, LINUX */
-
-#define FREEBSD			// FreeBSD
-//#define SOLARIS		// Solaris
-//#define LINUX			// Linux
-
 /* Define language desired, one of: SWEDISH or ENGLISH */
 
 #define SWEDISH
