@@ -359,6 +359,7 @@ int cmd_upload(char *);
 int cmd_unlink(char *);
 int cmd_describe(char *);
 int cmd_I(char *);
+int cmd_alias(char *);
 int cmd_my(char *);
 int cmd_prio(char *);
 int cmd_deprio(char *);
@@ -374,7 +375,9 @@ int cmd_answermsg(char *);
 int cmd_from(char *);
 int cmd_list_says(char *);
 int cmd_list_yells(char *);
+int cmd_post_survey(char *);
 int cmd_read_last_text(char *);
+int cmd_reclaim_unread(char *);
 
 /* admin.c */
 
