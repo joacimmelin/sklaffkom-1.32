@@ -27,7 +27,9 @@
 
 #include <signal.h>
 #include <termios.h>
-#include <sys/ttycom.h>
+#ifndef LINUX
+# include <sys/ttycom.h>
+#endif
 #include <sys/ioctl.h>
 
 extern int Uid;                 /* Uid of current user	 */
