@@ -22,15 +22,12 @@ CFLAGS = -D$(SKLAFFSYS) -O2 -pipe -Wall -Werror
 # uncomment for UNIXWARE
 #LIBS=-lsklaff -ltermcap -lelf lib/bzero.o -lm
 
-# uncomment for BSD/SUNOS/LINUXOLD/ULTRIX
-LIBS=-lsklaff -ltermcap -lm
+# uncomment for BSD/SUNOS/LINUX/ULTRIX
+LIBS=-lsklaff -lm
 
 # uncomment for SOLARIS
 #CFLAGS=-g -I/usr/ucbinclude
 #LIBS=-L/usr/ucblib -lm -lsklaff -ltermcap -lucb -lsocket -lnsl -lelf -laio
-
-# uncomment for LINUXELF
-#LIBS=-lsklaff -ltermcap -lelf -lm
 
 #
 # Change nothing below this line
