@@ -41,6 +41,6 @@ unlock(int fd)
 {
     lseek(fd, 0L, 0);
     if (flock(fd, LOCK_UN)) {
-        output("\nFel %d vid flock(). Notera detta felmeddelande och meddela info@skom.se.\n", errno);
+        output("\nFel %d vid flock(). Notera detta felmeddelande och meddela info@sklaffkom.se.\n", errno);
     }
 }
