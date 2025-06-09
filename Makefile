@@ -7,9 +7,7 @@ SKLAFFDIR=/usr/local/sklaff
 
 #CC=gcc
 #CFLAGS=-O2 -m486
-CFLAGS=-O2 -pipe -Wall -g -fcommon
-
-LDFLAGS=-static -Wl,--allow-multiple-definition,--unresolved-symbols=ignore-all
+CFLAGS=-O2 -pipe -Wall -Werror
 
 # uncomment for SYSV
 #LIBS=-lc_s -lsklaff -ltermcap -lcposix -linet -lm
@@ -62,43 +60,43 @@ $(FTCOBJ): sklaff.h globals.h struct.h lang.h
 $(FTYOBJ): sklaff.h globals.h struct.h lang.h
 
 sklaffkom: $(SKLAFFLIB) $(KOMOBJ) $(OBJS)
-	$(CC) -g -o sklaffkom $(KOMOBJ) $(OBJS) $(LDFLAGS) -Llib $(LIBS)
+	$(CC) -g -o sklaffkom $(KOMOBJ) $(OBJS) -Llib $(LIBS)
 	#chmod u+s sklaffkom
 	#chown sklaff sklaffkom
 
 sklaffadm: $(SKLAFFLIB) $(ADMOBJ) $(OBJS)
-	$(CC) -o sklaffadm $(ADMOBJ) $(OBJS) $(LDFLAGS) -Llib $(LIBS)
+	$(CC) -o sklaffadm $(ADMOBJ) $(OBJS) -Llib $(LIBS)
 	strip sklaffadm
 	chmod og-rwx sklaffadm
 
 sklaffwho: $(SKLAFFLIB) $(WHOOBJ) $(OBJS)
-	$(CC) -o sklaffwho $(WHOOBJ) $(OBJS) $(LDFLAGS) -Llib $(LIBS)
+	$(CC) -o sklaffwho $(WHOOBJ) $(OBJS) -Llib $(LIBS)
 	strip sklaffwho
 	#chmod u+s sklaffwho
 
 sklaffacct: $(SKLAFFLIB) $(ACCTOBJ) $(OBJS)
-	$(CC) -o sklaffacct $(ACCTOBJ) $(OBJS) $(LDFLAGS) -Llib $(LIBS)
+	$(CC) -o sklaffacct $(ACCTOBJ) $(OBJS) -Llib $(LIBS)
 	strip sklaffacct
 	#chmod u+s sklaffacct
 
 mailtoss: $(SKLAFFLIB) $(MTOSSOBJ) $(OBJS)
-	$(CC) -o mailtoss $(MTOSSOBJ) $(OBJS) $(LDFLAGS) -Llib $(LIBS)
+	$(CC) -o mailtoss $(MTOSSOBJ) $(OBJS) -Llib $(LIBS)
 	strip mailtoss
 
 newstoss: $(SKLAFFLIB) $(NTOSSOBJ) $(OBJS)
-	$(CC) -o newstoss $(NTOSSOBJ) $(OBJS) $(LDFLAGS) -Llib $(LIBS)
+	$(CC) -o newstoss $(NTOSSOBJ) $(OBJS) -Llib $(LIBS)
 	strip newstoss
 
 survreport: $(SKLAFFLIB) $(SURVREPOBJ) $(OBJS)
-	$(CC) -o survreport $(SURVREPOBJ) $(OBJS) $(LDFLAGS) -Llib $(LIBS)
+	$(CC) -o survreport $(SURVREPOBJ) $(OBJS) -Llib $(LIBS)
 	strip survreport
 
 forwardtoconf: $(SKLAFFLIB) $(FTCOBJ) $(OBJS)
-	$(CC) -o forwardtoconf $(FTCOBJ) $(OBJS) $(LDFLAGS) -Llib $(LIBS)
+	$(CC) -o forwardtoconf $(FTCOBJ) $(OBJS) -Llib $(LIBS)
 	strip forwardtoconf
 
 forwardtoyell: $(SKLAFFLIB) $(FTYOBJ) $(OBJS)
-	$(CC) -o forwardtoyell $(FTYOBJ) $(OBJS) $(LDFLAGS) -Llib $(LIBS)
+	$(CC) -o forwardtoyell $(FTYOBJ) $(OBJS) -Llib $(LIBS)
 	strip forwardtoyell
 
 version.c:
