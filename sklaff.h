@@ -390,7 +390,7 @@ void display_news(void);
 void check_open(void);
 void out_onoff(int);
 int grep(int, char *);
-void logout(int);
+void exec_logout(int);
 void exec_login(void);
 void timeout(int);
 void debuglog(char *, int);
