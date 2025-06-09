@@ -2,6 +2,7 @@
 # Makefile for SklaffKOM
 #
 
+SKLAFFUSER=sklaff
 SKLAFFBIN=/usr/local/bin
 SKLAFFDIR=/usr/local/sklaff
 
@@ -76,7 +77,7 @@ $(FTYOBJ): sklaff.h globals.h struct.h lang.h
 sklaffkom: $(SKLAFFLIB) $(KOMOBJ) $(OBJS)
 	$(CC) -g -o sklaffkom $(KOMOBJ) $(OBJS) -Llib $(LIBS)
 	#chmod u+s sklaffkom
-	#chown sklaff sklaffkom
+	#chown $(SKLAFFUSER) sklaffkom
 
 sklaffadm: $(SKLAFFLIB) $(ADMOBJ) $(OBJS)
 	$(CC) -o sklaffadm $(ADMOBJ) $(OBJS) -Llib $(LIBS)
@@ -126,11 +127,11 @@ install: sklaffkom sklaffadm sklaffacct survreport sklaffwho
 	-mkdir $(SKLAFFDIR)/etc
 	@echo Installing SklaffKOM
 	-mv $(SKLAFFBIN)/sklaffkom $(SKLAFFBIN)/sklaffkom.old
-	chown sklaff $(SKLAFFBIN)/sklaffkom.old
+	chown $(SKLAFFUSER) $(SKLAFFBIN)/sklaffkom.old
 	chmod u+s $(SKLAFFBIN)/sklaffkom.old
 	cp sklaffkom sklaffadm sklaffwho sklaffacct $(SKLAFFBIN)/
 	cp survreport $(SKLAFFBIN)/srep
-	-chown sklaff $(SKLAFFBIN)/sklaffkom $(SKLAFFBIN)/sklaffadm $(SKLAFFBIN)/sklaffwho \
+	-chown $(SKLAFFUSER) $(SKLAFFBIN)/sklaffkom $(SKLAFFBIN)/sklaffadm $(SKLAFFBIN)/sklaffwho \
 		      $(SKLAFFBIN)/sklaffacct
 	-chown root   $(SKLAFFBIN)/srep
 	chmod u+s $(SKLAFFBIN)/sklaffkom $(SKLAFFBIN)/sklaffacct $(SKLAFFBIN)/sklaffwho
@@ -145,40 +146,40 @@ install: sklaffkom sklaffadm sklaffacct survreport sklaffwho
 installdb:
 	@echo Installing datafiles
 	-mkdir $(SKLAFFDIR)
-	chown sklaff $(SKLAFFDIR)
+	chown $(SKLAFFUSER) $(SKLAFFDIR)
 	chmod og-rwx $(SKLAFFDIR)
 	-rm -rf $(SKLAFFDIR)/db
 	mkdir $(SKLAFFDIR)/db
-	chown sklaff $(SKLAFFDIR)/db
+	chown $(SKLAFFUSER) $(SKLAFFDIR)/db
 	chmod og-rwx $(SKLAFFDIR)/db
 	-rm -rf $(SKLAFFDIR)/user
 	mkdir $(SKLAFFDIR)/user
-	chown sklaff $(SKLAFFDIR)/user
+	chown $(SKLAFFUSER) $(SKLAFFDIR)/user
 	chmod og-rwx $(SKLAFFDIR)/user
 	-rm -rf $(SKLAFFDIR)/mbox
 	mkdir $(SKLAFFDIR)/mbox
-	chown sklaff $(SKLAFFDIR)/mbox
+	chown $(SKLAFFUSER) $(SKLAFFDIR)/mbox
 	chmod og-rwx $(SKLAFFDIR)/mbox
 	-rm -rf $(SKLAFFDIR)/files
 	mkdir $(SKLAFFDIR)/files
-	chown sklaff $(SKLAFFDIR)/files
+	chown $(SKLAFFUSER) $(SKLAFFDIR)/files
 	chmod og-rwx $(SKLAFFDIR)/files
 	-rm -rf $(SKLAFFDIR)/etc
 	mkdir $(SKLAFFDIR)/etc
-	chown sklaff $(SKLAFFDIR)/etc
+	chown $(SKLAFFUSER) $(SKLAFFDIR)/etc
 	chmod og-rwx $(SKLAFFDIR)/etc
 	mkdir $(SKLAFFDIR)/etc/help.swe
-	chown sklaff $(SKLAFFDIR)/etc/help.swe
+	chown $(SKLAFFUSER) $(SKLAFFDIR)/etc/help.swe
 	chmod og-rxw $(SKLAFFDIR)/etc/help.swe
 	mkdir $(SKLAFFDIR)/etc/help.eng
-	chown sklaff $(SKLAFFDIR)/etc/help.eng
+	chown $(SKLAFFUSER) $(SKLAFFDIR)/etc/help.eng
 	chmod og-rxw $(SKLAFFDIR)/etc/help.eng
 	-cp etc/* $(SKLAFFDIR)/etc/
 	cp etc/help.swe/* $(SKLAFFDIR)/etc/help.swe/
 	cp etc/help.eng/* $(SKLAFFDIR)/etc/help.eng/
-	chown sklaff $(SKLAFFDIR)/etc/*
-	chown sklaff $(SKLAFFDIR)/etc/help.swe/*
-	chown sklaff $(SKLAFFDIR)/etc/help.eng/*
+	chown $(SKLAFFUSER) $(SKLAFFDIR)/etc/*
+	chown $(SKLAFFUSER) $(SKLAFFDIR)/etc/help.swe/*
+	chown $(SKLAFFUSER) $(SKLAFFDIR)/etc/help.eng/*
 	chmod og-rxw $(SKLAFFDIR)/etc/*
 	chmod og-rxw $(SKLAFFDIR)/etc/help.swe/*
 	chmod og-rxw $(SKLAFFDIR)/etc/help.eng/*
