@@ -155,7 +155,8 @@ display_welcome(void)
     output(MSG_CPY5);
     output(MSG_CPY6);
     output(MSG_CPY7);
-    output("%s\"%s\"%s", MSG_CPY8, MSG_LICENS, MSG_CPY9);
+    output(MSG_CPY8);
+    output(MSG_CPY9);
 #ifdef MODEM_POOL
 #ifdef MODEM_GROUP
 #ifdef INET_GROUP
