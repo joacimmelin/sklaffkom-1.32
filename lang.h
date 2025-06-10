@@ -614,19 +614,19 @@
 
 /* sklaffacct.c */
 
-#define MSG_INNAME	"F|r och efternamn      : "
-#define MSG_INLOGIN	"login (gemener 6-8 st) : "
-#define MSG_INPASSWD	"\\nskat password        : "
+#define MSG_INNAME	"För och efternamn      : "
+#define MSG_INLOGIN	"Inloggningsnamn : "
+#define MSG_INPASSWD	"Önskat password        : "
 #define MSG_INMODEM	"Modempools-tillg}ng    : "
 #define MSG_INTELE	"Telefonnummer          : "
-#define MSG_ACCAPP	"Kontoans|kning: "
+#define MSG_ACCAPP	"Kontoansökning: "
 #define MSG_INSNAME	"Namn   : "
 #define MSG_INSLOGIN	"\nlogin  : "
 #define MSG_INSPASSWD	"\npasswd : "
 #define MSG_INSMODEM	"\nModem  : "
 #define MSG_INSTELE	"\nTelefon: "
-#define MSG_APPLIED	"Din ans|kan {r registrerad.\nV{lkommen }ter.\n\n"
-#define MSG_UIDINUSE	"login-namnet anv{nds av en annan anv{ndare."
+#define MSG_APPLIED	"Din ansökan är registrerad.\nVälkommen åter.\n\n"
+#define MSG_UIDINUSE	"Inloggningsnamn kan ej användas. Vänligen välj annat."
 
 /* mailtoss.c */
 
@@ -1218,7 +1218,7 @@
 
 /* sklaffacct.c */
 
-#define MSG_INNAME	"First and slast name    : "
+#define MSG_INNAME	"First and last name    : "
 #define MSG_INLOGIN	"login (6-8 characters) : "
 #define MSG_INPASSWD	"Password               : "
 #define MSG_INMODEM	"Modempool-access       : "
