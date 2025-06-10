@@ -1,4 +1,6 @@
-Installation instructions for SklaffKOM v1.11, 9 Mars 1996.
+Installation instructions for SklaffKOM v1.32, March 9 1996, June 2025.
+
+Please note: these instructions are out of date.  Please find updated instructions here: https://github.com/joacimmelin/sklaffkom-1.32/wiki/Install-Instructions
 
 What is SklaffKOM?
 ------------------ 
@@ -30,7 +32,7 @@ is wise to do this when you are logged in as sklaff. Use for example
 the command line "uncompress < sklaff.tar.Z | tar xvof -".
 
 3. Configure SklaffKOM. There are a few files you must edit.  First
-edit the makefile in the sklaff-1.11 directory. If you're not using
+edit the makefile in the sklaff-1.32 directory. If you're not using
 gcc, change CC to something else (cc) and modify "-O2" to "-O" in
 CFLAGS.  Define where you want the sklaff database to reside (default
 /usr/local/sklaff, it you change this, you must change in sklaff.h
@@ -38,7 +40,7 @@ also) and where you want the exectables to go (default
 /usr/local/bin). Also define LIBS as the extra libraries you need.
 You must almost certainly change this for untested systems.
 
-The next file to edit is sklaff-1.11/sklaff.h. This file defines just
+The next file to edit is sklaff-1.32/sklaff.h. This file defines just
 about everything in SklaffKOM. Normally, you just have to change the
 following #defines.
 
