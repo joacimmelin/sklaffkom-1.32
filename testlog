@@ -67,3 +67,9 @@ xx Mar 1994	      *	Here a lot has happened, a zillion fixed during
 9 March 1996		Well, I sort of forgot to update this file, but
                         a lot of bugfixes and some new commands. 1.11
 			released.
+
+June 2025		Fredrik Björeman and Marcus Sundberg has patched
+			updated the code to compile on macOS 15.5 and 
+			Rocky Linux 8/9, AlmaLinux 8/9.
+			Joakim Melin has updated the documentation and 
+			other things. 
