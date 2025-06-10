@@ -1,235 +1,235 @@
-Utdrag fr}n ett m|te i systemet S|derKOM som beskriver SklaffKOM.
+Utdrag från ett möte i systemet SöderKOM som beskriver SklaffKOM.
 
-Allm{nt
+Allmänt
 -------
-SklaffKOM utvecklades under slutet av 1992 av n}gra glada entusiaster
+SklaffKOM utvecklades under slutet av 1992 av några glada entusiaster
 och har sedan dess utvecklats mer eller mindre konstant med nyheter.
-Programmet kan k|ras under de flesta UNIX-milj|er och finns p} svenska
-och engelska.  SklaffKOM lyder under GNU-licens.  I det h{r m|tet
-presenteras hur programmet fungerar samt vad som skiljer det fr}n
+Programmet kan köras under de flesta UNIX-miljöer och finns på svenska
+och engelska.  SklaffKOM lyder under GNU-licens.  I det här mötet
+presenteras hur programmet fungerar samt vad som skiljer det från
 andra liknande system.
 
-M|ten
+Möten
 -----
-Det finns fyra typer av m|ten som kan skapas i SklaffKOM: |ppna,
-slutna, hemliga och news.  Hemliga m|ten {r osynliga |verallt i
-systemet utom f|r m|tesskaparen och de som har r{ttigheter i m|tet.
-M|ten skapas med kommandot "skapa m|te".  Om m|tesnamnet inneh}ller
-ord inom parentes r{knas inte dessa ord in i m|tets namn.  T.ex. g}r
-man till m|tet "(SklaffKOM) synpunkter" genom att skriva "g}
-synpunkter".  F|r att se vilka m|ten som finns ges kommandot "lista
-m|ten".  M|ten med en asterisk innan m|tesnamnet {r m|ten du inte {r
-medlem i.  News-m|ten skapas normalt bara av
-administrations-anv{ndaren p} anv{ndarnas best{llning.
+Det finns fyra typer av möten som kan skapas i SklaffKOM: öppna,
+slutna, hemliga och news.  Hemliga möten är osynliga överallt i
+systemet utom för mötesskaparen och de som har rättigheter i mötet.
+Möten skapas med kommandot "skapa möte".  Om mötesnamnet innehåller
+ord inom parentes räknas inte dessa ord in i mötets namn.  T.ex. går
+man till mötet "(SklaffKOM) synpunkter" genom att skriva "gå
+synpunkter".  För att se vilka möten som finns ges kommandot "lista
+möten".  Möten med en asterisk innan mötesnamnet är möten du inte är
+medlem i.  News-möten skapas normalt bara av
+administrations-användaren på användarnas beställning.
 
-M|tesskaparen kan addera och subtrahera r{ttigheter f|r anv{ndare i
-sitt m|te.  Att ha r{ttigheter inneb{r att man f}r bli medlem i m|tet.
-Alla som {r medlemmar har r{tt att l{sa och skriva texter, samt
-|verf|ra filer till m|tet.  F|r att se vilka som har r{ttigheter i ett
-m|te ges kommandot "lista r{ttigheter".
+Mötesskaparen kan addera och subtrahera rättigheter för användare i
+sitt möte.  Att ha rättigheter innebär att man får bli medlem i mötet.
+Alla som är medlemmar har rätt att läsa och skriva texter, samt
+överföra filer till mötet.  För att se vilka som har rättigheter i ett
+möte ges kommandot "lista rättigheter".
 
-Medlemskap i m|te f}s genom kommandot "medlem".  Man kan uttr{da ur
-ett m|te med kommandot "uttr{d".  F|r att se vilka som {r medlemmar i
-ett m|te skriver man "lista medlemmar".
+Medlemskap i möte fås genom kommandot "medlem".  Man kan utträda ur
+ett möte med kommandot "utträd".  För att se vilka som är medlemmar i
+ett möte skriver man "lista medlemmar".
 
-M|tesskaparen kan inte radera texter i m|tet, utan bara f|rfattaren
-till en text kan radera den.  M|tets namn kan {ndras av m|tesskaparen
-med kommandot "{ndra m|tesnamn".  M|tet kan {ven raderas av sin
-skapare med kommandot "radera m|te".
+Mötesskaparen kan inte radera texter i mötet, utan bara författaren
+till en text kan radera den.  Mötets namn kan ändras av mötesskaparen
+med kommandot "ändra mötesnamn".  Mötet kan även raderas av sin
+skapare med kommandot "radera möte".
 
 Texter
 ------
-Texterna organiseras i tr{d som {r separata f|r varje m|te.  Varje
-inl{gg motsvarar roten p} tr{det och dess kommentarer {r f|rgreningar.
-Normalt l{ser man texter fr}n roten och upp}t i tr{det.  Texter kan
-inte flyttas mellan m|ten och en text kan inte ligga i flera m|ten
+Texterna organiseras i träd som är separata för varje möte.  Varje
+inlägg motsvarar roten på trädet och dess kommentarer är förgreningar.
+Normalt läser man texter från roten och uppåt i trädet.  Texter kan
+inte flyttas mellan möten och en text kan inte ligga i flera möten
 samtidigt.
 
-SklaffKOM h}ller reda p} tre stycken texter }t dig hela tiden, den
-sist l{sta texten, den "senaste" texten och den "kommenterade" texten.
-Om du vill l{sa den sist l{sta texten igen ger du kommandot "igen".
-Den "senaste" l{sta texten {r den text som senast l{stes med kommandot
-"(L{sa) n{sta text" eller "(L{sa) n{sta kommentar".  Denna text kan
+SklaffKOM håller reda på tre stycken texter åt dig hela tiden, den
+sist lästa texten, den "senaste" texten och den "kommenterade" texten.
+Om du vill läsa den sist lästa texten igen ger du kommandot "igen".
+Den "senaste" lästa texten är den text som senast lästes med kommandot
+"(Läsa) nästa text" eller "(Läsa) nästa kommentar".  Denna text kan
 refereras till med "senaste" i alla kommandon som arbetar med texter,
-t.ex. "l{sa", "kommentera" och "}terse".  Den "kommenterade" texten {r
-den text som den "senaste" l{sta texten {r en kommentar till och kan
-refereras p} samma s{tt som den "senaste" texten, t.ex. "}terse
-kommenterade" (kan {ven f|rkortas till "-").  Har du l{st f|r l}ngt
-kan du anv{nda kommandot "backa" f|r att backa tillbaka ett visst
+t.ex. "läsa", "kommentera" och "återse".  Den "kommenterade" texten är
+den text som den "senaste" lästa texten är en kommentar till och kan
+refereras på samma sätt som den "senaste" texten, t.ex. "återse
+kommenterade" (kan även förkortas till "-").  Har du läst för långt
+kan du använda kommandot "backa" för att backa tillbaka ett visst
 antal texter.
 
-Texter skrivs i m|ten med kommandot "inl{gg" eller "skriv".
-Kommentarer till texter eller brev g|rs med "kommentera".  Personliga
-kommentarer (kommentarer som hamnar i den kommenterade f|rfattarens
-brevl}da) g|rs med "personlig".
+Texter skrivs i möten med kommandot "inlägg" eller "skriv".
+Kommentarer till texter eller brev görs med "kommentera".  Personliga
+kommentarer (kommentarer som hamnar i den kommenterade författarens
+brevlåda) görs med "personlig".
 
-Privata brev till andra anv{ndare skrivs med kommandot "brev" och
-anv{ndares namn.  Om du har flaggan "kopia (av s{nda brev)" p}slagen
-f}r du {ven en kopia av brevet i din egen brevl}da.  Om namnet
-inneh}ller ett @ antas det att du vill skicka ett email till n}gon
-annan i Internet-v{rlden.
+Privata brev till andra användare skrivs med kommandot "brev" och
+användares namn.  Om du har flaggan "kopia (av sända brev)" påslagen
+får du även en kopia av brevet i din egen brevlåda.  Om namnet
+innehåller ett @ antas det att du vill skicka ett email till någon
+annan i Internet-världen.
 
-Texter l{sas normalt genom att trycka <RETURN>.  Vill man l{sa en
-speciell text kan kommandona "l{sa" eller "}terse" anv{ndas, eller
+Texter läsas normalt genom att trycka <RETURN>.  Vill man läsa en
+speciell text kan kommandona "läsa" eller "återse" användas, eller
 textnumret anges ensamt som kommando.  Texter raderas med kommandot
-"radera text" som bara kan utf|ras av textf|rfattaren.
+"radera text" som bara kan utföras av textförfattaren.
 
 Editor
 ------
-SklaffKOM anv{nder en enkel radeditor.  Det finns inte m|jlighet att
-g|ra t.ex. "!annat" och forts{tta en text senare.  Blir man utsl{ngd
-ur systemet pga avbrott i modemf|rbindelsen f}r man dock forts{tta
-skriva in sin avbrutna text n{sta g}ng man loggar in.
+SklaffKOM använder en enkel radeditor.  Det finns inte möjlighet att
+göra t.ex. "!annat" och fortsätta en text senare.  Blir man utslängd
+ur systemet pga avbrott i modemförbindelsen får man dock fortsätta
+skriva in sin avbrutna text nästa gång man loggar in.
 
-Editorn g|r automatiska radbrytningar och det finns m|jlighet att
-"backa" upp p} f|reg}ende rad ({ven upp till {renderaden).  "S{gar"
-och "skrik" kan skickas och tas emot innefr}n editorn.  Texten man
-editerar kan l{sas "!l{sa".  "!hela" eller Ctrl-L visar hela texten
-inklusive texthuvud.  "!{ndra" till}ter att man {ndrar en speciell rad
-i texten.  Ctrl-X eller Ctrl-U raderar hela den rad man st}r p} och
-Ctrl-W raderar ett ord bak}t.  Du kan {ven radera och infoga rader med
+Editorn gör automatiska radbrytningar och det finns möjlighet att
+"backa" upp på föregående rad (även upp till ärenderaden).  "Sägar"
+och "skrik" kan skickas och tas emot innefrån editorn.  Texten man
+editerar kan läsas "!läsa".  "!hela" eller Ctrl-L visar hela texten
+inklusive texthuvud.  "!ändra" tillåter att man ändrar en speciell rad
+i texten.  Ctrl-X eller Ctrl-U raderar hela den rad man står på och
+Ctrl-W raderar ett ord bakåt.  Du kan även radera och infoga rader med
 kommandona "!radera" resp "!infoga". En text sparas med "!spara"/
-"!l{gga" eller med Ctrl-Z/Ctrl-D.  Den text man kommenterar kan
-}terses med "!}terse".  Vill man kasta bort sin text skriver man
-"!bort" eller trycker Ctrl-C.  Hj{lp i editorn f}s med "!hj{lp".
+"!lägga" eller med Ctrl-Z/Ctrl-D.  Den text man kommenterar kan
+återses med "!återse".  Vill man kasta bort sin text skriver man
+"!bort" eller trycker Ctrl-C.  Hjälp i editorn fås med "!hjälp".
 
 Flytta i editorn
 ----------------
-Kommandot "!flytta" finns numera i editorn. Det tar ett m|tesnamn som
-argument och flyttar texten man skriver dit n{r den sparas. Det g}r bara
-att flytta texter till m|ten man {r medlem i. Kommandot fungerar bara vid
-"kommentera" i m|ten, inte vid brev, inl{gg eller personliga kommentarer.
+Kommandot "!flytta" finns numera i editorn. Det tar ett mötesnamn som
+argument och flyttar texten man skriver dit när den sparas. Det går bara
+att flytta texter till möten man är medlem i. Kommandot fungerar bara vid
+"kommentera" i möten, inte vid brev, inlägg eller personliga kommentarer.
 
-Texten som kommenteras vet inte om att den {r kommenterad, det vill s{ga
-att det st}r inget om att det finns en kommentar i ett annat m|te under
-sj{lva texten. Detta av tv} orsaker:
+Texten som kommenteras vet inte om att den är kommenterad, det vill säga
+att det står inget om att det finns en kommentar i ett annat möte under
+själva texten. Detta av två orsaker:
 
-1. Rent tekniskt {r det sv}rt att f} det att fungera.
-2. Man slipper en massa struntprat fr}n ett m|te i ett annat. !flytta
-   har ju ofta anv{nds i andra system f|r att skriva n}gon f}nig
-   kommentar till en seri|s text och addera den till ett slaskm|te.
+1. Rent tekniskt är det svårt att få det att fungera.
+2. Man slipper en massa struntprat från ett möte i ett annat. !flytta
+   har ju ofta används i andra system för att skriva någon fånig
+   kommentar till en seriös text och addera den till ett slaskmöte.
 
-N{r man l{ser den flyttade kommentaren g}r det att }terse den kommenterade
-texten med "} k" eller "-" som vanligt, {ven om man inte {r medlem i det
-m|tet d{r texten finns. Dock m}ste man ha beh|righet att BLI medlem f|r
-att f} se texten. [r en kommentar flyttad fr}n ett m|te man inte har
-beh|righet att titta i f}r man aldrig veta att det {r en kommentar |ver
+När man läser den flyttade kommentaren går det att återse den kommenterade
+texten med "å k" eller "-" som vanligt, även om man inte är medlem i det
+mötet där texten finns. Dock måste man ha behörighet att BLI medlem för
+att få se texten. [r en kommentar flyttad från ett möte man inte har
+behörighet att titta i får man aldrig veta att det är en kommentar över
 huvud taget.
 
-Hoppa |ver och ol{s
+Hoppa över och oläs
 -------------------
-SklaffKOM inneh}ller n}gra kommandon f|r att v{lja ut vilka texter man
-vill ha som ol{sta.  Dessa {r indelade i tre grupper, kommandon f|r
-att "hoppa |ver" texter, kommandon f|r att "ol{sa" texter samt
+SklaffKOM innehåller några kommandon för att välja ut vilka texter man
+vill ha som olästa.  Dessa är indelade i tre grupper, kommandon för
+att "hoppa över" texter, kommandon för att "oläsa" texter samt
 kommandot "endast".
 
-Vill man l{smarkera (allts} slippa l{sa) alla texter i den gren av
-text-tr{det som man befinner sig i anv{nds kommandot "hoppa |ver".
-Vill man l{smarkera hela tr{det anv{nds kommandot "hoppa tr{d".
+Vill man läsmarkera (alltså slippa läsa) alla texter i den gren av
+text-trädet som man befinner sig i används kommandot "hoppa över".
+Vill man läsmarkera hela trädet används kommandot "hoppa träd".
 
-F|r att markera en text som ol{st anv{nds kommandot "ol{s text".  D}
-kommer du att f} l{sa om texten n{sta g}ng du loggar in i SklaffKOM.
-Vill du ol{smarkera alla texter i tr{det du st}r i ges kommandot "ol{s
-tr{d".  
+För att markera en text som oläst används kommandot "oläs text".  Då
+kommer du att få läsa om texten nästa gång du loggar in i SklaffKOM.
+Vill du oläsmarkera alla texter i trädet du står i ges kommandot "oläs
+träd".  
 
-Vill du ol{smarkera en del av tr{det, det vill s{ga en viss text och
-alla dess kommentar och underkommentarer osv. anv{nds du kommandot
-"ol{s deltr{d" och anger fr}n vilken text du vill ha ol{st.  Praktiskt
-n{r man g|r "}terse kommenterade" flera g}nger och sen vill l{sa om
-fr}n det st{lle d{r diskussion startade utan att beh|va anv{nda
+Vill du oläsmarkera en del av trädet, det vill säga en viss text och
+alla dess kommentar och underkommentarer osv. används du kommandot
+"oläs delträd" och anger från vilken text du vill ha oläst.  Praktiskt
+när man gör "återse kommenterade" flera gånger och sen vill läsa om
+från det ställe där diskussion startade utan att behöva använda
 "endast".
 
-"Endast" anv{nds f|r att s{tta antalet ol{sta texter i ett m|te och
-arbetar kronologiskt bak}t.  "endast 10" ol{smarkerar t.ex. de 10
-senast skrivna texterna i m|tet.
+"Endast" används för att sätta antalet olästa texter i ett möte och
+arbetar kronologiskt bakåt.  "endast 10" oläsmarkerar t.ex. de 10
+senast skrivna texterna i mötet.
 
-S|kfunktioner
+Sökfunktioner
 -------------
-SklaffKOM har tv} funktioner f|r att s|ka efter str{ngar i texter:
-"s|k" och "globals|k".  Dessa fungerar p} samma s{tt f|rutom att
-"globals|k" s|ker i alla m|ten i systemet och "s|k" bara s|ker i det
-m|te du befinner dig i.  B}da kommandona tar en textstr{ng som
-argument och visar sedan alla textnummer d{r textstr{ngen f|rekommer
-samt hela den rad som inneh}ller str{ngen.
+SklaffKOM har två funktioner för att söka efter strängar i texter:
+"sök" och "globalsök".  Dessa fungerar på samma sätt förutom att
+"globalsök" söker i alla möten i systemet och "sök" bara söker i det
+möte du befinner dig i.  Båda kommandona tar en textsträng som
+argument och visar sedan alla textnummer där textsträngen förekommer
+samt hela den rad som innehåller strängen.
 
-Vill du lista {renderaderna i det m|te du befinner dig i kan du skriva
-"lista {renden" och f} se dessa med den senast skrivna texten f|rst.
-Anger du en textstr{ng som argument visas bara de {renderader som
-inneh}ller textstr{ngen.
+Vill du lista ärenderaderna i det möte du befinner dig i kan du skriva
+"lista ärenden" och få se dessa med den senast skrivna texten först.
+Anger du en textsträng som argument visas bara de ärenderader som
+innehåller textsträngen.
 
-S{g och skrik
+Säg och skrik
 -------------
-F|r att meddela sig med andra anv{ndare direkt och inte beh|va skriva
-texter i systemet finns det tv} kommandon: "s{g" och "skrik"/"ropa".
-Dessa fungerar p} samma s{tt f|rutom att "skrik"/"ropa" skickar
-meddelandet till samtliga inloggade och "s{g" endast skickar till en
+För att meddela sig med andra användare direkt och inte behöva skriva
+texter i systemet finns det två kommandon: "säg" och "skrik"/"ropa".
+Dessa fungerar på samma sätt förutom att "skrik"/"ropa" skickar
+meddelandet till samtliga inloggade och "säg" endast skickar till en
 specifik person.
 
-Syntaxen f|r "s{g" {r "s{g <anv{ndare>, <meddelande>".  Om bara "s{g
-<anv{ndare>" ges kommer SklaffKOM att fr}ga efter rader med
+Syntaxen för "säg" är "säg <användare>, <meddelande>".  Om bara "säg
+<användare>" ges kommer SklaffKOM att fråga efter rader med
 meddelanden att skicka till personen tills ett tomt meddelande ges.
-Kommandot "skrik"/"ropa" tar inget anv{ndarnamn men fungerar i |vrigt
-p} samma s{tt.
+Kommandot "skrik"/"ropa" tar inget användarnamn men fungerar i övrigt
+på samma sätt.
 
-Du beh|ver aldrig g|ra n}got f|r att ta emot ett meddelande, det
-kommer automatiskt upp n{r systemet v{ntar p} inmatning.  Samma sak
-g{ller om det skrivs en ny text i n}got m|te, din prompt skrivs om
+Du behöver aldrig göra något för att ta emot ett meddelande, det
+kommer automatiskt upp när systemet väntar på inmatning.  Samma sak
+gäller om det skrivs en ny text i något möte, din prompt skrivs om
 automatiskt.
 
-Anv{ndarprofil
+Användarprofil
 --------------
-Det finns ett flertal saker du kan st{lla in f|r din anv{ndare.  Dessa
+Det finns ett flertal saker du kan ställa in för din användare.  Dessa
 beskrivs nedan:
 
-Flaggor:  Dessa kan antingen vara "av" eller "p}".  Ger du kommandot
-"lista flaggor" ser du vilka flaggor som finns och deras status.  F|r
-att {ndra en flagga skriver du antingen "sl} av <flagga>" eller "sl}
-p} <flagga>".
+Flaggor:  Dessa kan antingen vara "av" eller "på".  Ger du kommandot
+"lista flaggor" ser du vilka flaggor som finns och deras status.  För
+att ändra en flagga skriver du antingen "slå av <flagga>" eller "slå
+på <flagga>".
 
-Lapp:  En text som kommer upp varje g}ng n}gon skriver ett brev eller
-en personlig kommentar till dig, {ndras med kommandot "{ndra lapp".
+Lapp:  En text som kommer upp varje gång någon skriver ett brev eller
+en personlig kommentar till dig, ändras med kommandot "ändra lapp".
 
-L|senord:  Detta b|r {ndras f|rsta g}ngen du loggar in och g|rs med
-kommandot "{ndra l|senord".
+Lösenord:  Detta bör ändras första gången du loggar in och görs med
+kommandot "ändra lösenord".
 
 Personuppgifter:  Uppgifter som adress, telefonnummer och dylikt kan
-du {ndra med "{ndra personuppgifter".  Dessa syns senare om man g|r
-"status" p} din anv{ndare.
+du ändra med "ändra personuppgifter".  Dessa syns senare om man gör
+"status" på din användare.
 
-Timeout: Den tid det tar innan du blir utloggad om du inte r|r vid
-n}gon tangent.  Den {r normalt 0 minuter, det vill s{ga aldrig.  Du
-{ndrar den med kommandot "{ndra timeout".  En minut innan du blir
-utloggad f}r du en varning.
+Timeout: Den tid det tar innan du blir utloggad om du inte rör vid
+någon tangent.  Den är normalt 0 minuter, det vill säga aldrig.  Du
+ändrar den med kommandot "ändra timeout".  En minut innan du blir
+utloggad får du en varning.
 
-Uppstartskommandon: En text som inneh}ller alla de kommandon som du
-vill ska utf|ras varje g}ng du loggar in, t.ex. "vilka" och "lista
-nyheter".  Anv{nd kommandot "{ndra uppstartskommandon" och skriv in
-kommandona i editorn, ett kommando p} varje rad och spara som vanligt.
+Uppstartskommandon: En text som innehåller alla de kommandon som du
+vill ska utföras varje gång du loggar in, t.ex. "vilka" och "lista
+nyheter".  Använd kommandot "ändra uppstartskommandon" och skriv in
+kommandona i editorn, ett kommando på varje rad och spara som vanligt.
 
 Information
 -----------
-I SklaffKOM finns det ett flertal kommandon f|r att f} information.
-"lista anv{ndare" ger dig en lista p} alla anv{ndare sorterad p}
-efternamnet.  "lista senaste" visar n{r varje anv{ndare senast
-loggade in.  "lista nyheter"/"lista ol{sta" visar var du har ol{sta
+I SklaffKOM finns det ett flertal kommandon för att få information.
+"lista användare" ger dig en lista på alla användare sorterad på
+efternamnet.  "lista senaste" visar när varje användare senast
+loggade in.  "lista nyheter"/"lista olästa" visar var du har olästa
 texter.  "lista kommandon"/"?" visar vilka kommandon som finns och
-"hj{lp" ger hj{lp f|r ett speciellt kommando.
+"hjälp" ger hjälp för ett speciellt kommando.
 
-"vilka" visar vilka som anv{nder SklaffKOM just nu.  "var" visar i
-vilket m|te du befinner dig.  "tiden" visar vad systemets klocka {r.
+"vilka" visar vilka som använder SklaffKOM just nu.  "var" visar i
+vilket möte du befinner dig.  "tiden" visar vad systemets klocka är.
 
-"status" visar detaljerad information om en anv{ndare eller ett m|te
-och "information" ger allm{n information om systemet.
+"status" visar detaljerad information om en användare eller ett möte
+och "information" ger allmän information om systemet.
 
 Filhantering
 ------------
-SklaffKOM filsystem {r uppbyggt s} att varje m|te automatiskt har en
-area f|r filer.  Alla som {r medlemmar i m|tet har r{tt att g|ra allt
-med filerna i m|tet, det vill s{ga: "ladda upp" filer till m|tet,
-"ladda ner" filer fr}n m|tet, "lista filer" i m|tet, "beskriva filer"
-i m|tet samt "radera filer" i m|tet.
+SklaffKOM filsystem är uppbyggt så att varje möte automatiskt har en
+area för filer.  Alla som är medlemmar i mötet har rätt att göra allt
+med filerna i mötet, det vill säga: "ladda upp" filer till mötet,
+"ladda ner" filer från mötet, "lista filer" i mötet, "beskriva filer"
+i mötet samt "radera filer" i mötet.
 
 Avsluta
 -------
-SklaffKOM avslutas genom n}got av kommandona "sluta" eller "logout" och
-omstartas med "b|rja om".
+SklaffKOM avslutas genom något av kommandona "sluta" eller "logout" och
+omstartas med "börja om".
