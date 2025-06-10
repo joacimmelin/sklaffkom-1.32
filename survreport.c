@@ -7,7 +7,7 @@
  *
  *   Program dedicated to the memory of Staffan Bergstr|m.
  *
- *   For questions about this program, mail sklaff@skom.se
+ *   For questions about this program, mail sklaff@sklaffkom.se
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
