@@ -36,9 +36,9 @@
 void
 sig_setup(void)
 {
-    signal(SIGHUP, logout);
-    signal(SIGPIPE, logout);
-    signal(SIGTERM, logout);
+    signal(SIGHUP, exec_logout);
+    signal(SIGPIPE, exec_logout);
+    signal(SIGTERM, exec_logout);
     signal(SIGALRM, timeout);
     signal(SIGINT, SIG_IGN);
     signal(SIGQUIT, SIG_IGN);
@@ -50,9 +50,9 @@ sig_setup(void)
     signal(SIGNAL_NEW_MSG, newmsg);
     signal(SIGCONT, SIG_IGN);
 #ifdef SIGXCPU
-    signal(SIGXCPU, logout);
+    signal(SIGXCPU, exec_logout);
 #endif
 #ifdef SIGXFSZ
-    signal(SIGXFSZ, logout);
+    signal(SIGXFSZ, exec_logout);
 #endif
 }

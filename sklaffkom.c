@@ -45,7 +45,7 @@ main(int argc, char *argv[])
     srand(time(0));             /* Initialize random number generator */
     /* Initialize parser	   */
     if (parse_init(Program_name) == -1) {
-        logout(0);
+        exec_logout(0);
     }
     force_unsubscribe();
     exec_login();               /* Execute user login script */
@@ -75,5 +75,5 @@ main(int argc, char *argv[])
             }
         }
     }
-    logout(0);                  /* Get normal   */
+    exec_logout(0);                  /* Get normal   */
 }

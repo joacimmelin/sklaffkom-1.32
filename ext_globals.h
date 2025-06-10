@@ -27,8 +27,14 @@
 
 #include <signal.h>
 #include <termios.h>
-#include <sys/ttycom.h>
+#ifndef LINUX
+# include <sys/ttycom.h>
+#endif
 #include <sys/ioctl.h>
+
+#ifdef LINUX
+size_t strlcpy(char *dst, const char *src, size_t siz);
+#endif
 
 extern int Uid;                 /* Uid of current user	 */
 extern LINE Home;               /* home_dir of current user */
@@ -49,6 +55,7 @@ extern int Last_conf;           /* Last conference	 */
 extern long Size;               /* size of editing buf  */
 extern struct EDIT_BUF *Start;  /* start of editing buf */
 extern struct TEXT_HEADER *Globalth;    /* Used by line_ed	 */
+extern const struct COMMAND_ENTRY command_list[];       /* Exported commands  */
 extern struct PARSE_ENTRY Par_ent[MAX_COMMANDS];        /* Parse entries      */
 extern struct COM_STACK *cstack;/* Comment stack	 */
 extern struct UR_STACK *ustack, *rstack;        /* Unread/read stack	 */
@@ -89,9 +96,9 @@ extern int Clear;               /* Clear screen		   */
 extern int Header;              /* email header		   */
 extern int Presbeep;            /* Beep at present msg     */
 extern struct termios Tty_mode;
-sigset_t Oldmask;
+extern sigset_t Oldmask;
 
-int ActiveFD;                   /* Global file descriptor used for the active
+extern int ActiveFD;            /* Global file descriptor used for the active
                                  * file.         */
 
 /* Calles stuff for debugging */

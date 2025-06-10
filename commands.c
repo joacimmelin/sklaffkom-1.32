@@ -82,7 +82,7 @@ cmd_sendbatch(char *args)
     char filler[1], msint[4];
     int offset;
     long login, msg_size;
-    fpos_t rem;
+    long rem;
     struct {
         int uid;
         char *name;
@@ -4898,13 +4898,11 @@ cmd_unreadsub(char *args)
             snprintf(cname, sizeof(cname), "%s/%d/%ld", SKLAFF_DB, Current_conf, last);
         else
             snprintf(cname, sizeof(cname), "%s/%ld", Mbox, last);
-        if (file_exists(cname) != -1) {
-            if ((fd = open_file(cname, 0)) != -1) {
-                if ((buf = read_file(fd)) == NULL)
-                    return -1;
-                oldbuf = buf;
-                close_file(fd);
-            }
+        if (file_exists(cname) != -1 && (fd = open_file(cname, 0)) != -1) {
+            if ((buf = read_file(fd)) == NULL)
+                return -1;
+            oldbuf = buf;
+            close_file(fd);
             buf = get_text_entry(buf, &te);
             free_text_entry(&te);
             free(oldbuf);
@@ -4965,13 +4963,11 @@ cmd_jumpsub(char *args)
             snprintf(cname, sizeof(cname), "%s/%d/%ld", SKLAFF_DB, Current_conf, num);
         else
             snprintf(cname, sizeof(cname), "%s/%ld", Mbox, num);
-        if (file_exists(cname) != -1) {
-            if ((fd = open_file(cname, 0)) != -1) {
-                if ((buf = read_file(fd)) == NULL)
-                    return -1;
-                oldbuf = buf;
-                close_file(fd);
-            }
+        if (file_exists(cname) != -1 && (fd = open_file(cname, 0)) != -1) {
+            if ((buf = read_file(fd)) == NULL)
+                return -1;
+            oldbuf = buf;
+            close_file(fd);
             buf = get_text_entry(buf, &te);
             free_text_entry(&te);
             free(oldbuf);
@@ -5055,13 +5051,11 @@ cmd_jumpuser(char *args)
             snprintf(cname, sizeof(cname), "%s/%d/%ld", SKLAFF_DB, Current_conf, num);
         else
             snprintf(cname, sizeof(cname), "%s/%ld", Mbox, num);
-        if (file_exists(cname) != -1) {
-            if ((fd = open_file(cname, 0)) != -1) {
-                if ((buf = read_file(fd)) == NULL)
-                    return -1;
-                oldbuf = buf;
-                close_file(fd);
-            }
+        if (file_exists(cname) != -1 && (fd = open_file(cname, 0)) != -1) {
+            if ((buf = read_file(fd)) == NULL)
+                return -1;
+            oldbuf = buf;
+            close_file(fd);
             buf = get_text_entry(buf, &te);
             free_text_entry(&te);
             free(oldbuf);

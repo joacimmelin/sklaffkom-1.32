@@ -386,7 +386,7 @@ line_ed(char *fname, struct TEXT_HEADER * th, int edit_text, int allow_say, int 
                                         malloc(sizeof(struct EDIT_BUF));
                                     if (ptr->next == NULL) {
                                         output("%s\n", MSG_OUTMEM);
-                                        logout(0);
+                                        exec_logout(0);
                                     }
                                     tmpptr = ptr;
                                     ptr = ptr->next;
@@ -714,7 +714,7 @@ line_ed(char *fname, struct TEXT_HEADER * th, int edit_text, int allow_say, int 
 
 save:
     output("\n");
-    signal(SIGHUP, logout);
+    signal(SIGHUP, exec_logout);
     critical();
     if ((fd = create_file(fname)) == -1) {
         sys_error("line_ed", 1, "create_file");
@@ -785,7 +785,7 @@ abort_edit(int tmp)
     if (close_file(fd) == -1) {
         sys_error("abort_edit", 2, "close_file");
     }
-    logout(tmp);
+    exec_logout(tmp);
 }
 
 

@@ -33,6 +33,14 @@
 
 /* lib/output.c */
 
+#ifdef LINUX
+/* MSG_MORE is defined in Linux socket API. First ensure it is
+   included, and then undefine it so we can re-define it. */
+# include <sys/socket.h>
+# if defined(MSG_MORE)
+#  undef MSG_MORE
+# endif
+#endif
 #define MSG_MORE 	"-Forts-"
 
 /* lib/time_string.c */

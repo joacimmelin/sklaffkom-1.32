@@ -25,7 +25,6 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <nlist.h>
 #include "sklaff.h"
 #include "ext_globals.h"
 
@@ -43,8 +42,8 @@ int find_max_match(struct hitlist * hl);
  * ret: pointer to function or NULL
  */
 
-int (*
-    parse(char *buf, char *args)) (void)
+cmd_func_t *
+parse(char *buf, char *args)
 {
     struct hitlist hl[MAX_COMMANDS];
     int i, found, full_hit, arg_hit, part_hit, max_words, full_ind, arg_ind, part_ind;
@@ -223,6 +222,18 @@ find_max_match(struct hitlist * hl)
     return max_words;
 }
 
+static cmd_func_t *
+get_command(const char *name)
+{
+    unsigned int i;
+    for (i = 0; command_list[i].name != NULL; i++) {
+        if (strcmp(command_list[i].name, name) == 0) {
+            return command_list[i].ptr;
+        }
+    }
+    return NULL;
+}
+
 /*
  * parse_init - initialize parser
  * args: name of program (program_name)
@@ -234,7 +245,6 @@ parse_init(char *program_name)
 {
     int i = 0, pf;
     char *buf;
-    struct nlist commands[MAX_COMMANDS];
 
     if ((pf = open_file(PARSE_FILE, OPEN_DEFAULT)) == -1) {
         sys_error("parse_init", 1, "open_file");
@@ -247,23 +257,8 @@ parse_init(char *program_name)
     close_file(pf);
 
     while ((buf = get_parse_entry(buf, &Par_ent[i])) != NULL) {
-        commands[i].n_name = Par_ent[i].func;
-        i++;
-    }
-    commands[i].n_name = NULL;
-
-    /* This strange line of code is a result of a */
-    /* typedef/struct misfeature */
-
-    Par_ent[i].func[0] = '\0';  /* Ugly solution, huh?! */
-    nlist(program_name, commands);
-    i = 0;
-    while (Par_ent[i].func[0] != '\0') {
-        Par_ent[i].addr = (int (*) ()) commands[i].n_value;
-        if (Par_ent[i].addr == 0) {
-            buggy_sunOS_fix(i);
-        }
-        if (Par_ent[i].addr == 0) {
+        Par_ent[i].addr = get_command(Par_ent[i].func);
+        if (! Par_ent[i].addr) {
             output("%s[%s #%d] %s(): %s\n", program_name,
                 "parse_init", 3, Par_ent[i].func,
                 "no such function");
@@ -272,27 +267,6 @@ parse_init(char *program_name)
         i++;
     }
     return i;
-}
-
-/* Because of a stupid bug, Sun OS 4.1.3. can't handle multiple queries for
-   the same symbol. Therefore we must fix it ourselves. */
-
-/*
- * buggy_sunOS_fix - fix bug in sunOS nlist system call
- * args: indexnumber in Par_ent struct
- */
-
-void
-buggy_sunOS_fix(int i)
-{
-    int j;
-
-    for (j = 0; j < i; j++) {
-        if (!strcmp(Par_ent[j].func, Par_ent[i].func)) {
-            Par_ent[i].addr = Par_ent[j].addr;
-            break;
-        }
-    }
 }
 
 #define EXPLIST_SIZE 20

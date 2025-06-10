@@ -31,6 +31,8 @@
 #include <signal.h>
 #include <sys/stat.h>
 
+#include "globals.h"
+
 int
 main(int argc, char *argv[])
 {

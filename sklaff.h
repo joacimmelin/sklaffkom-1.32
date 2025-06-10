@@ -30,12 +30,6 @@
 #include <stdio.h>
 #include <time.h>
 
-/* Define target system, one of: FREEBSD, SOLARIS, LINUX */
-
-#define FREEBSD			// FreeBSD
-//#define SOLARIS		// Solaris
-//#define LINUX			// Linux
-
 /* Define language desired, one of: SWEDISH or ENGLISH */
 
 #define SWEDISH
@@ -108,42 +102,42 @@
 #define MVPRGM		"/bin/mv"
 #define MAILPRGM	"/usr/sbin/sendmail --"
 #define NEWSPRGM	"/usr/bin/inews"
-#define SURVREPORT 	"/usr/local/bin/srep"
+#define SURVREPORT 	SKLAFFBIN "/srep"
 
 /* SklaffKOM-files */
 
-#define SKLAFF_DB 	"/usr/local/sklaff/db"
-#define USER_DB		"/usr/local/sklaff/user"
-#define FILE_DB		"/usr/local/sklaff/files"
-#define MBOX_DB		"/usr/local/sklaff/mbox"
-#define LOGDIR   	"/usr/local/sklaff/log"
+#define SKLAFF_DB 	SKLAFFDIR "/db"
+#define USER_DB		SKLAFFDIR "/user"
+#define FILE_DB		SKLAFFDIR "/files"
+#define MBOX_DB		SKLAFFDIR "/mbox"
+#define LOGDIR   	SKLAFFDIR "/log"
 
-#define USER_FILE 	"/usr/local/sklaff/etc/user"
-#define	ACTIVE_FILE 	"/usr/local/sklaff/etc/active"
-#define CONF_FILE 	"/usr/local/sklaff/etc/conf"
-#define NEWS_FILE 	"/usr/local/sklaff/etc/news"
-#define INFO_FILE	"/usr/local/sklaff/etc/info"
-#define LICENS_FILE	"/usr/local/sklaff/etc/COPYING"
-#define DOWN_FILE 	"/usr/local/sklaff/etc/down"
-#define PAY_FILE	"/usr/local/sklaff/etc/pay"
-#define INET_FILE	"/usr/local/sklaff/etc/inet"
-#define ACCT_FILE	"/usr/local/sklaff/etc/newacct"
-#define ACCT_LOG	"/usr/local/sklaff/etc/acctlog"
-#define STD_CONFS 	"/usr/local/sklaff/etc/stdconfs"
-#define GLOBAL_SKLAFFRC "/usr/local/sklaff/etc/sklaffrc"
-#define STD_SKLAFFRC 	"/usr/local/sklaff/etc/stdsklaffrc"
-#define POST_INFO	"/usr/local/sklaff/etc/postnews"
+#define USER_FILE 	SKLAFFDIR "/etc/user"
+#define	ACTIVE_FILE 	SKLAFFDIR "/etc/active"
+#define CONF_FILE 	SKLAFFDIR "/etc/conf"
+#define NEWS_FILE 	SKLAFFDIR "/etc/news"
+#define INFO_FILE	SKLAFFDIR "/etc/info"
+#define LICENS_FILE	SKLAFFDIR "/etc/COPYING"
+#define DOWN_FILE 	SKLAFFDIR "/etc/down"
+#define PAY_FILE	SKLAFFDIR "/etc/pay"
+#define INET_FILE	SKLAFFDIR "/etc/inet"
+#define ACCT_FILE	SKLAFFDIR "/etc/newacct"
+#define ACCT_LOG	SKLAFFDIR "/etc/acctlog"
+#define STD_CONFS 	SKLAFFDIR "/etc/stdconfs"
+#define GLOBAL_SKLAFFRC	SKLAFFDIR "/etc/sklaffrc"
+#define STD_SKLAFFRC 	SKLAFFDIR "/etc/stdsklaffrc"
+#define POST_INFO	SKLAFFDIR "/etc/postnews"
 
 #ifdef SWEDISH
-#define PARSE_FILE 	"/usr/local/sklaff/etc/parse.swe"
-#define STD_MAILBOX 	"/usr/local/sklaff/etc/stdmailbox.swe"
-#define HELP_DIR	"/usr/local/sklaff/etc/help.swe"
-#define HELP_FILE	"/usr/local/sklaff/etc/help.swe/general.help"
+#define PARSE_FILE 	SKLAFFDIR "/etc/parse.swe"
+#define STD_MAILBOX 	SKLAFFDIR "/etc/stdmailbox.swe"
+#define HELP_DIR	SKLAFFDIR "/etc/help.swe"
+#define HELP_FILE	SKLAFFDIR "/etc/help.swe/general.help"
 #else
-#define PARSE_FILE 	"/usr/local/sklaff/etc/parse.eng"
-#define STD_MAILBOX 	"/usr/local/sklaff/etc/stdmailbox.eng"
-#define HELP_DIR	"/usr/local/sklaff/etc/help.eng"
-#define HELP_FILE	"/usr/local/sklaff/etc/help.eng/general.help"
+#define PARSE_FILE 	SKLAFFDIR "/etc/parse.eng"
+#define STD_MAILBOX 	SKLAFFDIR "/etc/stdmailbox.eng"
+#define HELP_DIR	SKLAFFDIR "/etc/help.eng"
+#define HELP_FILE	SKLAFFDIR "/etc/help.eng/general.help"
 #endif
 
 #define CONFRC_FILE 	"/confrc"
@@ -365,6 +359,7 @@ int cmd_upload(char *);
 int cmd_unlink(char *);
 int cmd_describe(char *);
 int cmd_I(char *);
+int cmd_alias(char *);
 int cmd_my(char *);
 int cmd_prio(char *);
 int cmd_deprio(char *);
@@ -380,7 +375,9 @@ int cmd_answermsg(char *);
 int cmd_from(char *);
 int cmd_list_says(char *);
 int cmd_list_yells(char *);
+int cmd_post_survey(char *);
 int cmd_read_last_text(char *);
+int cmd_reclaim_unread(char *);
 
 /* admin.c */
 
@@ -390,7 +387,7 @@ void display_news(void);
 void check_open(void);
 void out_onoff(int);
 int grep(int, char *);
-void logout(int);
+void exec_logout(int);
 void exec_login(void);
 void timeout(int);
 void debuglog(char *, int);

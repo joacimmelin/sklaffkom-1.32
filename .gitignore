@@ -1,2 +1,12 @@
 .compile
 version.c
+/lib/libsklaff.a
+/mailtoss
+/newstoss
+/sklaffacct
+/sklaffadm
+/sklaffkom
+/sklaffwho
+/survreport
+*~
+*.o

@@ -30,6 +30,8 @@
 #include <fcntl.h>
 #include <signal.h>
 
+#include "globals.h"
+
 int send_mail(int uid, char *mbuf, int ouid, int ogrp);
 
 int

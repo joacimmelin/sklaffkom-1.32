@@ -406,7 +406,7 @@ grep(int conf, char *search)
  */
 
 void
-logout(int tmp)
+exec_logout(int tmp)
 {
     LINE name, tmpdir;
     int fd, conf, i;
@@ -603,7 +603,7 @@ timeout(int sig)
     LINE name;
 
     if (Warning)
-        logout(SIGALRM);
+        exec_logout(SIGALRM);
     else {
         Warning = 1;
         sprintf(name, "timeout(): sm");
