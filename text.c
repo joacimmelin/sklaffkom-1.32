@@ -841,7 +841,7 @@ next_text(int conf)
                         sys_error("next_text", 1, "malloc");
                         return -1;
                     }
-                    bzero(nbuf, i);
+                    memset(nbuf, 0, i);
                     tmpbuf = buf;
                     tmpbuf--;
                     while ((tmpbuf > oldbuf) && (*tmpbuf == '\n'))
@@ -1124,7 +1124,7 @@ display_text(int conf, long num, int stack, int dtype)
                 sys_error("display_text", 1, "malloc");
                 return -1;
             }
-            bzero(survey_reply, LINE_LEN * th->sh.n_questions);
+            memset(survey_reply, 0, LINE_LEN * th->sh.n_questions);
             quest = 0;
         }
     }
@@ -1791,7 +1791,7 @@ save_text(char *fname, struct TEXT_HEADER * th, int conf)
         sys_error("save_text", 1, "malloc");
         return -1L;
     }
-    bzero(fbuf, strlen(inbuf) + sizeof(LONG_LINE));
+    memset(fbuf, 0, strlen(inbuf) + sizeof(LONG_LINE));
     if (th->type == TYPE_TEXT)
         sprintf(fbuf, "%ld:%d:%lld:%ld:%d:%d:%d:%d\n", ce.last_text, th->author,
             (long long) th->time, th->comment_num, th->comment_conf,
@@ -1876,7 +1876,7 @@ save_text(char *fname, struct TEXT_HEADER * th, int conf)
             sys_error("save_text", 1, "malloc");
             return -1L;
         }
-        bzero(fbuf, strlen(inbuf) + LONG_LINE_LEN);
+        memset(fbuf, 0, strlen(inbuf) + LONG_LINE_LEN);
         th->comment_num = 0;
         th->comment_conf = 0;
         th->comment_author = usernum;
@@ -2027,7 +2027,7 @@ save_mailcopy(char *rec, char *subject, char *inbuf)
         sys_error("save_mailcopy", 1, "malloc");
         return -1L;
     }
-    bzero(fbuf, strlen(inbuf) + 240);
+    memset(fbuf, 0, strlen(inbuf) + 240);
 
     th.author = Uid;
     th.time = time(0);

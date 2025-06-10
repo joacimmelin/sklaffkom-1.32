@@ -167,7 +167,7 @@ post_survey_result(char *resultbuf, struct TEXT_HEADER * th, int conf, int ouid,
         sys_error("post_survey_result", 1, "malloc");
         return -1L;
     }
-    bzero(fbuf, strlen(resultbuf) + sizeof(LONG_LINE));
+    memset(fbuf, 0, strlen(resultbuf) + sizeof(LONG_LINE));
 
     /* Compute size of buffer, in lines */
 
@@ -223,7 +223,7 @@ post_survey_result(char *resultbuf, struct TEXT_HEADER * th, int conf, int ouid,
         sys_error("cmd_comment", 1, "malloc");
         return -1;
     }
-    bzero(nbuf, i);
+    memset(nbuf, 0, i);
 
     sprintf(newline, "%ld:%d\n", ce.last_text, th->author);
     strcpy(nbuf, buf);

@@ -51,7 +51,7 @@ parse(char *buf, char *args)
     if (atol(buf)) {
         sprintf(buf, "%s %ld", MSG_TEXTPROMPT2, atol(buf));
     }
-    bzero(args, LINE_LEN);
+    memset(args, 0, LINE_LEN);
     i = 0;
     found = wc(buf);
     while (Par_ent[i].func[0] != '\0') {

@@ -112,7 +112,7 @@ save_survey_result(long survey, int conf, char *survey_result, int n_quest)
                     sys_error("save_survey_result", 1, "malloc");
                     return -1;
                 }
-                bzero(fbuf, n_quest * LINE_LEN);
+                memset(fbuf, 0, n_quest * LINE_LEN);
 
                 for (i = 0; i < n_quest; i++) {
                     strcat(fbuf, survey_result + i * LINE_LEN);
@@ -155,7 +155,7 @@ save_survey_result(long survey, int conf, char *survey_result, int n_quest)
                 /* Sort to get random order of results */
 
                 qsort(resbuf, n, sizeof(struct RESSHOW), resshowcompare);
-                bzero(fbuf, strlen(buf) + n_quest * LINE_LEN);
+                memset(fbuf, 0, strlen(buf) + n_quest * LINE_LEN);
 
                 for (i = 0; i < n; i++) {
                     if (resbuf[i].entry == survey_result) {
@@ -174,7 +174,7 @@ save_survey_result(long survey, int conf, char *survey_result, int n_quest)
 
 #ifdef SURVEYDEBUG
             debugbuf = (char *) malloc(strlen(fbuf) + 2 * LINE_LEN);
-            bzero(debugbuf, strlen(fbuf) + 2 * LINE_LEN);
+            memset(debugbuf, 0, strlen(fbuf) + 2 * LINE_LEN);
             memcpy(debugbuf, fbuf, strlen(fbuf));
 #endif
 
@@ -573,7 +573,7 @@ mark_survey_as_taken(long survey, int conf)
                 sys_error("mark_survey_as_taken", 1, "malloc");
                 return -1;
             }
-            bzero(fbuf, 10);
+            memset(fbuf, 0, 10);
             sprintf(fbuf, "[%d]", Uid);
         } else {
 
@@ -586,14 +586,14 @@ mark_survey_as_taken(long survey, int conf)
                 sys_error("mark_survey_as_taken", 1, "malloc");
                 return -1;
             }
-            bzero(fbuf, strlen(buf) + 10);
+            memset(fbuf, 0, strlen(buf) + 10);
             sprintf(fbuf, "%s\n[%d]", buf, Uid);
             free(buf);
         }
 
 #ifdef SURVEYDEBUG
         debugbuf = (char *) malloc(strlen(fbuf) + LINE_LEN);
-        bzero(debugbuf, strlen(fbuf) + LINE_LEN);
+        memset(debugbuf, 0, strlen(fbuf) + LINE_LEN);
         memcpy(debugbuf, fbuf, strlen(fbuf));
 #endif
 

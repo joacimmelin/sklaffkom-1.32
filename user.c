@@ -270,7 +270,7 @@ replace_active(struct ACTIVE_ENTRY *ae, char *buf)
     obuf = buf;
     i = strlen(buf) + LINE_LEN;
     nbuf = (char *) malloc(i);  /* Jaja... */
-    bzero(nbuf, i);
+    memset(nbuf, 0, i);
 
     /* Find active-entry */
 
@@ -493,7 +493,7 @@ setup_new_user()
         return -1;
     }
     nbuf = (char *) malloc(strlen(buf) + strlen(new_user_string) + 1);
-    bzero(nbuf, strlen(buf) + strlen(new_user_string) + 1);
+    memset(nbuf, 0, strlen(buf) + strlen(new_user_string) + 1);
     strcpy(nbuf, buf);
     free(buf);
     strcat(nbuf, new_user_string);
@@ -623,7 +623,7 @@ add_active()
         (long long) time(0), hname, ttyname(0));
 
     nbuf = (char *) malloc(strlen(buf) + strlen(tmp) + 1);
-    bzero(nbuf, strlen(buf) + strlen(tmp) + 1);
+    memset(nbuf, 0, strlen(buf) + strlen(tmp) + 1);
     strcpy(nbuf, buf);
     strcat(nbuf, tmp);
     free(buf);
@@ -668,7 +668,7 @@ remove_active()
     oldbuf = buf;
 
     nbuf = (char *) malloc(strlen(buf) + 1);
-    bzero(nbuf, strlen(buf) + 1);
+    memset(nbuf, 0, strlen(buf) + 1);
 
     found = 0;
     while (buf != NULL) {
@@ -1157,24 +1157,24 @@ read_sklaffrc(int uid)
     headptr[18].heading = "url";
     headptr[19].heading = "";
 
-    bzero(kaffer->user.adress, 80);
-    bzero(kaffer->user.postnr, 80);
-    bzero(kaffer->user.ort, 80);
-    bzero(kaffer->user.tele1, 80);
-    bzero(kaffer->user.tele2, 80);
-    bzero(kaffer->user.tele3, 80);
-    bzero(kaffer->user.email1, 80);
-    bzero(kaffer->user.email2, 80);
-    bzero(kaffer->user.url, 80);
-    bzero(kaffer->user.org, 80);
-    bzero(kaffer->note, 4096);
-    bzero(kaffer->sig, 4096);
-    bzero(kaffer->editor, 80);
-    bzero(kaffer->flags, 400);
-    bzero(kaffer->paid, 80);
-    bzero(kaffer->login, 4096);
-    bzero(kaffer->timeout, 80);
-    bzero(kaffer->paydate, 80);
+    memset(kaffer->user.adress, 0, 80);
+    memset(kaffer->user.postnr, 0, 80);
+    memset(kaffer->user.ort, 0, 80);
+    memset(kaffer->user.tele1, 0, 80);
+    memset(kaffer->user.tele2, 0, 80);
+    memset(kaffer->user.tele3, 0, 80);
+    memset(kaffer->user.email1, 0, 80);
+    memset(kaffer->user.email2, 0, 80);
+    memset(kaffer->user.url, 0, 80);
+    memset(kaffer->user.org, 0, 80);
+    memset(kaffer->note, 0, 4096);
+    memset(kaffer->sig, 0, 4096);
+    memset(kaffer->editor, 0, 80);
+    memset(kaffer->flags, 0, 400);
+    memset(kaffer->paid, 0, 80);
+    memset(kaffer->login, 0, 4096);
+    memset(kaffer->timeout, 0, 80);
+    memset(kaffer->paydate, 0, 80);
 
     /* Loop two times, one time for global sklaffrc, one for users local */
     for (fusker = 0; fusker != 2; fusker++) {
@@ -1201,7 +1201,7 @@ read_sklaffrc(int uid)
                 ptr = buf;
                 startptr = buf;
                 state = 0;
-                bzero(entry, 4096);
+                memset(entry, 0, 4096);
                 lastchar = 0;
                 lasttwo = 0;
 
@@ -1241,7 +1241,7 @@ read_sklaffrc(int uid)
                             state = 4;
                         }
                         fflush(stdout);
-                        bzero(entry, 4096);
+                        memset(entry, 0, 4096);
                     }
                     if (((*ptr == '[') && ((lastchar == '!') &&
                                 ((lasttwo == '\n') || (lasttwo == 0))))
@@ -1293,7 +1293,7 @@ read_sklaffrc(int uid)
                             if (strcmp(headptr[i].heading, "url") == 0)
                                 strcpy(kaffer->user.url, entry);
 
-                            bzero(entry, 4096);
+                            memset(entry, 0, 4096);
                         }
                         state = 1;
                     }           /* new heading */

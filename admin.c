@@ -502,7 +502,7 @@ exec_logout(int tmp)
         new_user = stringify_user_struct(&ue, tbuf);
         i = strlen(oldbuf) + LINE_LEN;
         nbuf = (char *) malloc(i);
-        bzero(nbuf, i);
+        memset(nbuf, 0, i);
 
         tmpbuf = buf;
 

@@ -319,7 +319,7 @@ replace_confs(struct CONFS_ENTRY * cse, char *buf)
     obuf = buf;
     i = strlen(buf) + LINE_LEN;
     nbuf = (char *) malloc(i);  /* Jaja... */
-    bzero(nbuf, i);
+    memset(nbuf, 0, i);
 
     /* Find confs-entry */
 
@@ -379,7 +379,7 @@ replace_conf(struct CONF_ENTRY * ce, char *buf)
 
     i = strlen(buf) + LINE_LEN;
     nbuf = (char *) malloc(i);  /* Jaja... */
-    bzero(nbuf, i);
+    memset(nbuf, 0, i);
 
     /* Find conf-entry */
 
@@ -917,7 +917,7 @@ more_conf(void)
                         if (!nbuf) {
                             return -1;
                         }
-                        bzero(nbuf, i);
+                        memset(nbuf, 0, i);
                         tmpbuf = buf2;
                         tmpbuf--;
                         while ((tmpbuf > oldbuf2) && (*tmpbuf == '\n'))
@@ -1019,7 +1019,7 @@ more_conf(void)
                         if (!nbuf) {
                             return -1;
                         }
-                        bzero(nbuf, i);
+                        memset(nbuf, 0, i);
                         tmpbuf = buf2;
                         tmpbuf--;
                         while ((tmpbuf > oldbuf2) && (*tmpbuf == '\n'))

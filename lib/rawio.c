@@ -77,7 +77,7 @@ read_file(int fildes)
 
     fstat(fildes, &s);
     buf = (char *) malloc(s.st_size + 1);
-    bzero(buf, s.st_size + 1);
+    memset(buf, 0, s.st_size + 1);
     lseek(fildes, 0L, 0);
     if (read(fildes, buf, s.st_size) == s.st_size) {
         return buf;
