@@ -857,7 +857,7 @@ more_conf(void)
         if (buf == NULL)
             break;
     }
-    confsiz = (long *) malloc(sizeof(int) * (confnum + 1));
+    confsiz = malloc(sizeof(*confsiz) * (confnum + 1));
     buf = oldbuf;
     for (;;) {
         buf = get_conf_entry(buf, &ce);
