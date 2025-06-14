@@ -763,8 +763,7 @@ member_of(int uid, int conf)
     }
     xit = 0;
     while ((buf = get_confs_entry(buf, &cse)) != NULL) {
-        if (strlen(buf) == 0)
-            free_confs_entry(&cse);
+        free_confs_entry(&cse);
         if (cse.num == conf) {
             xit = 1;
             break;
@@ -958,9 +957,9 @@ more_conf(void)
                     if (close_file(fd2) == -1)
                         return -1;
                     while ((buf2 = get_confs_entry(buf2, &cse))) {
+                        free_confs_entry(&cse);
                         if (cse.num == saveconf)
                             break;
-                        free_confs_entry(&cse);
                     }
                 } else {
                     free(oldbuf2);
@@ -979,8 +978,10 @@ more_conf(void)
     free_confs_entry(&cse);
 
     while ((buf2 = get_confs_entry(buf2, &cse))) {
-        if (cse.num == Current_conf)
+        if (cse.num == Current_conf) {
+            free_confs_entry(&cse);
             break;
+        }
         saveconf = cse.num;
         while (1) {
             if (cse.il == NULL) {
@@ -1061,9 +1062,9 @@ more_conf(void)
                     if (close_file(fd2) == -1)
                         return -1;
                     while ((buf2 = get_confs_entry(buf2, &cse))) {
+                        free_confs_entry(&cse);
                         if (cse.num == saveconf)
                             break;
-                        free_confs_entry(&cse);
                     }
                 } else {
                     free(oldbuf2);
