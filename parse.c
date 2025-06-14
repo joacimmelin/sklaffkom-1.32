@@ -244,28 +244,31 @@ int
 parse_init(char *program_name)
 {
     int i = 0, pf;
-    char *buf;
+    char *fbuf, *buf;
 
     if ((pf = open_file(PARSE_FILE, OPEN_DEFAULT)) == -1) {
         sys_error("parse_init", 1, "open_file");
         return -1;
     }
-    if ((buf = read_file(pf)) == NULL) {
+    if ((fbuf = read_file(pf)) == NULL) {
         sys_error("parse_init", 2, "read_file");
         return -1;
     }
     close_file(pf);
 
+    buf = fbuf;
     while ((buf = get_parse_entry(buf, &Par_ent[i])) != NULL) {
         Par_ent[i].addr = get_command(Par_ent[i].func);
         if (! Par_ent[i].addr) {
             output("%s[%s #%d] %s(): %s\n", program_name,
                 "parse_init", 3, Par_ent[i].func,
                 "no such function");
+            free(fbuf);
             return -1;
         }
         i++;
     }
+    free(fbuf);
     return i;
 }
 
