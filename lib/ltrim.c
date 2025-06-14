@@ -44,6 +44,6 @@ ltrim(char *s)
     while (*ptr && (*ptr == 0x20)) {
         ptr++;
     }
-    strcpy(s, ptr);
+    memmove(s, ptr, strlen(ptr)+1);
     return s;
 }
