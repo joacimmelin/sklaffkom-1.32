@@ -123,9 +123,9 @@ $(SKLAFFLIB):
 
 install: sklaffkom sklaffadm sklaffacct survreport sklaffwho newstoss
 	@echo Making libraries
-	-mkdir $(SKLAFFBIN)
 	-mkdir $(SKLAFFDIR)
 	-mkdir $(SKLAFFDIR)/etc
+	-mkdir $(SKLAFFBIN)
 	@echo Installing SklaffKOM
 	-mv $(SKLAFFBIN)/sklaffkom $(SKLAFFBIN)/sklaffkom.old
 	cp sklaffkom sklaffadm sklaffwho sklaffacct $(SKLAFFBIN)/
