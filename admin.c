@@ -993,9 +993,10 @@ list_who(int who_type)
 
         buf = oldbuf;
 
-        i = 0;
-        while ((buf = get_active_entry(buf, &(ae[i]))))
-            i++;
+        for (i = 0; i < nactive; i++) {
+            buf = get_active_entry(buf, &(ae[i]));
+            assert(buf);
+        }
 
         qsort(ae, nactive, sizeof(struct ACTIVE_ENTRY), active_entry_cmp);
 
