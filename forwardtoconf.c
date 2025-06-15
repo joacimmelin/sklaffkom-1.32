@@ -169,7 +169,7 @@ send_mail(int conf, char *mbuf, int ouid, int ogrp)
 
     th.time = time(0);
 
-    bzero(fbuf, strlen(mbuf) + sizeof(LONG_LINE));
+    memset(fbuf, 0, strlen(mbuf) + sizeof(LONG_LINE));
     sprintf(fbuf, "%ld:%d:%ld:%ld:%d:%d:%d\n", ce.last_text, 0,
         th.time, 0L, 0,
         0, th.size);

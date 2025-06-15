@@ -137,7 +137,7 @@ cmd_sendbatch(char *args)
         return -1;
     }
     nbuf = (char *) malloc(100000);
-    bzero(nbuf, 100000);
+    memset(nbuf, 0, 100000);
     snprintf(nbuf, 100000, "%s\n%s\n%s\n%s\n%s\n",
         SKLAFF_ID, SKLAFF_LOC, SKLAFF_NUM,
         SKLAFF_SYSOP, user_name(Uid, cname));
@@ -176,7 +176,7 @@ cmd_sendbatch(char *args)
         return -1;
     }
     nbuf = (char *) malloc(100000);
-    bzero(nbuf, 100000);
+    memset(nbuf, 0, 100000);
 
     while ((buf = get_confs_entry(buf, &cse)) != NULL) {
         free_confs_entry(&cse);
@@ -289,15 +289,15 @@ cmd_sendbatch(char *args)
         set_avail(Uid, 0);
         return -1;
     }
-    bzero(info.bbs, 64);
+    memset(info.bbs, 0, 64);
     fgets(info.bbs, 63, fp);
-    bzero(info.adress, 64);
+    memset(info.adress, 0, 64);
     fgets(info.adress, 63, fp);
-    bzero(info.phone, 128);
+    memset(info.phone, 0, 128);
     fgets(info.phone, 127, fp);
-    bzero(info.sysop, 128);
+    memset(info.sysop, 0, 128);
     fgets(info.sysop, 127, fp);
-    bzero(info.user, 64);
+    memset(info.user, 0, 64);
     fgets(info.user, 63, fp);
     cnvnat(info.bbs, ch);
     cnvnat(info.adress, ch);
@@ -1130,7 +1130,7 @@ cmd_create_conf(char *args)
 
         i = strlen(oldbuf) + strlen(tmp) + 1;
         nbuf = (char *) malloc(i);
-        bzero(nbuf, i);
+        memset(nbuf, 0, i);
 
         strcpy(nbuf, oldbuf);
         strcat(nbuf, tmp);
@@ -1210,7 +1210,7 @@ cmd_subscribe(char *args)
                     sys_error("cmd_subscribe", 1, "malloc");
                     return -1;
                 }
-                bzero(nbuf, i);
+                memset(nbuf, 0, i);
                 strcpy(nbuf, buf);
                 free(buf);
                 first = first_text(conf, Uid);
@@ -1278,7 +1278,7 @@ cmd_unsubscribe(char *args)
                     sys_error("cmd_unsubscribe", 1, "malloc");
                     return -1;
                 }
-                bzero(nbuf, i);
+                memset(nbuf, 0, i);
 
                 while (buf != NULL) {
                     buf = get_confs_entry(buf, &ce);
@@ -1363,7 +1363,7 @@ cmd_add_rights(char *args)
                     i = strlen(buf) + 20;
                     if ((nbuf = (char *) malloc(i)) == NULL)
                         return -1;
-                    bzero(nbuf, i);
+                    memset(nbuf, 0, i);
                     if ((ce->type > 0) && (ce->type < 3)) {
                         snprintf(newuid, sizeof(newuid), "%d\n", unum);
                         strcpy(nbuf, buf);
@@ -1437,7 +1437,7 @@ cmd_sub_rights(char *args)
                         i = strlen(buf) + 20;
                         if ((nbuf = (char *) malloc(i)) == NULL)
                             return -1;
-                        bzero(nbuf, i);
+                        memset(nbuf, 0, i);
                         if ((ce->type > 0) && (ce->type < 3)) {
                             while (ul) {
                                 if (ul->num != unum) {
@@ -1969,7 +1969,7 @@ cmd_mail(char *args)
             /*
  	    msize = (strlen(inbuf) * 3) + 1;
             finbuf = (char *) malloc (msize);
-            bzero(finbuf, msize);
+            memset(finbuf, 0, msize);
             ptr = finbuf;
             inptr = inbuf;
             */
@@ -1982,7 +1982,7 @@ cmd_mail(char *args)
 
             msize = (strlen(inbuf) * 3) + 1 + 1;
             finbuf = (char *) malloc(msize);
-            bzero(finbuf, msize);
+            memset(finbuf, 0, msize);
             finbuf[0] = 10;
             ptr = finbuf + 1;
             inptr = inbuf;
@@ -2204,7 +2204,7 @@ cmd_personal(char *args)
         }
         msize = (strlen(inbuf) * 3) + 1;
         finbuf = (char *) malloc(msize);
-        bzero(finbuf, msize);
+        memset(finbuf, 0, msize);
         ptr = finbuf;
         inptr = inbuf;
         while (*inptr) {
@@ -2605,7 +2605,7 @@ cmd_comment(char *args)
 
         msize = (strlen(inbuf) * 3) + 1;
         finbuf = (char *) malloc(msize);
-        bzero(finbuf, msize);
+        memset(finbuf, 0, msize);
         bptr = finbuf;
         inptr = inbuf;
         while (*inptr) {
@@ -2726,7 +2726,7 @@ cmd_comment(char *args)
             sys_error("cmd_comment", 1, "malloc");
             return -1;
         }
-        bzero(nbuf, i);
+        memset(nbuf, 0, i);
 
         snprintf(newline, sizeof(newline), "%ld:%d\n", savednum, Uid);
         strcpy(nbuf, buf);
@@ -3054,7 +3054,7 @@ cmd_mod_note(char *args)
             sys_error("cmd_mod_note", 1, "malloc");
             return -1;
         }
-        bzero(nbuf, j);
+        memset(nbuf, 0, j);
         strcpy(nbuf, rc->note);
         critical();
         write_file(fd, nbuf);
@@ -3117,7 +3117,7 @@ cmd_mod_sig(char *args)
             sys_error("cmd_mod_sig", 1, "malloc");
             return -1;
         }
-        bzero(nbuf, j);
+        memset(nbuf, 0, j);
         strcpy(nbuf, rc->sig);
         critical();
         write_file(fd, nbuf);
@@ -3220,7 +3220,7 @@ cmd_mod_login(char *args)
             sys_error("cmd_mod_login", 1, "malloc");
             return -1;
         }
-        bzero(nbuf, j);
+        memset(nbuf, 0, j);
         strcpy(nbuf, rc->login);
         critical();
         write_file(fd, nbuf);;
@@ -4413,7 +4413,7 @@ cmd_describe(char *args)
         sys_error("cmd_describe", 1, "malloc");
         return -1;
     }
-    bzero(nbuf, i);
+    memset(nbuf, 0, i);
 
     ptr = strstr(buf, fname);
     buf = ptr;
@@ -4519,7 +4519,7 @@ cmd_prio(char *args)
             sys_error("cmd_prio", 1, "malloc");
             return -1;
         }
-        bzero(nbuf, i);
+        memset(nbuf, 0, i);
         buf = get_confs_entry(buf, &ce);
         free_confs_entry(&ce);
         saved = *buf;
@@ -4619,7 +4619,7 @@ cmd_deprio(char *args)
             sys_error("cmd_prio", 1, "malloc");
             return -1;
         }
-        bzero(nbuf, i);
+        memset(nbuf, 0, i);
         buf = get_confs_entry(buf, &ce);
         free_confs_entry(&ce);
         saved = *buf;

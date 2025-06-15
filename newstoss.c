@@ -331,7 +331,7 @@ send_news(int confid, char *mbuf, int ouid, int ogrp, long com)
 
     th.time = time(0);
 
-    bzero(fbuf, strlen(mbuf) + LONG_LINE_LEN);
+    memset(fbuf, 0, strlen(mbuf) + LONG_LINE_LEN);
     sprintf(fbuf, "%ld:%d:%ld:%ld:%d:%d:%d\n", ce.last_text, 0,
         th.time, com, 0,
         0, th.size);
@@ -368,7 +368,7 @@ send_news(int confid, char *mbuf, int ouid, int ogrp, long com)
         if (!nbuf) {
             return -1;
         }
-        bzero(nbuf, i);
+        memset(nbuf, 0, i);
 
         sprintf(newline, "%ld:%d\n", ce.last_text, 0);
         strcpy(nbuf, buf);

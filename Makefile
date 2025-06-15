@@ -22,7 +22,7 @@ CFLAGS = $(SKLAFFFLAGS) -O2 -g -pipe -Wall -Werror
 #LIBS=-lsklaff -ltermcap -lelf -lm
 
 # uncomment for UNIXWARE
-#LIBS=-lsklaff -ltermcap -lelf lib/bzero.o -lm
+#LIBS=-lsklaff -ltermcap -lelf -lm
 
 # uncomment for BSD/SUNOS/LINUX/ULTRIX
 LIBS=-lsklaff -lm
@@ -123,9 +123,9 @@ $(SKLAFFLIB):
 
 install: sklaffkom sklaffadm sklaffacct survreport sklaffwho newstoss
 	@echo Making libraries
-	-mkdir $(SKLAFFBIN)
 	-mkdir $(SKLAFFDIR)
 	-mkdir $(SKLAFFDIR)/etc
+	-mkdir $(SKLAFFBIN)
 	@echo Installing SklaffKOM
 	-mv $(SKLAFFBIN)/sklaffkom $(SKLAFFBIN)/sklaffkom.old
 	cp sklaffkom sklaffadm sklaffwho sklaffacct $(SKLAFFBIN)/

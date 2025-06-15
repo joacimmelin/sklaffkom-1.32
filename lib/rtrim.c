@@ -40,6 +40,9 @@ rtrim(char *s)
 
     if (!s)
         return NULL;
+    if (*s == '\0') {
+        return s;
+    }
     ptr = s;
     while (*ptr)
         ptr++;

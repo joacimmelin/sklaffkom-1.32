@@ -38,7 +38,7 @@ get_user_entry(char *buf, struct USER_ENTRY * ue)
 {
     char *ptr, *str;
 
-    bzero(ue->name, LINE_LEN);
+    memset(ue->name, 0, LINE_LEN);
     ue->num = (int) strtol(buf, &str, 10);
     if (str == buf) {
         return NULL;
@@ -129,9 +129,9 @@ get_parse_entry(char *buf, struct PARSE_ENTRY * pe)
 {
     int res;
 
-    bzero(pe->cmd, LINE_LEN);
-    bzero(pe->func, LINE_LEN);
-    bzero(pe->help, LINE_LEN);
+    memset(pe->cmd, 0, LINE_LEN);
+    memset(pe->func, 0, LINE_LEN);
+    memset(pe->help, 0, LINE_LEN);
     for (;;) {
         res = sscanf(buf, "%[^:#\n]:%[^#:\n]:%[^#:\n]'", pe->cmd,
             pe->func, pe->help);
@@ -242,7 +242,7 @@ get_text_entry(char *buf, struct TEXT_ENTRY * te)
     if (!buf)
         return buf;
     buf++;
-    bzero(te->th.subject, LINE_LEN);
+    memset(te->th.subject, 0, LINE_LEN);
     run = te->th.subject;
     c = 1;
     while (*buf != '\n') {
@@ -461,7 +461,7 @@ get_active_entry(char *buf, struct ACTIVE_ENTRY * ae)
     char *ptr, *str;
 
     for (;;) {
-        bzero(ae->from, 17);    /* Ugly! But it works... */
+        memset(ae->from, 0, 17);    /* Ugly! But it works... */
         ae->user = (int) strtol(buf, &str, 10);
         if (buf == str) {
             return NULL;
@@ -580,7 +580,7 @@ get_msg_entry(char *buf, struct MSG_ENTRY * me)
 {
     char *ptr, *ptr2;
 
-    bzero(me->msg, LINE_LEN);
+    memset(me->msg, 0, LINE_LEN);
 
     me->direct = 0;             /* Default is always uid=sender */
 

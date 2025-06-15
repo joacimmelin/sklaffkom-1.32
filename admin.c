@@ -502,7 +502,7 @@ exec_logout(int tmp)
         new_user = stringify_user_struct(&ue, tbuf);
         i = strlen(oldbuf) + LINE_LEN;
         nbuf = (char *) malloc(i);
-        bzero(nbuf, i);
+        memset(nbuf, 0, i);
 
         tmpbuf = buf;
 
@@ -993,9 +993,10 @@ list_who(int who_type)
 
         buf = oldbuf;
 
-        i = 0;
-        while ((buf = get_active_entry(buf, &(ae[i]))))
-            i++;
+        for (i = 0; i < nactive; i++) {
+            buf = get_active_entry(buf, &(ae[i]));
+            assert(buf);
+        }
 
         qsort(ae, nactive, sizeof(struct ACTIVE_ENTRY), active_entry_cmp);
 
