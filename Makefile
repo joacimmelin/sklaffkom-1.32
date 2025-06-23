@@ -131,7 +131,7 @@ install: sklaffkom sklaffadm sklaffacct survreport sklaffwho newstoss
 	cp sklaffkom sklaffadm sklaffwho sklaffacct $(SKLAFFBIN)/
 	cp survreport $(SKLAFFBIN)/srep
 	-chown $(SKLAFFUSER) $(SKLAFFBIN)/sklaffkom $(SKLAFFBIN)/sklaffadm $(SKLAFFBIN)/sklaffwho \
-		      $(SKLAFFBIN)/sklaffacct
+		$(SKLAFFBIN)/sklaffacct
 	-chown root   $(SKLAFFBIN)/srep
 	chmod u+s $(SKLAFFBIN)/sklaffkom $(SKLAFFBIN)/sklaffacct $(SKLAFFBIN)/sklaffwho
 	chmod og-rxw $(SKLAFFBIN)/sklaffadm
@@ -191,7 +191,7 @@ distrib:
 	find sklaff-1.28 -type f -not -name "*.o" -not -name "*.a" \
 		-not -name "*~" \( -not -perm +111 -or -name "version.sh" \) \
 		-print | sort > /tmp/sklaff; \
-        tar --create --file - --files-from /tmp/sklaff | \
+	tar --create --file - --files-from /tmp/sklaff | \
 		compress > sklaff128.tz; \
 	tar --create --file - --files-from /tmp/sklaff | \
 		gzip -c > sklaff128.tgz; \
