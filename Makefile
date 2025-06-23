@@ -137,10 +137,8 @@ install: sklaffkom sklaffadm sklaffacct survreport sklaffwho newstoss
 	chmod og-rxw $(SKLAFFBIN)/sklaffadm
 	-chmod 4755   $(SKLAFFBIN)/srep
 	cp newstoss mailtoss $(SKLAFFDIR)/etc
-	-chown root $(SKLAFFDIR)/etc/newstoss $(SKLAFFDIR)/etc/ntoss \
-                   $(SKLAFFDIR)/etc/mailtoss $(SKLAFFDIR)/etc/mtoss
-	-chmod og-rxw $(SKLAFFDIR)/etc/newstoss $(SKLAFFDIR)/etc/ntoss \
-                     $(SKLAFFDIR)/etc/mailtoss $(SKLAFFDIR)/etc/mtoss
+	-chown root $(SKLAFFDIR)/etc/newstoss $(SKLAFFDIR)/etc/mailtoss
+	-chmod og-rxw $(SKLAFFDIR)/etc/newstoss $(SKLAFFDIR)/etc/mailtoss
 
 installdb:
 	@echo Installing datafiles
