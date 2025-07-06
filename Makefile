@@ -125,6 +125,9 @@ install: sklaffkom sklaffadm sklaffacct survreport sklaffwho newstoss
 	@echo Making libraries
 	-mkdir $(SKLAFFDIR)
 	-mkdir $(SKLAFFDIR)/etc
+	#log directory is defined in sklaff.h (and logging works), but the directory was not 
+	#created during install, let's fix : (PL 2025-07-06)
+	-mkdir $(SKLAFFDIR)/log
 	-mkdir $(SKLAFFBIN)
 	@echo Installing SklaffKOM
 	-mv $(SKLAFFBIN)/sklaffkom $(SKLAFFBIN)/sklaffkom.old
