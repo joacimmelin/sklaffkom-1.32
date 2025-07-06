@@ -62,7 +62,7 @@ FTYOBJ=forwardtoyell.o
 
 SKLAFFLIB=lib/libsklaff.a
 
-all: $(SKLAFFLIB) sklaffkom sklaffadm sklaffacct mailtoss survreport sklaffwho
+all: $(SKLAFFLIB) sklaffkom sklaffadm sklaffacct newstoss mailtoss survreport sklaffwho
 
 $(OBJS): sklaff.h ext_globals.h struct.h lang.h
 $(KOMOBJ): sklaff.h globals.h struct.h lang.h
