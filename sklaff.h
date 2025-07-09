@@ -45,11 +45,11 @@
 /* Allow news postings in news-conferences */
 
 /* #undef POSTING_OK */
-/* #define POSTING_OK */
+ #define POSTING_OK 
 
 /* Machine name for news postings */
 
-#define MACHINE_NAME	"skom.se"
+#define MACHINE_NAME	"chatdiet.org"
 
 /* User to mail for new accounts */
 
@@ -57,10 +57,10 @@
 
 /* For "batch" command */
 
-#define SKLAFF_ID	"SKOM II"
-#define SKLAFF_LOC	"Stockholm, Sweden"
-#define SKLAFF_NUM	"+46-8-7021174"
-#define SKLAFF_SYSOP	"Carl Sundbom"
+#define SKLAFF_ID	"SklaffkomBBS"
+#define SKLAFF_LOC	"Solvesborg, Sweden"
+#define SKLAFF_NUM	"+46-8-123456"
+#define SKLAFF_SYSOP	"Peter Lundén"
 
 /* User ID of survey reporter account */
 
@@ -68,13 +68,13 @@
 
 /* Default terminal used for clear screen if TERM not correct */
 
-#define NO_TERM	        "unknown"
-#define SKLAFF_TERM	"vt100"
+#define NO_TERM	        "linux"
+#define SKLAFF_TERM	"linux"
 
 /* Default number of days before texts expire */
 
-#define EXP_DEF		10      /* Ordinary confs */
-#define EXP_DEF_NEWS	 3      /* News confs	  */
+#define EXP_DEF		0      /* Ordinary confs */
+#define EXP_DEF_NEWS	0      /* News confs	  */
 
 /* System files used by SklaffKOM */
 
@@ -157,7 +157,7 @@
 
 /* Log level (lower means less logs, 0 = no logs) */
 
-#define LOGLEVEL 6
+#define LOGLEVEL 50
 
 /* Change nothing below this line (unless it won't compile) */
 

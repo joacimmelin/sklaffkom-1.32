@@ -7,13 +7,13 @@ SKLAFFBIN=/usr/local/bin
 SKLAFFDIR=/usr/local/sklaff
 
 # Define target system, one of: FREEBSD, SOLARIS, LINUX
-SKLAFFSYS = FREEBSD	# FreeBSD
+#SKLAFFSYS = FREEBSD	# FreeBSD
 #SKLAFFSYS = SOLARIS	# Solaris
-#SKLAFFSYS = LINUX	# Linux
+SKLAFFSYS = LINUX	# Linux
 
 #CC=gcc
 SKLAFFFLAGS = -D$(SKLAFFSYS) -DSKLAFFDIR=\"$(SKLAFFDIR)\" -DSKLAFFBIN=\"$(SKLAFFBIN)\"
-CFLAGS = $(SKLAFFFLAGS) -O2 -g -pipe -Wall -Werror
+CFLAGS = $(SKLAFFFLAGS) -O2 -g -pipe -Wall
 
 # uncomment for SYSV
 #LIBS=-lc_s -lsklaff -ltermcap -lcposix -linet -lm
@@ -96,11 +96,11 @@ sklaffacct: $(SKLAFFLIB) $(ACCTOBJ) $(OBJS)
 	#chmod u+s sklaffacct
 
 mailtoss: $(SKLAFFLIB) $(MTOSSOBJ) $(OBJS)
-	$(CC) -o mailtoss $(MTOSSOBJ) $(OBJS) -Llib $(LIBS)
+	$(CC) -g -o mailtoss $(MTOSSOBJ) $(OBJS) -Llib $(LIBS)
 	strip mailtoss
 
 newstoss: $(SKLAFFLIB) $(NTOSSOBJ) $(OBJS)
-	$(CC) -o newstoss $(NTOSSOBJ) $(OBJS) -Llib $(LIBS)
+	$(CC) -g -o newstoss $(NTOSSOBJ) $(OBJS) -Llib $(LIBS)
 	strip newstoss
 
 survreport: $(SKLAFFLIB) $(SURVREPOBJ) $(OBJS)
