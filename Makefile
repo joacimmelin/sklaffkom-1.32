@@ -7,13 +7,13 @@ SKLAFFBIN=/usr/local/bin
 SKLAFFDIR=/usr/local/sklaff
 
 # Define target system, one of: FREEBSD, SOLARIS, LINUX
-SKLAFFSYS = FREEBSD	# FreeBSD
+#SKLAFFSYS = FREEBSD	# FreeBSD
 #SKLAFFSYS = SOLARIS	# Solaris
-#SKLAFFSYS = LINUX	# Linux
+SKLAFFSYS = LINUX	# Linux
 
 #CC=gcc
 SKLAFFFLAGS = -D$(SKLAFFSYS) -DSKLAFFDIR=\"$(SKLAFFDIR)\" -DSKLAFFBIN=\"$(SKLAFFBIN)\"
-CFLAGS = $(SKLAFFFLAGS) -O2 -g -pipe -Wall -Werror
+CFLAGS = $(SKLAFFFLAGS) -O2 -g -pipe -Wall
 
 # uncomment for SYSV
 #LIBS=-lc_s -lsklaff -ltermcap -lcposix -linet -lm
@@ -62,7 +62,7 @@ FTYOBJ=forwardtoyell.o
 
 SKLAFFLIB=lib/libsklaff.a
 
-all: $(SKLAFFLIB) sklaffkom sklaffadm sklaffacct mailtoss survreport sklaffwho
+all: $(SKLAFFLIB) sklaffkom sklaffadm sklaffacct newstoss mailtoss survreport sklaffwho
 
 $(OBJS): sklaff.h ext_globals.h struct.h lang.h
 $(KOMOBJ): sklaff.h globals.h struct.h lang.h
@@ -96,11 +96,11 @@ sklaffacct: $(SKLAFFLIB) $(ACCTOBJ) $(OBJS)
 	#chmod u+s sklaffacct
 
 mailtoss: $(SKLAFFLIB) $(MTOSSOBJ) $(OBJS)
-	$(CC) -o mailtoss $(MTOSSOBJ) $(OBJS) -Llib $(LIBS)
+	$(CC) -g -o mailtoss $(MTOSSOBJ) $(OBJS) -Llib $(LIBS)
 	strip mailtoss
 
 newstoss: $(SKLAFFLIB) $(NTOSSOBJ) $(OBJS)
-	$(CC) -o newstoss $(NTOSSOBJ) $(OBJS) -Llib $(LIBS)
+	$(CC) -g -o newstoss $(NTOSSOBJ) $(OBJS) -Llib $(LIBS)
 	strip newstoss
 
 survreport: $(SKLAFFLIB) $(SURVREPOBJ) $(OBJS)
@@ -125,6 +125,9 @@ install: sklaffkom sklaffadm sklaffacct survreport sklaffwho newstoss
 	@echo Making libraries
 	-mkdir $(SKLAFFDIR)
 	-mkdir $(SKLAFFDIR)/etc
+	#log directory is defined in sklaff.h (and logging works), but the directory was not 
+	#created during install, let's fix : (PL 2025-07-06)
+	-mkdir $(SKLAFFDIR)/log
 	-mkdir $(SKLAFFBIN)
 	@echo Installing SklaffKOM
 	-mv $(SKLAFFBIN)/sklaffkom $(SKLAFFBIN)/sklaffkom.old

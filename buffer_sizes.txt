@@ -1,0 +1,7 @@
+./sklaff.h:#define LINE_LEN 	79
+./sklaff.h:#define SUBJECT_LEN 	70
+./sklaff.h:#define LONG_LINE_LEN 	2 * LINE_LEN
+./sklaff.h:#define HUGE_LINE_LEN 	32768
+./sklaff.h:#define HISTORY_SIZE    20
+./sklaff.h:#define FROM_FIELD_LEN  28
+./parse.c:#define EXPLIST_SIZE 20
