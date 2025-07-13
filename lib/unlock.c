@@ -27,10 +27,10 @@
 
 #include <sys/file.h>
 #include <errno.h>
+#include <string.h>
 #include <fcntl.h>
-
 #include "sklaff.h"
-
+#include <sys/stat.h>
 /*
  * unlock - unlocks locked file
  * args: file descriptor (fd)
@@ -40,8 +40,28 @@
 void
 unlock(int fd)
 {
+    char path[64];
+    char filename[1024];
+    ssize_t len;
+    
+    /* Modified by PL 2025-07-13 for more verbose output */
+
+    /* Get the file path from /proc/self/fd/<fd> */
+    snprintf(path, sizeof(path), "/proc/self/fd/%d", fd);
+    len = readlink(path, filename, sizeof(filename) - 1);
+
+    if (len != -1) {
+        filename[len] = '\0';  // null-terminate
+    } else {
+        strcpy(filename, "(unknown)");
+    }
+
     lseek(fd, 0L, 0);
     if (flock(fd, LOCK_UN)) {
-        output("\nFel %d vid flock(). Notera detta felmeddelande och meddela info@sklaffkom.se.\n", errno);
+        printf("\nError %d at flock() on file: %s. Please note this error and inform us.\n",
+               errno, filename);
+    } else {
+	/* Optional debug logging. Can be commented out if it produces too much output, but I'll leave it here for now */
+        debuglog("Unlocked: %s\n", 20);
     }
 }

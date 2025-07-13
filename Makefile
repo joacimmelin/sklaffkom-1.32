@@ -62,7 +62,8 @@ FTYOBJ=forwardtoyell.o
 
 SKLAFFLIB=lib/libsklaff.a
 
-all: $(SKLAFFLIB) sklaffkom sklaffadm sklaffacct mailtoss survreport sklaffwho
+#newstoss was missing below, added 2025-07-14
+all: $(SKLAFFLIB) sklaffkom sklaffadm sklaffacct newstoss mailtoss survreport sklaffwho
 
 $(OBJS): sklaff.h ext_globals.h struct.h lang.h
 $(KOMOBJ): sklaff.h globals.h struct.h lang.h
@@ -125,6 +126,7 @@ install: sklaffkom sklaffadm sklaffacct survreport sklaffwho newstoss
 	@echo Making libraries
 	-mkdir $(SKLAFFDIR)
 	-mkdir $(SKLAFFDIR)/etc
+	-mkdir $(SKLAFFDIR)/log
 	-mkdir $(SKLAFFBIN)
 	@echo Installing SklaffKOM
 	-mv $(SKLAFFBIN)/sklaffkom $(SKLAFFBIN)/sklaffkom.old
@@ -137,8 +139,8 @@ install: sklaffkom sklaffadm sklaffacct survreport sklaffwho newstoss
 	chmod og-rxw $(SKLAFFBIN)/sklaffadm
 	-chmod 4755   $(SKLAFFBIN)/srep
 	cp newstoss mailtoss $(SKLAFFDIR)/etc
-	cp newstoss $(SKLAFFDIR)/etc/ntoss
-	cp mailtoss $(SKLAFFDIR)/etc/mtoss
+#       cp newstoss $(SKLAFFDIR)/etc/ntoss
+#	cp mailtoss $(SKLAFFDIR)/etc/mtoss
 	-chown root $(SKLAFFDIR)/etc/newstoss $(SKLAFFDIR)/etc/ntoss $(SKLAFFDIR)/etc/mailtoss $(SKLAFFDIR)/etc/mtoss
 	-chmod og-rxw $(SKLAFFDIR)/etc/newstoss $(SKLAFFDIR)/etc/ntoss $(SKLAFFDIR)/etc/mailtoss $(SKLAFFDIR)/etc/mtoss
 

@@ -264,6 +264,8 @@
 #define MSG_EMFROM	"From: "
 #define MSG_EMFROM2	"from: "
 #define MSG_EMFROM3	"FROM: "
+#define MSG_EMFROM4     "From " /* Newer mailprgs may need this, PL 2025-0714 */
+#define MSG_EMFROM5     "from " /* Newer mailprgs may need this, PL 2025-0714 */
 #define MSG_EMRETURN	"Return-Path: "
 #define MSG_PRIO	"prioriterat."
 #define MSG_DEPRIO	"avprioriterat."
@@ -618,12 +620,14 @@
 #define MSG_INLOGIN	"Inloggningsnamn : "
 #define MSG_INPASSWD	"|nskat l|senord        : "
 #define MSG_INMODEM	"Modempools-tillg}ng    : "
-#define MSG_INTELE	"Telefonnummer          : "
+#define MSG_INPOST	"E-postadress      : " /* Upcoming feature : ask for e-mail address in sklaffacct 2025-07-14 PL*/
+#define MSG_INTELE	"Telefonnummer     : "
 #define MSG_ACCAPP	"Kontoans|kning: "
 #define MSG_INSNAME	"Namn   : "
 #define MSG_INSLOGIN	"\nlogin  : "
 #define MSG_INSPASSWD	"\npasswd : "
 #define MSG_INSMODEM	"\nModem  : "
+#define MSG_INSPOST	"\nE-post : " /* Upcoming feature : ask for e-mail address in sklaffacct 2025-07-14 PL*/
 #define MSG_INSTELE	"\nTelefon: "
 #define MSG_APPLIED	"Din ans|kan {r registrerad.\nV{lkommen }ter.\n\n"
 #define MSG_UIDINUSE	"Inloggningsnamn kan ej anv{ndas. V{nligen v{lj annat."
@@ -892,10 +896,12 @@
 #define MSG_MIMEENC	"Content-Transfer-Encoding: quoted-printable"
 #define MSG_NOCMD	"Please supply a command."
 #define MSG_NOALIAS     "Please supply an alias."
+#define MSG_NOWHASALIAS "now has the alias" /* Missing language strings made the english binary crash, now fixed 2025-07-14 PL */
 #define MSG_CMNTMOVED   "Comment automatically moved to "
 #define MSG_YOUAREFROM  "You are now from "
 #define MSG_NOWHERE     "nowhere"
 #define MSG_UNREADUNREAD "\n%d text(s) marked unread.\n"
+#define MSG_THECOMMAND  "The command" /* Missing language strings made the english binary crash, now fixed 2025-07-14 PL */
 
 /* conf.c */
 

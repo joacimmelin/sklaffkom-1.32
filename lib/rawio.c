@@ -181,12 +181,15 @@ int	flag;
 int
 close_file(int filedesc)
 {
-
-    unlock(filedesc);           /** Error checking ! **/
-
-    return (close(filedesc));
-
+    /* "Error handling" added by PL 2025-07-07 */
+    /* only unlock if file descriptor is still valid */
+    
+    if (filedesc >= 0 && fcntl(filedesc, F_GETFD) != -1) {
+        unlock(filedesc);
+    }
+    return close(filedesc);
 }
+
 
 /*
  * create_file - create file and lock it
