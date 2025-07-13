@@ -87,7 +87,8 @@ main(int argc, char *argv[])
         th->comment_num = num;
         th->comment_conf = 0;
         strcpy(tmp, MSG_REPORT);
-        strncat(tmp, th->subject, LINE_LEN - strlen(MSG_REPORT) - strlen(MSG_SUBJECT) - 4);
+     /* strncat(tmp, th->subject, LINE_LEN - strlen(MSG_REPORT) - strlen(MSG_SUBJECT) - 4); */
+        strlcat(tmp, th->subject, sizeof(tmp));  /* modified on 2025-07-13, PL */
         strcpy(th->subject, tmp);
         th->type = TYPE_TEXT;
 
@@ -117,14 +118,17 @@ post_survey_result(char *resultbuf, struct TEXT_HEADER * th, int conf, int ouid,
 {
     int fd, fdoutfile, usernum, i;
     char *buf, *oldbuf, *nbuf, *fbuf, *sb;
-    LINE conffile, confdir, textfile, home, cname, newline;
+    LINE cname, newline;
+    char conffile[256], confdir[256], textfile[256], home[256];  /* increased size to prevent truncation, modified on 2025-07-12, PL */
     struct CONF_ENTRY ce;
 
     if (conf < 0) {
         usernum = conf - (conf * 2);
         mbox_dir(usernum, home);
-        sprintf(conffile, "%s%s", home, MAILBOX_FILE);
-        sprintf(confdir, "%s/", home);
+     /* sprintf(conffile, "%s%s", home, MAILBOX_FILE); */
+        snprintf(conffile, sizeof(conffile), "%.200s%s", home, MAILBOX_FILE); /* 2025-07-13 PL */
+     /*	sprintf(confdir, "%s/", home); */
+        snprintf(confdir, sizeof(confdir), "%.200s/", home); /* 2025-07-13 PL */
         conf = 0;
     } else {
         strcpy(conffile, CONF_FILE);
@@ -156,7 +160,8 @@ post_survey_result(char *resultbuf, struct TEXT_HEADER * th, int conf, int ouid,
         return -1L;
     }
 
-    sprintf(textfile, "%s%ld", confdir, ce.last_text);
+ /* sprintf(textfile, "%s%ld", confdir, ce.last_text); */
+    snprintf(textfile, sizeof(textfile), "%.200s%ld", confdir, ce.last_text); /* 2025-07-13 PL */
 
     if ((fdoutfile = open_file(textfile, OPEN_QUIET | OPEN_CREATE)) == -1) {
         output("\n%s\n\n", MSG_ERRCREATET);

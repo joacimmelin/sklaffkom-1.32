@@ -38,9 +38,11 @@
 void
 display_header(struct TEXT_HEADER * th, int edit_subject, int type, int dtype, char *mailrec)
 {
-    LINE time_val, c, filename, fname, username;
+    LINE time_val, c, filename, username;
+    char fname[128];  /* increased from LINE to avoid overflow, modified on 2025-07-12, PL */
     int i, uid, right, nc, fd;
-    char *ptr, *tmp, *buf, *oldbuf;
+    char *tmp, *buf, *oldbuf;
+    char *ptr = NULL;   /* modified on 2025-07-12, PL */
     struct CONF_ENTRY *ce;
 
     if (mailrec && type && (th->author == 0)) {
@@ -125,7 +127,7 @@ display_header(struct TEXT_HEADER * th, int edit_subject, int type, int dtype, c
                         sprintf(fname, "%s/%d/%ld", SKLAFF_DB,
                             nc, th->comment_num);
                     } else {
-                        sprintf(fname, "%s/%ld", Mbox, th->comment_num);
+                        snprintf(fname, sizeof(fname), "%s/%ld", Mbox, th->comment_num);  /* modified on 2025-07-12, PL */
                     }
                     if ((fd = open_file(fname, OPEN_QUIET)) != -1) {
                         if ((buf = read_file(fd)) == NULL) {
@@ -519,8 +521,8 @@ mark_as_read(long text, int conf)
     struct CONFS_ENTRY cse;
     struct INT_LIST *int_list_next, *int_list_sav, *saved, *tmpsav;
     char *buf, *oldbuf, *nbuf;
-    LINE fname;
-
+    char fname[128];  /* increased from LINE to avoid overflow, modified on 2025-07-12, PL */
+    
     strcpy(fname, Home);
     strcat(fname, CONFS_FILE);
 
@@ -712,7 +714,7 @@ check_if_read(long text, int conf)
     int found, fd;
     struct CONFS_ENTRY cse;
     char *buf, *oldbuf;
-    LINE fname;
+    char fname[128];  /* increased from LINE to avoid overflow, modified on 2025-07-12, PL */
 
     strcpy(fname, Home);
     strcat(fname, CONFS_FILE);
@@ -770,8 +772,8 @@ next_text(int conf)
     long text, last, first, high;
     struct CONFS_ENTRY cse;
     char *buf, *oldbuf, *nbuf, *tmpbuf, saved;
-    LINE fname, textname, confsname;
-
+    LINE textname, confsname;
+    char fname[128];  /* increased from LINE to avoid overflow, modified on 2025-07-12, PL */
     strcpy(fname, Home);
     strcat(fname, CONFS_FILE);
 
@@ -890,7 +892,7 @@ mark_as_unread(long text, int conf)
     int found, fd;
     struct CONFS_ENTRY cse;
     char *buf, *oldbuf, *nbuf;
-    LINE fname;
+    char fname[128];  /* increased from LINE to avoid overflow, modified on 2025-07-12, PL */
 
     struct INT_LIST
     *int_list_sav, *saved, *tmpsav;
@@ -1017,16 +1019,19 @@ mark_as_unread(long text, int conf)
 int
 display_text(int conf, long num, int stack, int dtype)
 {
-    LINE fname, username, home, emau, aname;
-    int fd, uid, type, endwritten, bypass, rot, survey_flag;
+    LINE username, home, emau, aname;
+    char fname[128];  /* increased from LINE to avoid overflow, modified on 2025-07-12, PL */
+    int fd, uid, type, endwritten, bypass, rot;
+    int survey_flag = 0;  /* initialized to avoid maybe-uninitialized warning, modified on 2025-07-12, PL */
     int survey_valid, quest;
-    char *buf, *oldbuf, *ptr;
+    char *buf, *oldbuf;
+    char *ptr = NULL;   /* modified on 2025-07-12, PL */
     struct TEXT_ENTRY te, te2;
     struct TEXT_HEADER *th;
     struct TEXT_BODY *tb;
     struct COMMENT_LIST *cl, *tmpcl, *savedcl;
-    char *survey_reply;
-
+    char *survey_reply = NULL;  /* modified on 2025-07-12, PL */
+    
     rot = Rot13;
     Rot13 = 0;
     if (num == 0) {
@@ -1263,7 +1268,8 @@ long
 parse_text(char *args)
 {
     long textnum;
-    LINE fname, home, tmpstr, tmpstr2;
+    LINE home, tmpstr, tmpstr2;
+    char fname[128];  /* increased from LINE to avoid overflow, modified on 2025-07-12, PL */
     int fd, uid, right;
     char *buf, *oldbuf;
     struct TEXT_ENTRY te;
@@ -1374,7 +1380,7 @@ parse_text(char *args)
 int
 stack_text(long num)
 {
-    LINE fname;
+    char fname[128];  /* increased from LINE to avoid overflow, modified on 2025-07-12, PL */
     int fd;
     char *buf, *oldbuf;
     struct TEXT_ENTRY te;
@@ -1437,7 +1443,7 @@ stack_text(long num)
 int
 tree_top(long text)
 {
-    LINE fname;
+    char fname[128];  /* increased from LINE to avoid overflow, modified on 2025-07-12, PL */
     int fd;
     long top;
     char *buf, *oldbuf;
@@ -1487,8 +1493,10 @@ tree_top(long text)
 int
 list_subj(char *str)
 {
-    LINE subject, author, fname;
-    char *buf, *oldbuf, *ptr2, *ptr3, *ptr4, sav, c;
+    LINE subject, author;
+    char fname[128];  /* increased from LINE to avoid overflow, modified on 2025-07-12, PL */
+    char *buf, *oldbuf, *ptr3, *ptr4, sav, c;
+    char *ptr2 = NULL;   /* modified on 2025-07-12, PL */
     long firsttext, current_text;
     int dot_count, wait_count, strlgth, xit, from, fd;
     struct TEXT_ENTRY te;
@@ -1515,7 +1523,8 @@ list_subj(char *str)
         if (Current_conf) {
             sprintf(fname, "%s/%d/%ld", SKLAFF_DB, Current_conf, current_text);
         } else {
-            sprintf(fname, "%s/%ld", Mbox, current_text);
+        /* sprintf(fname, "%s/%ld", Mbox, current_text); */
+           snprintf(fname, sizeof(fname), "%s/%ld", Mbox, current_text);  /* modified on 2025-07-12, PL */
         }
         if ((fd = open_file(fname, OPEN_QUIET)) != -1) {
             if ((buf = read_file(fd)) == NULL) {
@@ -1677,7 +1686,7 @@ age_to_textno(long age)
     int fd;
     struct TEXT_ENTRY te;
     struct TEXT_HEADER *th;
-    LINE fname;
+    char fname[128];  /* increased from LINE to avoid overflow, modified on 2025-07-12, PL */;
 
     now = time(NULL);
 
@@ -1689,8 +1698,9 @@ age_to_textno(long age)
         if (Current_conf) {
             sprintf(fname, "%s/%d/%ld", SKLAFF_DB, Current_conf, current_text);
         } else {
-            sprintf(fname, "%s/%ld", Mbox, current_text);
-        }
+         /* sprintf(fname, "%s/%ld", Mbox, current_text); */   
+            snprintf(fname, sizeof(fname), "%s/%ld", Mbox, current_text);  /* modified on 2025-07-12, PL */
+}
         if ((fd = open_file(fname, OPEN_QUIET)) != -1) {
             if ((buf = read_file(fd)) == NULL) {
                 sys_error("list_subj", 1, "read_file");
@@ -1729,7 +1739,7 @@ save_text(char *fname, struct TEXT_HEADER * th, int conf)
 {
     int fd, fdinfile, fdoutfile, usernum, oldconf, ml;
     char *buf, *oldbuf, *nbuf, *inbuf, *fbuf;
-    LINE conffile, confdir, textfile, home;
+    char conffile[256], confdir[256], textfile[256], home[256];  /* increased size to prevent truncation, modified on 2025-07-12, PL */ 
     struct CONF_ENTRY ce;
 
     oldconf = conf;
@@ -1738,8 +1748,10 @@ save_text(char *fname, struct TEXT_HEADER * th, int conf)
         usernum = conf - (conf * 2);
         ml = usernum;
         mbox_dir(usernum, home);
-        sprintf(conffile, "%s%s", home, MAILBOX_FILE);
-        sprintf(confdir, "%s/", home);
+     /* sprintf(conffile, "%s%s", home, MAILBOX_FILE); */ // Original code
+	snprintf(conffile, sizeof(conffile), "%.200s%s", home, MAILBOX_FILE);  /* modified on 2025-07-12, PL */
+     /* sprintf(confdir, "%s/", home); */ // Original code
+        snprintf(confdir, sizeof(confdir), "%.252s/", home); /* modified on 2025-07-12, PL */
         conf = 0;
     } else {
         strcpy(conffile, CONF_FILE);
@@ -1771,7 +1783,8 @@ save_text(char *fname, struct TEXT_HEADER * th, int conf)
         return -1L;
     }
 
-    sprintf(textfile, "%s%ld", confdir, ce.last_text);
+ /* sprintf(textfile, "%s%ld", confdir, ce.last_text); */
+    snprintf(textfile, sizeof(textfile), "%.240s%ld", confdir, ce.last_text); /* modified on 2025-07-12, PL */
 
     if ((fdoutfile = open_file(textfile, OPEN_QUIET | OPEN_CREATE)) == -1) {
         output("\n%s\n\n", MSG_ERRCREATET);
@@ -1855,7 +1868,8 @@ save_text(char *fname, struct TEXT_HEADER * th, int conf)
             return -1L;
         }
 
-        sprintf(textfile, "%s%ld", confdir, ce.last_text);
+     /* sprintf(textfile, "%s%ld", confdir, ce.last_text); */
+        snprintf(textfile, sizeof(textfile), "%.240s%ld", confdir, ce.last_text); /* modified on 2025-07-12, PL */
 
         if ((fdoutfile = open_file(textfile,
                     OPEN_QUIET | OPEN_CREATE)) == -1) {
@@ -1986,7 +2000,7 @@ free_text_entry(struct TEXT_ENTRY * te)
 long
 save_mailcopy(char *rec, char *subject, char *inbuf)
 {
-    LONG_LINE conffile, confdir, textfile, copymsg;
+    char conffile[256], confdir[256], textfile[256], copymsg[256];  /* promoted to 256 to avoid truncation, modified on 2025-07-12, PL */
     char *buf, *oldbuf, *nbuf, *fbuf, *ptr;
     int fd, fd2;
     struct TEXT_HEADER th;
@@ -2016,7 +2030,8 @@ save_mailcopy(char *rec, char *subject, char *inbuf)
         return -1L;
     }
 
-    sprintf(textfile, "%s%ld", confdir, ce.last_text);
+ /* sprintf(textfile, "%s%ld", confdir, ce.last_text); */
+    snprintf(textfile, sizeof(textfile), "%.240s%ld", confdir, ce.last_text); /* modified on 2025-07-12, PL */
 
     if ((fd2 = open_file(textfile, OPEN_QUIET | OPEN_CREATE)) == -1) {
         output("\n%s\n\n", MSG_ERRCREATET);
@@ -2199,7 +2214,9 @@ int2ms(int i, char c[4])
 int
 display_survey_result(int conf, long num)
 {
-    LINE fname, username, confdir, resfile, home, time_val, c;
+    LINE username, confdir, home, time_val, c;
+    char fname[128];  /* increased from LINE to avoid overflow, modified on 2025-07-12, PL */
+    char resfile[128];  /* increased from LINE to avoid overflow, modified on 2025-07-12, PL */
     int fd, n, i;
     char *buf, *oldbuf, *s, *s2;
     struct TEXT_ENTRY te;
