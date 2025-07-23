@@ -45,7 +45,8 @@ line_ed(char *fname, struct TEXT_HEADER * th, int edit_text, int allow_say, int 
     unsigned char c, c2;
     char *space, *cptr, *j, *p, outc, lastchar, *confname;
     char *buf, *oldbuf;
-    LINE waste, cmd, arg, newname, upcasearg;
+    LINE waste, cmd, arg, upcasearg;
+    char newname[128];  /* increased buffer size to fix truncation issue, modified on 2025-07-12, PL */
     int fd, len, count, edit_line, buflen, i, newconf, origconf, marcel, qt;
     int ll;
     long tn, numlines;
@@ -489,8 +490,8 @@ line_ed(char *fname, struct TEXT_HEADER * th, int edit_text, int allow_say, int 
                         if (Current_conf)
                             sprintf(newname, "%s/%d/%ld", SKLAFF_DB,
                                 Current_conf, th->comment_num);
-                        else
-                            sprintf(newname, "%s/%ld", Mbox, th->comment_num);
+                        else                        
+			    snprintf(newname, sizeof(newname), "%.60s/%ld", Mbox, th->comment_num); /* modified on 2025-07-12, PL */
                         fd = open_file(newname, 0);
                         buf = read_file(fd);
                         oldbuf = buf;

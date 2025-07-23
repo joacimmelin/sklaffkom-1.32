@@ -501,7 +501,7 @@ int more_text(void);
 void free_text_entry(struct TEXT_ENTRY *);
 long save_mailcopy(char *, char *, char *);
 void cnvnat(char *, int);
-void int2ms(int, char *);
+void int2ms(int, char[4]);  /* modified on 2025-07-12, PL */
 long age_to_textno(long);
 
 /* user.c */

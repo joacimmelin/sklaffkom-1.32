@@ -31,7 +31,9 @@
 #include <sys/stat.h>
 #include <signal.h>
 #include <errno.h>
-
+#if defined(LINUX) || defined(__linux__)
+#include <bsd/string.h>  // Required for strlcpy on Linux via libbsd
+#endif
 /*
  * user_name - get username from uid
  * args: uid of user (uid), username string (name)
@@ -263,7 +265,7 @@ char *
 replace_active(struct ACTIVE_ENTRY *ae, char *buf)
 {
     char *tbuf, *nbuf, *obuf;
-    LINE tmp;
+    char tmp[256];  /* promoted from LINE to 256 bytes to avoid overflow, modified on 2025-07-12, PL */
     int i;
     struct ACTIVE_ENTRY tae;
 
@@ -377,7 +379,8 @@ set_from(int uid, char *value)
         }
     }
 
-    strncpy(ae.from, value, FROM_FIELD_LEN);
+ /* strncpy(ae.from, value, FROM_FIELD_LEN); */
+    strlcpy(ae.from, value, FROM_FIELD_LEN);  /* modified on 2025-07-12, PL */
     nbuf = replace_active(&ae, oldbuf);
     /* critical();  Shouldn't this be here? /OR 98-04-11 */
     if (write_file(ActiveFD, nbuf) == -1) {
@@ -1126,12 +1129,13 @@ read_sklaffrc(int uid)
         char *heading;
     } headptr[100];             /* Limits maximum of headings */
 
-    char *buf, *oldbuf;
+    char *buf;
+    char *oldbuf = NULL;  /* modified on 2025-07-12, PL */
     char *startptr;
     char *ptr;
     char lastchar, lasttwo;
-    int state, len, i;
-
+    int state, len;
+    int i = 0;  /* initialized to silence maybe-uninitialized warning; will be set properly later, modified on 2025-07-12, PL */
     if ((kaffer = (struct SKLAFFRC *) malloc(sizeof(struct SKLAFFRC)))
         == (struct SKLAFFRC *) 0) {
         sys_error(func_name, 1, "malloc");
