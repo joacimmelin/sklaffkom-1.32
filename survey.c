@@ -39,7 +39,8 @@ struct RESSHOW {
 
 /* static int resshowcompare(struct RESSHOW *, struct RESSHOW *); */
 static int parse_survey_line(char *);
-static int input_survey_quest(char *, char *, int, int);
+/* static int input_survey_quest(char *, char *, int, int); */
+static int input_survey_quest(LINE lin, LINE reply, int qtype, int flag); /* modified on 2025-07-12, PL */
 
 int
 make_survey(char *reply, int *quest, LINE ll, int flag)
@@ -69,7 +70,8 @@ int
 save_survey_result(long survey, int conf, char *survey_result, int n_quest)
 {
     int fd, i, j, ret, n;
-    LINE confdir, resfile;
+    LINE confdir;
+    char resfile[128];  /* increased from LINE (80) to fix sprintf overflow, modified on 2025-07-12, PL */
     char *buf, *fbuf, *t;
     char saveanswer[4];
     struct RESSHOW *resbuf;
@@ -97,7 +99,7 @@ save_survey_result(long survey, int conf, char *survey_result, int n_quest)
 
         if (conf >= 0) {
             sprintf(confdir, "%s/%d/", SKLAFF_DB, conf);
-            sprintf(resfile, "%s%ld.result", confdir, survey);
+            snprintf(resfile, sizeof(resfile), "%s%ld.result", confdir, survey);  /* modified on 2025-07-12, PL */
 
             if ((fd = open_file(resfile, OPEN_QUIET)) == -1) {
                 if ((fd = open_file(resfile, OPEN_CREATE)) == -1) {
@@ -291,7 +293,10 @@ show_survey_result(long survey, int conf, struct TEXT_BODY *tbstart, int n_quest
     struct TEXT_BODY *tb, *tbut;
     struct TEXT_ENTRY te;
     int fd, i, j, k, n, quest, qtype, nalt, n2;
-    LINE confdir, resfile, infofile, utlinje, uttmp;
+    LINE confdir, uttmp;
+    char resfile[128];  /* increased from LINE to avoid overflow, modified on 2025-07-12, PL */
+    char infofile[128];  /* increased from LINE (80) to fix sprintf overflow, modified on 2025-07-12, PL */
+    char utlinje[128];  /* increased from LINE (80) to fix sprintf overflow, modified on 2025-07-12, PL */
     char *buf, *t, *utbuf, *buf2;
     struct RESSHOW *resbuf = NULL;
     long *repbuf;
@@ -550,7 +555,8 @@ int
 mark_survey_as_taken(long survey, int conf)
 {
     int fd;
-    LINE confdir, infofile;
+    LINE confdir;
+    char infofile[128];  /* increased from LINE to avoid overflow, modified on 2025-07-12, PL */
     char *buf, *fbuf;
 
 #ifdef SURVEYDEBUG
@@ -636,7 +642,8 @@ int
 check_if_survey_taken(long survey, int conf)
 {
     int fd, ret;
-    LINE confdir, infofile;
+    LINE confdir;
+    char infofile[128];  /* increased from LINE to avoid overflow, modified on 2025-07-12, PL */
     char *buf, uidbuf[20];
 
     ret = -1;
@@ -780,7 +787,7 @@ parse_survey_line(char *lin)
 static int
 input_survey_quest(LINE lin, LINE reply, int qtype, int flag)
 {
-    char *s, *s2;
+    char *s, *s2 = NULL;  /* initialized to NULL to avoid maybe-uninitialized warning, modified on 2025-07-12, PL */
     long n1 = 0, n2 = 0;
     int i = 0, j = 0, t, ret;
 

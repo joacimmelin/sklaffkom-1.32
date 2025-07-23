@@ -39,7 +39,7 @@ main(int argc, char *argv[])
     char *name, *buf, *oldbuf, *buf2, *oldbuf2, *buf3, *oldbuf3;
     int u_num, fd, conf, fd2, fd3, pdate, ndays;
     long ftext, ntext, otext, ttext, ltext;
-    LONG_LINE dirname, fname, udir, uname;
+    char dirname[256], fname[256], udir[256], uname[256];  /* promoted to 256 to prevent truncation, modified on 2025-07-13, PL */
     LINE cname, args;
     struct ACTIVE_ENTRY ae;
     struct TEXT_HEADER th;
@@ -174,7 +174,7 @@ main(int argc, char *argv[])
             buf = get_conf_entry(buf, &ce);
             if (buf) {
                 otext = 0;
-                sprintf(udir, "%s/%d%s", FILE_DB, ce.num, INDEX_FILE);
+                snprintf(udir, sizeof(udir), "%s/%d%s", FILE_DB, ce.num, INDEX_FILE); /* modified on 2025-07-12, PL  */
                 if ((fd = open_file(udir, OPEN_QUIET)) != -1) {
                     buf2 = read_file(fd);
                     oldbuf2 = buf2;
@@ -182,7 +182,7 @@ main(int argc, char *argv[])
                     while (buf2) {
                         buf2 = get_file_entry(buf2, &fe);
                         if (buf2) {
-                            sprintf(udir, "%s/%d/%s", FILE_DB, ce.num,
+                            snprintf(udir, sizeof(udir), "%s/%d/%s", FILE_DB, ce.num, /* modified on 2025-07-12, PL  */
                                 fe.name);
                             if (stat(udir, &fs) == -1) {
                                 fs.st_size = 0;
@@ -214,7 +214,7 @@ main(int argc, char *argv[])
             buf = get_user_entry(buf, &ue);
             if (buf) {
                 mbox_dir(ue.num, udir);
-                sprintf(uname, "%s%s", udir, MAILBOX_FILE);
+                snprintf(uname, sizeof(uname), "%.240s%s", udir, MAILBOX_FILE); /* modified on 2025-07-12, PL  */
                 fd2 = open_file(uname, 0);
                 buf2 = read_file(fd2);
                 oldbuf2 = buf2;
@@ -248,13 +248,13 @@ main(int argc, char *argv[])
                         output("\n%s\n\n", MSG_WRONGCONF);
                     } else {
                         ce2 = get_conf_struct(conf);
-                        sprintf(dirname, "%s/%d/", SKLAFF_DB, conf);
+                        snprintf(dirname, sizeof(dirname), "%s/%d/", SKLAFF_DB, conf); /* modified on 2025-07-12, PL  */
                         ftext = first_text(conf, Uid);
                         ltext = last_text(conf, Uid);
                         ltext = ltext - ntext + 1;
                         ttext = 0;
                         while ((ftext < ltext) && ce2->life) {
-                            sprintf(fname, "%s%ld", dirname, ftext);
+                            snprintf(fname, sizeof(fname), "%.244s%ld", dirname, ftext); /* modified on 2025-07-12, PL  */
                             ftext++;
                             if (file_exists(fname) != -1) {
                                 fd = open_file(fname, 0);
@@ -288,12 +288,12 @@ main(int argc, char *argv[])
                         while (buf) {
                             buf = get_conf_entry(buf, &ce);
                             if (buf) {
-                                sprintf(dirname, "%s/%d/", SKLAFF_DB, ce.num);
+                                snprintf(dirname, sizeof(dirname), "%s/%d/", SKLAFF_DB, ce.num); /* modified on 2025-07-12, PL  */
                                 ftext = first_text(ce.num, Uid);
                                 ltext = last_text(ce.num, Uid);
                                 ltext = ltext - ntext + 1;
                                 while ((ftext < ltext) && ce.life) {
-                                    sprintf(fname, "%s%ld", dirname, ftext);
+                                    snprintf(fname, sizeof(fname), "%.244s%ld", dirname, ftext); /* modified on 2025-07-12, PL  */
                                     ftext++;
                                     if (file_exists(fname) != -1) {
                                         fd2 = open_file(fname, 0);
@@ -335,7 +335,7 @@ main(int argc, char *argv[])
                         output("%s", MSG_EUSERN);
                     } else {
                         mbox_dir(conf, dirname);
-                        strcpy(fname, dirname);
+                        strlcpy(fname, dirname, sizeof(fname)); /* modified on 2025-07-12, PL  */
                         strcat(fname, MAILBOX_FILE);
                         fd = open_file(fname, 0);
                         buf = read_file(fd);
@@ -348,7 +348,7 @@ main(int argc, char *argv[])
                         ltext = ltext - ntext + 1;
                         ttext = 0;
                         while ((ftext < ltext) && ce.life) {
-                            sprintf(fname, "%s/%ld", dirname, ftext);
+                            snprintf(fname, sizeof(fname), "%.244ss/%ld", dirname, ftext); /* modified on 2025-07-12, PL  */
                             ftext++;
                             if (file_exists(fname) != -1) {
                                 fd2 = open_file(fname, 0);
@@ -381,7 +381,7 @@ main(int argc, char *argv[])
                             buf = get_user_entry(buf, &ue);
                             if (buf) {
                                 mbox_dir(ue.num, dirname);
-                                strcpy(fname, dirname);
+                                strlcpy(fname, dirname, sizeof(fname)); /* modified on 2025-07-12, PL  */
                                 strcat(fname, MAILBOX_FILE);
                                 fd3 = open_file(fname, 0);
                                 buf3 = read_file(fd3);
@@ -393,7 +393,7 @@ main(int argc, char *argv[])
                                 ltext = ce.last_text;
                                 ltext = ltext - ntext + 1;
                                 while ((ftext < ltext) && ce.life) {
-                                    sprintf(fname, "%s/%ld", dirname, ftext);
+                                    snprintf(fname, sizeof(fname), "%.244s/%ld", dirname, ftext);  /* modified on 2025-07-13, PL */
                                     ftext++;
                                     if (file_exists(fname) != -1) {
                                         fd2 = open_file(fname, 0);
@@ -479,7 +479,7 @@ main(int argc, char *argv[])
             output("etc/down %s\n\n", MSG_CREATED);
             sleep(3);
             output("%s\n", MSG_NOTIFY);
-            strcpy(args, MSG_EXITNOW);
+            strlcpy(args, MSG_EXITNOW, sizeof(args)); /* modified on 2025-07-12, PL  */
             Uid = -2;
             cmd_yell(args);
             fflush(stdout);
