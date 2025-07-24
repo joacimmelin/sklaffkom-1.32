@@ -112,7 +112,9 @@ get_hostname(void)
         strcpy(my_host, "N/A");
         return my_host;
     }
-    strlcpy(tmp, ptr, sizeof(my_host));
+    /* New code for Ubuntu 24.04 compatibility */
+ /* strlcpy(tmp, ptr, sizeof(my_host)); */
+    strlcpy(tmp, ptr, sizeof(tmp));
     ptr = strchr(tmp + 1, '/');
     ptr++;
     uf = open(UTMP_REC, O_RDONLY);
