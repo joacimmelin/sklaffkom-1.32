@@ -332,9 +332,11 @@ send_news(int confid, char *mbuf, int ouid, int ogrp, long com)
     th.time = time(0);
 
     memset(fbuf, 0, strlen(mbuf) + LONG_LINE_LEN);
-    sprintf(fbuf, "%ld:%d:%ld:%ld:%d:%d:%d\n", ce.last_text, 0,
-        th.time, com, 0,
-        0, th.size);
+    sprintf(fbuf, "%ld:%d:%ld:%ld:%d:%d:%d\n",
+    (long)ce.last_text, 0,
+    (long)th.time, (long)com, 0,
+    0, th.size);
+
     strcat(fbuf, th.subject);
     strcat(fbuf, "\n");
     strcat(fbuf, mbuf);
