@@ -31,9 +31,7 @@
 #include <sys/stat.h>
 #include <signal.h>
 #include <errno.h>
-#if defined(LINUX) || defined(__linux__)
-#include <bsd/string.h>  // Required for strlcpy on Linux via libbsd
-#endif
+
 /*
  * user_name - get username from uid
  * args: uid of user (uid), username string (name)
@@ -265,7 +263,7 @@ char *
 replace_active(struct ACTIVE_ENTRY *ae, char *buf)
 {
     char *tbuf, *nbuf, *obuf;
-    char tmp[256];  /* promoted from LINE to 256 bytes to avoid overflow, modified on 2025-07-12, PL */
+    LINE tmp;
     int i;
     struct ACTIVE_ENTRY tae;
 
@@ -379,8 +377,7 @@ set_from(int uid, char *value)
         }
     }
 
- /* strncpy(ae.from, value, FROM_FIELD_LEN); */
-    strlcpy(ae.from, value, FROM_FIELD_LEN);  /* modified on 2025-07-12, PL */
+    strncpy(ae.from, value, FROM_FIELD_LEN);
     nbuf = replace_active(&ae, oldbuf);
     /* critical();  Shouldn't this be here? /OR 98-04-11 */
     if (write_file(ActiveFD, nbuf) == -1) {
@@ -1129,13 +1126,12 @@ read_sklaffrc(int uid)
         char *heading;
     } headptr[100];             /* Limits maximum of headings */
 
-    char *buf;
-    char *oldbuf = NULL;  /* modified on 2025-07-12, PL */
+    char *buf, *oldbuf;
     char *startptr;
     char *ptr;
     char lastchar, lasttwo;
-    int state, len;
-    int i = 0;  /* initialized to silence maybe-uninitialized warning; will be set properly later, modified on 2025-07-12, PL */
+    int state, len, i;
+
     if ((kaffer = (struct SKLAFFRC *) malloc(sizeof(struct SKLAFFRC)))
         == (struct SKLAFFRC *) 0) {
         sys_error(func_name, 1, "malloc");
@@ -1458,6 +1454,18 @@ write_sklaffrc(int uid, struct SKLAFFRC *kaffer)
 
     non_critical();
 
+
+#ifndef LINUX
+
+ /*
+* The feature below does not work well with mordern Linux (Ubuntu 24.04),
+* due to how permission work slightly different than in FreeBSD. However,
+* I can't find a single other instance in the code where this .plan-file
+* is being used, so I suppose it's a planned feature that never came about.
+* For historical reasons, I've kept it as it is - with a flag to only
+* execute it if we're not on Linux 2025-07-10 PL
+*/
+
     /* Mirror sig to .plan file */
 
     p = getpwuid(Uid);
@@ -1479,4 +1487,5 @@ write_sklaffrc(int uid, struct SKLAFFRC *kaffer)
     non_critical();
 
     return 0;
+#endif
 }
