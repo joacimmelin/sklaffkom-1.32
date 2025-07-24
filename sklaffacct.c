@@ -36,20 +36,23 @@
 int
 main(int argc, char *argv[])
 {
-    LINE name, login, passwd, inet, tele, cmdline, fname;
+    LINE name, login, passwd, epost, cmdline, fname; /* Declare inet and tele here if we want to use them again. PL 2025-07-24 */
     HUGE_LINE outbuf;
     int fd;
     char *buf;
     struct passwd *pw;
 
     tty_raw();
-
+    
     if ((fd = open_file(ACCT_FILE, OPEN_QUIET)) == -1) {
         goto cont;
     }
     if ((buf = read_file(fd)) == NULL) {
         goto cont;
     }
+    
+ /* output("Closing file: %s\n", ACCT_FILE); */		/* debug */
+ 
     close_file(fd);
     output("\n%s\n", buf);
     free(buf);
@@ -58,7 +61,7 @@ cont:
     input("", name, LINE_LEN, 0, 0, 0);
 errlogin:
     output(MSG_INLOGIN);
-    input("", login, 11, 0, 0, 0);
+    input("", login, 25, 0, 0, 0);
     pw = getpwnam(login);
     if (pw != NULL) {
         output("\n%s\n\n", MSG_UIDINUSE);
@@ -66,11 +69,19 @@ errlogin:
     }
     output(MSG_INPASSWD);
     input("", passwd, 13, 0, 0, 0);
-    output(MSG_INMODEM);
-    input(MSG_YES, inet, 7, 0, 0, 0);
-    output(MSG_INTELE);
-    input("", tele, 70, 0, 0, 0);
+    
+    /* It's 2025 so it makes sense to ask for an e-mail address, right? 2025-07-24, PL */
+    output(MSG_INPOST);
+    input("", epost, 70, 0, 0, 0);
+    /* Modem user? Yes by default. Not sure yet why it matters. Why ask the user at all? PL */   
+ /* output(MSG_INMODEM);
+    input(MSG_YES, inet, 7, 0, 0, 0); */
+    
+    /* Let's not ask for phone number here - too long registrations tend to upset users ;) PL */
+/*  output(MSG_INTELE);
+    input("", tele, 70, 0, 0, 0); */
     output("\n");
+
     strcpy(outbuf, "\n");
     strcpy(outbuf, "------------------------------------------------\n");
     strcat(outbuf, MSG_ACCAPP);
@@ -83,14 +94,20 @@ errlogin:
     strcat(outbuf, login);
     strcat(outbuf, MSG_INSPASSWD);
     strcat(outbuf, passwd);
+    strcat(outbuf, MSG_INSPOST);
+    strcat(outbuf, epost);
+    /*
     strcat(outbuf, MSG_INSMODEM);
     strcat(outbuf, inet);
     strcat(outbuf, MSG_INSTELE);
     strcat(outbuf, tele);
+    */
     strcat(outbuf, "\n");
     sprintf(fname, "/tmp/%d", getpid());
     fd = open_file(fname, OPEN_QUIET | OPEN_CREATE);
     write(fd, outbuf, strlen(outbuf));
+    
+ /* printf("Closing file: %s\n", fname); */		/* debug */
     close_file(fd);
     if (fork()) {
         (void) wait(&fd);
@@ -106,9 +123,11 @@ errlogin:
     unlink(fname);
     fd = open_file(ACCT_LOG, OPEN_QUIET | OPEN_CREATE);
     lseek(fd, 0L, 2);
-    write(fd, outbuf, strlen(outbuf));
+    write(fd, outbuf, strlen(outbuf));  
+ /* printf("Closing file: %s\n", ACCT_LOG); */		/* debug */
     close_file(fd);
     output(MSG_APPLIED);
+    sleep(1);
     tty_reset();
     exit(0);
 }
