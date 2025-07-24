@@ -4824,9 +4824,33 @@ int
 cmd_nethack(char *args)
 {
     sigset_t sigmask, oldsigmask;
+    char nethack_path[256] = "/usr/local/bin/nethack";  /* default path */
+    FILE *which_fp;
+    char which_buf[256];
 
     Change_msg = 1;
     Change_prompt = 1;
+
+    /* Check default path first */
+    if (access(nethack_path, X_OK) != 0) {
+        /* Try fallback using "which nethack" */
+        which_fp = popen("which nethack", "r");
+        if (which_fp && fgets(which_buf, sizeof(which_buf), which_fp)) {
+            which_buf[strcspn(which_buf, "\n")] = '\0';  /* strip newline */
+            if (access(which_buf, X_OK) == 0) {
+                strncpy(nethack_path, which_buf, sizeof(nethack_path) - 1);
+                nethack_path[sizeof(nethack_path) - 1] = '\0';
+            }
+        }
+        if (which_fp)
+            pclose(which_fp);
+    }
+
+    /* If still not found */
+    if (access(nethack_path, X_OK) != 0) {
+        output("\nFel: Kan inte starta Nethack - har SysOp glömt att installera den?\n");
+        return 0;
+    }
 
     sigemptyset(&sigmask);
     sigaddset(&sigmask, SIGNAL_NEW_TEXT);
@@ -4835,19 +4859,24 @@ cmd_nethack(char *args)
     signal(SIGNAL_NEW_TEXT, SIG_IGN);
     signal(SIGNAL_NEW_MSG, SIG_IGN);
     set_avail(Uid, 1);
+
     if (!fork()) {
         sig_reset();
         tty_reset();
-        execl("/usr/local/bin/nethack", "/usr/local/bin/nethack", NULL);
+        execl(nethack_path, nethack_path, NULL);
+        perror("execl");
+        _exit(1);
     } else {
         wait(NULL);
     }
+
     signal(SIGNAL_NEW_TEXT, baffo);
     signal(SIGNAL_NEW_MSG, newmsg);
     sigprocmask(SIG_UNBLOCK, &oldsigmask, NULL);
     tty_raw();
     output("\n");
     set_avail(Uid, 0);
+
     return 0;
 }
 
