@@ -379,6 +379,7 @@ int cmd_list_yells(char *);
 int cmd_post_survey(char *);
 int cmd_read_last_text(char *);
 int cmd_reclaim_unread(char *);
+int cmd_nethack(char *);
 
 /* admin.c */
 

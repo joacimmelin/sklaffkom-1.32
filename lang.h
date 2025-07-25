@@ -690,6 +690,7 @@
 #define MSG_CPY2	"Copyright (C) 1993-1994  Torbj|rn B}}th, Peter Forsberg, Peter Lindberg,\n"
 #define MSG_CPY3	"                         Odd Petersson, Carl Sundbom.\n"
 #define MSG_CPY4	"QWK extensions (C) 1994  Daniel Gr|njord\n\n"
+#define MSG_CPY4a	"Surveys (C) 1996         Olof Runborg\n\n" /* Missing language strings made the english binary crash, now fixed 2025-07-14 PL */
 #define MSG_CPY5	"Program dedicated to the memory of Staffan Bergstr|m.\n\n"
 #define MSG_CPY6	"SklaffKOM comes with ABSOLUTELY NO WARRANTY. This is free software, \n"
 #define MSG_CPY7	"and you are welcome to redistribute it under certain conditions.\n\n"

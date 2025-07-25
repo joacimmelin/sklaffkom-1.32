@@ -88,6 +88,7 @@ Write (article):cmd_post_text:Write a new article in a conference
 Yell:cmd_yell:Same as 'shout'
 I:cmd_I:Tell everyone how you are
 (Make) survey:cmd_post_survey:Make a survey in the current conference
+Nethack:cmd_nethack:Play Nethack
 
 ?:cmd_help:Same as 'List commands'
 +:cmd_next_conf:Same as 'Next conference'
