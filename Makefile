@@ -25,7 +25,7 @@ CFLAGS = $(SKLAFFFLAGS) -O2 -g -pipe -Wall -Werror
 #LIBS=-lsklaff -ltermcap -lelf -lm
 
 # uncomment for BSD/SUNOS/LINUX/ULTRIX
-LIBS=-lsklaff -lm
+LIBS=-lsklaff -lbsd -lm
 
 # uncomment for SOLARIS
 #CFLAGS=-g -I/usr/ucbinclude
