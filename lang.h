@@ -74,7 +74,7 @@
 #define MSG_CPY3        "                         Odd Petersson, Carl Sundbom.\n"
 #define MSG_CPY4        "QWK-hantering (C) 1994   Daniel Gr|njord\n"
 #define MSG_CPY4a       "Enk{tfunktion (C) 1996   Olof Runborg\n\n"
-#define MSG_CPY5       "Uppdateringar/buggfixar gjorda av Petri Stenberg, Fredrik Bj|reman, Marcus Sundberg och Joakim Melin.\n\n"
+#define MSG_CPY5        "Uppdateringar/buggfixar gjorda av Petri Stenberg, Fredrik Bj|reman, Marcus Sundberg, Peter Lunden och Joakim Melin.\n\n"
 #define MSG_CPY6        "Programmet till{gnat Staffan Bergstr|ms minne.\n\n"
 #define MSG_CPY7        "SklaffKOM distribueras UTAN GARANTI. Detta {r fri programvara och alla\n"
 #define MSG_CPY8        "har r{tt sprida den enligt vissa villkor.\n\n"
