@@ -288,6 +288,7 @@ char *real_string(char *);
 char *reorder_name(char *, char *);
 char *prog_name(char *);
 char *mbox_dir(int, char *);
+const char *safe_str(const char *s); /* 2025-07-26 PL */
 
 /* Debugging */
 /* void *my_malloc (size_t); */

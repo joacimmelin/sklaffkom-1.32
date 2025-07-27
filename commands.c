@@ -602,6 +602,17 @@ cmd_sendbatch(char *args)
 }
 
 /*
+ * safe_str - returns a safe printable string
+ * We need this for file descriptions to show
+ * correctly on FreeBSD. PL 2025-07-26
+ */ 
+const char *
+safe_str(const char *s)
+{
+    return (s && *s) ? s : "";
+}
+
+/*
  * cmd_help - list all commands
  * args: user arguments (args)
  * ret: ok (0) or error (-1)
@@ -4193,12 +4204,20 @@ cmd_upload(char *args)
         (void) wait(&fd);
     } else {
         sig_reset();
-        execl(UPLOADPRGM, UPLOADPRGM, ULOPT1, (char *) 0);
-    }
+     /* Now we call uploadpgrm */
+     /* fprintf(stderr, "Executing: %s %s\n\n\n", UPLOADPRGM, ULOPT1); */   	/* debugging */
+     /* fprintf(stderr, "EUID: %d\n", getuid()); */				/* Debug: Check the effective user ID */
+        char *args[] = {UPLOADPRGM, ULOPT1, NULL};  				/* Added by PL 2025-07-17 */
+        execvp(UPLOADPRGM, args); 						/* Replaces execl() that was broken. PL 2025-07-17 */
+        }
     chdir(cwd);
     signal(SIGNAL_NEW_TEXT, baffo);
     signal(SIGNAL_NEW_MSG, newmsg);
-    rebuild_index_file();
+ /* rebuild_index_file();*/ 	/* Replaced with new code with error checking below, PL 2025-07-17 */
+    if (rebuild_index_file() == -1) {
+    fprintf(stderr, "Failed to rebuild index file.\n");
+    return -1;
+}
     output("\n\n");
     set_avail(Uid, 0);
     return 0;
@@ -4253,9 +4272,22 @@ cmd_download(char *args)
     snprintf(filed, sizeof(filed), "%s/%d", FILE_DB, Current_conf);
     chdir(filed);
     if (!fork()) {
-        sig_reset();
-        execl(DOWNLOADPRGM, DOWNLOADPRGM, DLOPT1, DLOPT2, DLOPT3, fname, (char *) 0);
-    } else {
+        sig_reset();        
+ /* fprintf(stderr, "Executing: %s %s\n\n\n", DOWNLOADPRGM, DLOPT1, DLOPT2, DLOPT3); */ 	/* debugging */
+ /* execl(DOWNLOADPRGM, DOWNLOADPRGM, DLOPT1, DLOPT2, DLOPT3, cmdline, NULL); */ 		/* DID NOT WORK IN 2025 */      
+ /* fprintf(stderr, "EUID: %d\n", getuid()); */                         			/* Debug: Check the effective user ID */      
+ /* Build argument list dynamically, omitting empty args */ 	/* 2025-07-24 PL */
+    char *args_exec[10];					/* 2025-07-24 PL */
+    int i = 0;							/* 2025-07-24 PL */
+    args_exec[i++] = DOWNLOADPRGM;				/* 2025-07-24 PL */
+    if (DLOPT1[0]) args_exec[i++] = DLOPT1;			/* 2025-07-24 PL */
+    if (DLOPT2[0]) args_exec[i++] = DLOPT2;			/* 2025-07-24 PL */
+    if (DLOPT3[0]) args_exec[i++] = DLOPT3;			/* 2025-07-24 PL */
+    args_exec[i++] = fname;					/* 2025-07-24 PL */
+    args_exec[i]   = NULL;					/* 2025-07-24 PL */
+    execvp(DOWNLOADPRGM, args_exec); /* execl() replacement. PL 2025-07-24 */
+    exit(1);  // if exec fails  
+ } else {
         wait(NULL);
     }
     tty_raw();
@@ -4288,8 +4320,11 @@ cmd_list_files(char *args)
         output("\n%s\n\n", MSG_NOTINMBOX);
         return 0;
     }
+     /* New code 2025-07-26 to help sklaffkom find the .index file */
+	snprintf(fn, sizeof(fn), "%s/%d/.index", FILE_DB, Current_conf);	/* Better way to ensure we have the correct path */
+     /* fprintf(stderr, "[DEBUG] Checking .index file at path: %s\n", fn);*/ 	/* Directory debugging */
     if ((fd = open_file(fn, OPEN_QUIET)) == -1) {
-        output("\n%s\n\n", MSG_NOFILES);
+	output("\n%s\n\n", MSG_NOFILES);
         return 0;
     }
     if ((buf = read_file(fd)) == NULL) {
@@ -4312,9 +4347,8 @@ cmd_list_files(char *args)
             if (stat(fn, &fs) == -1) {
                 fs.st_size = 0;
             }
-            if (output("%-20s  %7d  %s\n", fe.name, fs.st_size, fe.desc)
-                == -1)
-                break;
+            if (output("%-20s  %7d  %s\n", fe.name, (int)fs.st_size, safe_str(fe.desc)) == -1)
+	       break;
         }
     }
 

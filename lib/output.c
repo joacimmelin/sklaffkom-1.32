@@ -29,6 +29,8 @@
 #include "ext_globals.h"
 #include <stdarg.h>
 
+#define safe_str(x) ((x) ? (x) : "") /* Fixes partially broken output() function on FreeBSD */
+
 /*
  * output - outputs string
  * args: same as for printf
@@ -58,12 +60,17 @@ output(char *fmt,...)
     char tmpline[LONG_LINE_LEN];
 
     va_start(args, fmt);
-    vsprintf(fmt2, fmt, args);
+    va_list args_copy;
+    va_copy(args_copy, args);
+    vsnprintf(fmt2, sizeof(fmt2), fmt, args_copy);  /* safer formatting */
+    va_end(args_copy);
     va_end(args);
     tmp = fmt2;
     tmp2 = outline;
     while (*tmp) {
         if (Beep || Special || (*tmp != 7)) {
+            if ((size_t)(tmp2 - outline) >= sizeof(outline) - 2)
+            break;  /* prevent buffer overrun */
             *tmp2 = *tmp;
             tmp++;
             if (*tmp2 == '\n') {
