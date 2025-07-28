@@ -91,10 +91,15 @@
 #define GREPOPT		"-i -F" /* option to grep */
 #define SKLAFFAT 	"/usr/bin/at"
 #define SKLAFFECHO 	"/bin/echo"
-#define UPLOADPRGM	"/usr/bin/rz"
-#define ULOPT1          ""
-#define DOWNLOADPRGM	"/usr/bin/sz"
-#define DLOPT1          ""
+
+/* Software for uploads and downloads. 
+Please read item 18 for instructions here: 
+https://github.com/joacimmelin/sklaffkom-1.32/wiki/Install-Instructions */
+
+#define UPLOADPRGM      "/usr/local/bin/lrz"
+#define ULOPT1          "-Eq"
+#define DOWNLOADPRGM    "/usr/local/bin/lsz"
+#define DLOPT1          "-Eq"
 #define DLOPT2          ""
 #define DLOPT3          ""
 #define ZIPPRGM		"/usr/bin/zip -9"
