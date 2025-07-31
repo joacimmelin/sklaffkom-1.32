@@ -382,7 +382,7 @@
 /* flag.c */
 
 #define MSG_FLAG0	"ibm-pc"
-#define MSG_FLAG0N	2
+#define MSG_FLAG0N	2 	/*ambiguity check - how many chars required to make flag name unique /Detective PL 2025-07-30 */
 #define MSG_FLAG0F	"IBM-PC (teckenupps{ttning)"
 #define MSG_FLAG1	"iso 8859-1"
 #define MSG_FLAG1N	2
@@ -658,6 +658,14 @@
 
 /* lib/output.c */
 
+#ifdef LINUX
+/* MSG_MORE is defined in Linux socket API. First ensure it is
+   included, and then undefine it so we can re-define it. */
+# include <sys/socket.h>
+# if defined(MSG_MORE)
+#  undef MSG_MORE
+# endif
+#endif
 #define MSG_MORE 	"-More-"
 
 /* lib/time_string.c */
@@ -881,6 +889,8 @@
 #define MSG_EMFROM	"From: "
 #define MSG_EMFROM2	"FROM: "
 #define MSG_EMFROM3	"from: "
+#define MSG_EMFROM4     "From " /* Newer mailprgs may need this, PL 2025-07-30 */
+#define MSG_EMFROM5     "from " /* Newer mailprgs may need this, PL 2025-07-30 */
 #define MSG_EMRETURN	"Return-Path: "
 #define MSG_PRIO	"given high priority."
 #define MSG_DEPRIO	"given low priority."
@@ -1226,16 +1236,18 @@
 /* sklaffacct.c */
 
 #define MSG_INNAME	"First and last name    : "
-#define MSG_INLOGIN	"login (6-8 characters) : "
+#define MSG_INLOGIN	"Login name             : "
 #define MSG_INPASSWD	"Password               : "
 #define MSG_INMODEM	"Modempool-access       : "
 #define MSG_INTELE	"Voice telephone	: "
+#define MSG_INPOST      "E-mail address         : "
 #define MSG_ACCAPP	"Account application: "
 #define MSG_INSNAME	"Name     : "
 #define MSG_INSLOGIN	"\nlogin    : "
 #define MSG_INSPASSWD	"\npasswd   : "
 #define MSG_INSMODEM	"\nModem    : "
 #define MSG_INSTELE	"\nTelephone: "
+#define MSG_INSPOST     "\nE-mail : "
 #define MSG_APPLIED	"Your application har been posted.\nWelcome back.\n\n"
 #define MSG_UIDINUSE	"login-name in use by another user."
 
