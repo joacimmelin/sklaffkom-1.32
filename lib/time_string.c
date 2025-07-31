@@ -48,7 +48,7 @@ char *time_string(time_t in_time, char *out_time, int show_date)
     struct tm ts, ts_now;
     time_t now;
     int out_day, comp_year;
-    char day_string[9];
+    char day_string[16]; /* Crucial bugfix that made English sklaffkom crash during certain weekdays :D 2025-07-31 PL */
 
     memcpy(&ts, localtime(&in_time), sizeof(struct tm));
     if (show_date) {
