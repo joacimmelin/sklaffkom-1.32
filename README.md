@@ -10,7 +10,7 @@ The reason for keeping this old codebase alive and working on modern operating s
 
 This version, 1.32.1, is based on the last publically released version by the original team behind Sklaffkom. Later additions to Sklaffkom was added but never released to the world.  
 
-The source code and documentation was updated in June-July 2025 (and onwards) to run on modern 64-bit OSes by Petri Stenberg, Fredrik Björeman, Peter Lunden, Marcus Sundberg and Joakim Melin. 
+The source code and documentation was updated in June-July 2025 (and onwards) to run on modern 64-bit OSes by Petri Stenberg, Fredrik Björeman, Peter London, Marcus Sundberg and Joakim Melin. 
 
 As of 2025-06-09 it has been verified to run with at least basic functionality on AlmaLinux 9 x86_64 (for now need to remove -Werror to compile on Linux) and MacOS 15.5 x86_64. Complete instructions on how to compile and install Sklaffkom can be found [here](https://github.com/joacimmelin/sklaffkom-1.32/wiki/Install-Instructions). 
 
