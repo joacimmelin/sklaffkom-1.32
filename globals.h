@@ -96,3 +96,9 @@ int ActiveFD;                   /* Global file descriptor used for the active
 
 /* long memstack[30000];      */
 /* int mempointer;            */
+
+/* Work in progress PL 2025-07-31 */
+/*
+extern char last_opened_filename[PATH_MAX];
+extern int last_opened_fd;
+*/
