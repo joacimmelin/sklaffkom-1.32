@@ -60,6 +60,9 @@ rebuild_index_file(void)
     getcwd(cwd, LINE_LEN);
 
     sprintf(filed, "%s/%d", FILE_DB, Current_conf);
+    
+/*  fprintf(stderr, "FILE_DB: %s, Current_conf: %d\n", FILE_DB, Current_conf); */ /* Debugging */
+
     chdir(filed);
     sprintf(fn2, "/tmp/%d", getpid());
     if (fork()) {
@@ -129,6 +132,6 @@ rebuild_index_file(void)
     if (remo)
         unlink(fn);
     non_critical();
-
+    output("\n\n");
     return 0;
 }
