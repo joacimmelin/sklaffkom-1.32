@@ -33,6 +33,8 @@
 
 #include "globals.h"
 
+/* Rewritten initialization by PL in July/August 2025 for more verbose output */
+
 struct REFLIST {
     long num;
     LONG_LINE id;
@@ -47,7 +49,8 @@ int add_text();
 int
 main(int argc, char *argv[])
 {
-    LONG_LINE newslib, article, ng;
+    LONG_LINE newslib, ng;
+    char article[256]; /* modified 2025-07-13 PL */
     LINE refer;
     struct passwd *pw;
     struct stat st;
@@ -61,45 +64,92 @@ main(int argc, char *argv[])
         printf("\n%s\n\n", MSG_NTINFO);
         exit(1);
     }
-    if ((fd = open_file(CONF_FILE, 0)) == -1)
-        exit(1);
-    if ((buf = read_file(fd)) == NULL)
-        exit(1);
-    oldbuf = buf;
-    if (close_file(fd) == -1)
-        exit(1);
-    buf = get_conf_entry(buf, &ce);
-
-    while ((strcmp(argv[1], ce.name) != 0) && buf)
-        buf = get_conf_entry(buf, &ce);
-    free(oldbuf);
-    if (strcmp(argv[1], ce.name) == 0)
-        confid = ce.num;
-    else
-        exit(0);
-
-    if ((fd = open(NEWS_GROUPS, O_RDONLY, 0)) == -1) {
-        printf("\n%s\n\n", MSG_BADACTIVE);
+    printf("Checking the SklaffKOM CONF_FILE: " CONF_FILE "... ");
+    fd = open_file(CONF_FILE, 0);
+    if (fd == -1) {
+        fprintf(stderr, "\n[ERROR] Could not open file '%s'\n", CONF_FILE);
+        perror("open_file");
         exit(1);
     }
+    buf = read_file(fd);
+    if (buf == NULL) {
+        fprintf(stderr, "\n[ERROR] Could not read file '%s'\n", CONF_FILE);
+        perror("read_file");
+        close_file(fd); /* Attempt to close even if read failed */
+        exit(1);
+    }
+
+    oldbuf = buf;
+
+    if (close_file(fd) == -1) {
+        fprintf(stderr, "\n[ERROR] Failed to close file '%s'\n", CONF_FILE);
+        perror("close_file");
+        exit(1);
+    }
+    printf("OK!\n");
+
+    printf("Checking conference: %s... ", argv[1]);
+    fflush(stdout);
+    buf = get_conf_entry(buf, &ce);
+    while (buf && strcmp(argv[1], ce.name) != 0)
+           buf = get_conf_entry(buf, &ce);
+
+    if (buf && strcmp(argv[1], ce.name) == 0) {
+        confid = ce.num;
+        printf("OK!\n");
+    } else {
+    fprintf(stderr, "\n[ERROR] Conference '%s' not found in %s\n", argv[1], CONF_FILE);
+    free(oldbuf);
+    exit(1);
+    }
+
+    free(oldbuf);
+
+    printf("Checking if your active-file exists : "NEWS_GROUPS "...");
+    fflush(stdout);
+    if ((fd = open(NEWS_GROUPS, O_RDONLY, 0)) == -1) {
+        fprintf(stderr, "\n[ERROR] Failed to open active file '%s'\n", NEWS_GROUPS);
+	exit(1);
+    }
+    printf("OK!\n");
+
+    printf("Reading active-file into memory...");
     if ((buf = read_file(fd)) == NULL)
         exit(1);
     if (close(fd) == -1)
         exit(1);
+    printf("Done!!\n\n");
+    //printf("I think we're all set now.\n");
+    //printf("Press ENTER to continue\n");
+    //getchar();
 
     strcpy(ng, argv[1]);
-    strcat(ng, " ");
-    ptr = strstr(buf, ng);
-    if (!ptr) {
-        printf("\n%s\n\n", MSG_NOGROUP);
-        exit(1);
+    ptr = NULL;
+    char *line = strtok(buf, "\n");
+    while (line != NULL) {
+    if (strncmp(line, ng, strlen(ng)) == 0 &&
+        (line[strlen(ng)] == ' ' || line[strlen(ng)] == '\t')) {
+        ptr = line;
+        break;
     }
+    line = strtok(NULL, "\n");
+    }
+
+    if (!ptr) {
+    fprintf(stderr, "[ERROR] Group '%s' not found in active file!\n", argv[1]);
+    exit(1);
+    }
+
     ptr2 = strchr(ptr, ' ');
     if (ptr2)
-        last = atol(ptr2 + 1);
+    last = atol(ptr2 + 1);
     else {
-        printf("\n%s\n\n", MSG_BADACTIVE);
-        exit(1);
+    fprintf(stderr, "[ERROR] Malformed entry for group '%s' in active file\n", argv[1]);
+    exit(1);
+    }
+    if (last == 0) {
+    fprintf(stderr, "[WARNING] The 'last article' value for '%s' is 0.\n", argv[1]);
+    fprintf(stderr, "[HINT] You may need to rebuild or renumber your active file.\n");
     }
     free(buf);
 
@@ -121,10 +171,13 @@ main(int argc, char *argv[])
     flag = 0;
     mtime = 0;
     first = first_news(newslib, last);
+    //printf("[DEBUG] first_news returned: %ld (last: %ld)\n", first, last);
     while ((first <= last) && first) {
-        sprintf(article, "%s/%ld", newslib, first);
+	snprintf(article, sizeof(article), "%.244s/%ld", newslib, first);  /* modified on 2025-07-13, PL */
+        printf("Trying to open article: %s", article);
         if ((fd = open(article, O_RDONLY, 0)) != -1) {
-            if (!flag) {
+                printf("...sucess!\n");
+                if (!flag) {
                 flag = 1;
                 sprintf(article, "%s/%d/%ld", SKLAFF_DB, ce.num, ce.last_text);
                 if (stat(article, &st) != -1)
@@ -221,6 +274,8 @@ main(int argc, char *argv[])
         free(top);
     }
 /*    if (first) notify_all_processes(SIGNAL_NEW_TEXT); */
+    printf("Now done");
+    printf("\n");
     exit(0);
 }
 
@@ -332,11 +387,9 @@ send_news(int confid, char *mbuf, int ouid, int ogrp, long com)
     th.time = time(0);
 
     memset(fbuf, 0, strlen(mbuf) + LONG_LINE_LEN);
-    sprintf(fbuf, "%ld:%d:%ld:%ld:%d:%d:%d\n",
-    (long)ce.last_text, 0,
-    (long)th.time, (long)com, 0,
-    0, th.size);
-
+    sprintf(fbuf, "%ld:%d:%ld:%ld:%d:%d:%d\n", ce.last_text, 0,
+        (long) th.time, com, 0,
+        0, th.size); /* modified on 2025-07-13, PL */
     strcat(fbuf, th.subject);
     strcat(fbuf, "\n");
     strcat(fbuf, mbuf);
@@ -346,7 +399,10 @@ send_news(int confid, char *mbuf, int ouid, int ogrp, long com)
     if (close_file(fdo) == -1)
         return -1;
 
-    chown(textfile, ouid, ogrp);
+    if (chown(textfile, ouid, ogrp) == -1) {
+    perror("chown");  /* 2025-07-25 PL */
+    return 1;
+    }
 
     if (write_file(fd, nbuf) == -1)
         return -1;

@@ -136,7 +136,7 @@ install: sklaffkom sklaffadm sklaffacct survreport sklaffwho newstoss
 	cp sklaffkom sklaffadm sklaffwho sklaffacct $(SKLAFFBIN)/
 	cp survreport $(SKLAFFBIN)/srep
 	-chown $(SKLAFFUSER) $(SKLAFFBIN)/sklaffkom $(SKLAFFBIN)/sklaffadm $(SKLAFFBIN)/sklaffwho \
-		$(SKLAFFBIN)/sklaffacct
+		$(SKLAFFBIN)/sklaffacct $(SKLAFFDIR)/log
 	-chown root   $(SKLAFFBIN)/srep
 	chmod u+s $(SKLAFFBIN)/sklaffkom $(SKLAFFBIN)/sklaffacct $(SKLAFFBIN)/sklaffwho
 	chmod og-rxw $(SKLAFFBIN)/sklaffadm

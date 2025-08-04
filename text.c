@@ -28,6 +28,21 @@
 #include "sklaff.h"
 #include "ext_globals.h"
 #include <signal.h>
+#include <ctype.h>
+
+
+
+/* better blank line detection for usenet headers */
+
+int is_blank_line(const char *line) {
+    if (!line) return 1;
+    while (*line) {
+        if (!isspace((unsigned char)*line))
+            return 0;
+        line++;
+    }
+    return 1;
+}
 
 /*
  * display_header - displays textheader
@@ -1031,7 +1046,7 @@ display_text(int conf, long num, int stack, int dtype)
     struct TEXT_BODY *tb;
     struct COMMENT_LIST *cl, *tmpcl, *savedcl;
     char *survey_reply = NULL;  /* modified on 2025-07-12, PL */
-    
+
     rot = Rot13;
     Rot13 = 0;
     if (num == 0) {
@@ -1085,31 +1100,72 @@ display_text(int conf, long num, int stack, int dtype)
     if (th->author) {
         display_header(th, 0, type, dtype, NULL);
     } else {
-        tb = te.body;
-        while (tb) {
-            if ((ptr = strstr(tb->line, MSG_EMFROM)) != NULL)
-                break;
-            else if ((ptr = strstr(tb->line, MSG_EMFROM2)) != NULL)
-                break;
-            else if ((ptr = strstr(tb->line, MSG_EMFROM3)) != NULL)
-                break;
+        /* Rewritten 2025-07-09 to avoid segfault if author = 0 */
+	tb = te.body;
+ptr = NULL;
+char *tmp = NULL;  // <- this was missing before
+
+// Look for From-line variants
+while (tb) {
+    if ((ptr = strstr(tb->line, MSG_EMFROM)) != NULL) {
+        ptr += strlen(MSG_EMFROM);
+        break;
+    } else if ((ptr = strstr(tb->line, MSG_EMFROM2)) != NULL) {
+        ptr += strlen(MSG_EMFROM2);
+        break;
+    } else if ((ptr = strstr(tb->line, MSG_EMFROM3)) != NULL) {
+        ptr += strlen(MSG_EMFROM3);
+        break;
+    } else if ((ptr = strstr(tb->line, MSG_EMFROM4)) != NULL) {
+        ptr += strlen(MSG_EMFROM4);
+        break;
+    } else if ((ptr = strstr(tb->line, MSG_EMFROM5)) != NULL) {
+        ptr += strlen(MSG_EMFROM5);
+        break;
+
+    }
+    tb = tb->next;
+}
+
+if (!ptr || strlen(ptr) == 0) {
+    snprintf(emau, sizeof(emau), "Unknown sender");
+    debuglog("WARNING: Could not extract 'From' address. Using fallback 'Unknown sender'", 2);
+    
+} else {
+    strncpy(emau, ptr, LINE_LEN - 1);
+    emau[LINE_LEN - 1] = '\0';  // Ensure null termination
+
+    // Strip trailing newline or whitespace
+    tmp = strchr(emau, '\n');
+    if (tmp) *tmp = '\0';
+
+    
+}
+
+    
+
+
+
+
+
+    if (!Header && te.body) {
+    tb = te.body;
+
+
+
+
+    while (tb) {
+        if (is_blank_line(tb->line)) {
+            bypass++;  // count the blank line too
             tb = tb->next;
+            break;
         }
-        ptr = ptr + strlen(MSG_EMFROM);
-        strcpy(emau, ptr);
-        if (!Header) {
-            tb = te.body;
-            while (1) {
-                if (!strlen(tb->line))
-                    break;
-                else {
-                    bypass++;
-                    tb = tb->next;
-                }
-            }
-            bypass++;
-        }
-        th->size -= bypass;
+        bypass++;
+        tb = tb->next;
+    }
+}
+
+   th->size -= bypass;
         display_header(th, 0, type, dtype, emau);
         strcpy(aname, emau);
     }
@@ -1523,7 +1579,6 @@ list_subj(char *str)
         if (Current_conf) {
             sprintf(fname, "%s/%d/%ld", SKLAFF_DB, Current_conf, current_text);
         } else {
-        /* sprintf(fname, "%s/%ld", Mbox, current_text); */
            snprintf(fname, sizeof(fname), "%s/%ld", Mbox, current_text);  /* modified on 2025-07-12, PL */
         }
         if ((fd = open_file(fname, OPEN_QUIET)) != -1) {
@@ -1868,7 +1923,6 @@ save_text(char *fname, struct TEXT_HEADER * th, int conf)
             return -1L;
         }
 
-     /* sprintf(textfile, "%s%ld", confdir, ce.last_text); */
         snprintf(textfile, sizeof(textfile), "%.240s%ld", confdir, ce.last_text); /* modified on 2025-07-12, PL */
 
         if ((fdoutfile = open_file(textfile,
