@@ -490,7 +490,7 @@ line_ed(char *fname, struct TEXT_HEADER * th, int edit_text, int allow_say, int 
                         if (Current_conf)
                             sprintf(newname, "%s/%d/%ld", SKLAFF_DB,
                                 Current_conf, th->comment_num);
-                        else                        
+                        else                       
 			    snprintf(newname, sizeof(newname), "%.60s/%ld", Mbox, th->comment_num); /* modified on 2025-07-12, PL */
                         fd = open_file(newname, 0);
                         buf = read_file(fd);
