@@ -620,14 +620,14 @@
 #define MSG_INLOGIN	"Inloggningsnamn : "
 #define MSG_INPASSWD	"|nskat l|senord        : "
 #define MSG_INMODEM	"Modempools-tillg}ng    : "
-#define MSG_INPOST	"E-postadress      : " /* Upcoming feature : ask for e-mail address in sklaffacct 2025-07-14 PL*/
+#define MSG_INPOST	"E-postadress      : "
 #define MSG_INTELE	"Telefonnummer     : "
 #define MSG_ACCAPP	"Kontoans|kning: "
 #define MSG_INSNAME	"Namn   : "
 #define MSG_INSLOGIN	"\nlogin  : "
 #define MSG_INSPASSWD	"\npasswd : "
 #define MSG_INSMODEM	"\nModem  : "
-#define MSG_INSPOST	"\nE-post : " /* Upcoming feature : ask for e-mail address in sklaffacct 2025-07-14 PL*/
+#define MSG_INSPOST	"\nE-post : "
 #define MSG_INSTELE	"\nTelefon: "
 #define MSG_APPLIED	"Din ans|kan {r registrerad.\nV{lkommen }ter.\n\n"
 #define MSG_UIDINUSE	"Inloggningsnamn kan ej anv{ndas. V{nligen v{lj annat."

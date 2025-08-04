@@ -1952,20 +1952,20 @@ cmd_mail(char *args)
             output("\n");
             return 0;
         }
-        if (line_ed(fname, &th, uid, 1, 0, NULL, mailrec) == NULL) {
+        if (line_ed(fname, &th, uid, 1, 0, NULL, mailrec) == NULL) {        /* Article deleted */
             output("\n%s\n\n", MSG_TEXTREM);
             return 0;
         }
         if (mailuid) {
             if (save_text(fname, &th, conf) == -1) {
-                output("\n%s\n\n", MSG_CONFMISSING);
+                output("\n%s\n\n", MSG_CONFMISSING);          /* Panic, conference missing, shouldn't happen */
                 return -1;
             }
             output("%s\n\n", MSG_SAVED);
         } else {
             snprintf(cmdline, sizeof(cmdline), "%s %s", MAILPRGM, mailrec);
             if ((pipe = (FILE *) popen(cmdline, "w")) == NULL) {
-                output("%s\n\n", MSG_NOMAIL);
+                output("%s\n\n", MSG_NOMAIL);                     /* Cannot exec mailprgm. */
                 return -1;
             }
             if ((fd = open_file(fname, 0)) == -1) {
@@ -4207,8 +4207,8 @@ cmd_upload(char *args)
 
        
 
-fprintf(stderr, "Executing: %s %s\n\n\n", UPLOADPRGM, ULOPT1);   	/* debugging */
-fprintf(stderr, "EUID: %d\n", getuid()); 			/* Debug: Check the effective user ID */
+/* fprintf(stderr, "Executing: %s %s\n\n\n", UPLOADPRGM, ULOPT1); */  	/* debugging */
+/* fprintf(stderr, "EUID: %d\n", getuid()); */			/* Debug: Check the effective user ID */
 
     char *args[] = {UPLOADPRGM, ULOPT1, NULL};  			/* Added by PL 2025-07-17 */
     execvp(UPLOADPRGM, args); 						/* Replaces execl() that was broken. PL 2025-07-17 */

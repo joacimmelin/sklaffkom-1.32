@@ -39,7 +39,6 @@ struct RESSHOW {
 
 /* static int resshowcompare(struct RESSHOW *, struct RESSHOW *); */
 static int parse_survey_line(char *);
-/* static int input_survey_quest(char *, char *, int, int); */
 static int input_survey_quest(LINE lin, LINE reply, int qtype, int flag); /* modified on 2025-07-12, PL */
 
 int

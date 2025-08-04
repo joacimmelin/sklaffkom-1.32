@@ -379,7 +379,6 @@ set_from(int uid, char *value)
         }
     }
 
- /* strncpy(ae.from, value, FROM_FIELD_LEN); */
     strlcpy(ae.from, value, FROM_FIELD_LEN);  /* modified on 2025-07-12, PL */
     nbuf = replace_active(&ae, oldbuf);
     /* critical();  Shouldn't this be here? /OR 98-04-11 */

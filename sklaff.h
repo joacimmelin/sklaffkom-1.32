@@ -80,7 +80,7 @@
 
 #define UTMP_REC 	"/var/run/utmp"
 #define MAIL_LIB	"/var/mail"
-#define NEWS_SPOOL	"/var/spool/news"
+#define NEWS_SPOOL	"/var/spool/news/articles"
 #define NEWS_GROUPS	"/var/lib/news/active"
 
 /* Programs used by SklaffKOM */
