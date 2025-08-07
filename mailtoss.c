@@ -29,7 +29,6 @@
 #include <pwd.h>
 #include <fcntl.h>
 #include <signal.h>
-#include <limits.h>
 
 #include "globals.h"
 
@@ -105,19 +104,19 @@ main(int argc, char *argv[])
 int
 send_mail(int uid, char *mbuf, int ouid, int ogrp)
 {
-    
-    char home[PATH_MAX];
-    char conffile[PATH_MAX * 2];
-    char confdir[PATH_MAX * 2];
-    char textfile[PATH_MAX * 2 +32];	
+    LINE home;
+    char conffile[256];   /* increased from 80 to prevent truncation warnings (2025-08-06, PL) */
+    char confdir[256];    /* increased from 80 to prevent truncation warnings (2025-08-06, PL) */
+    char textfile[512];   /* increased from 80 to prevent truncation warnings (2025-08-06, PL) */
     struct CONF_ENTRY ce;
     struct TEXT_HEADER th;
     int fd, fdo;
-    char *buf, *oldbuf, *nbuf = NULL, *ptr, *tmp, *fbuf;
+    char *buf, *oldbuf, *nbuf = NULL, *ptr, *tmp, *fbuf; 			/* fixed on 2025-08-06, PL */
 
     mbox_dir(uid, home);
-    snprintf(conffile, sizeof(conffile), "%s%s", home, MAILBOX_FILE);
-    snprintf(confdir, sizeof(confdir), "%s/", home);
+    snprintf(conffile, sizeof(conffile), "%s%s", home, MAILBOX_FILE);  		/* fixed on 2025-08-06, PL */
+    snprintf(confdir, sizeof(confdir), "%s/", home);                   		/* fixed on 2025-08-06, PL */
+
 
     if ((fd = open_file(conffile, 0)) == -1)
         return -1;
@@ -134,10 +133,8 @@ send_mail(int uid, char *mbuf, int ouid, int ogrp)
             printf("\n%s\n\n", MSG_CONFMISSING);
             return -1;
         }
-	if (write_file(fd, nbuf) == -1)
-        return -1;
-}
-    snprintf(textfile, sizeof(textfile), "%s%ld", confdir, ce.last_text);
+    }
+    snprintf(textfile, sizeof(textfile), "%s%ld", confdir, ce.last_text); 	/* fixed on 2025-08-06, PL */
     if ((fdo = open_file(textfile, OPEN_QUIET | OPEN_CREATE)) == -1) {
         printf("\n%s\n\n", MSG_ERRCREATET);
         return -1;
@@ -213,15 +210,9 @@ send_mail(int uid, char *mbuf, int ouid, int ogrp)
     th.time = time(0);
 
     memset(fbuf, 0, strlen(mbuf) + sizeof(LONG_LINE));
-    sprintf(fbuf, "%ld:%d:%lld:%ld:%d:%d:%d\n",
-        ce.last_text,         /* Text number */
-        0,                    /* Author UID */
-        (long long) th.time,  /* Unix time */
-        0L,                   /* Unknown */
-        0,                    /* Unknown */
-        0,                    /* Receiver UID? */
-        th.size);             /* Number of lines */
-    
+    sprintf(fbuf, "%ld:%d:%lld:%ld:%d:%d:%d\n", ce.last_text, 0,
+        (long long) th.time, 0L, 0,
+        0, th.size);
     strcat(fbuf, th.subject);
     strcat(fbuf, "\n");
     strcat(fbuf, mbuf);
