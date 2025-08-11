@@ -1,13 +1,15 @@
-Utdrag från ett möte i systemet SöderKOM som beskriver SklaffKOM.
-
 Allmänt
 -------
-SklaffKOM utvecklades under slutet av 1992 av några glada entusiaster
-och har sedan dess utvecklats mer eller mindre konstant med nyheter.
-Programmet kan köras under de flesta UNIX-miljöer och finns på svenska
-och engelska.  SklaffKOM lyder under GNU-licens.  I det här mötet
-presenteras hur programmet fungerar samt vad som skiljer det från
-andra liknande system.
+SklaffKOM utvecklades primärt under slutet av 1992 fram till 1994 
+av några glada entusiaster och har sedan dess utvecklats mer 
+eller mindre konstant med nyheter. Programmet kan köras under 
+de flesta UNIX-miljöer och finns på svenska och engelska.  
+
+SklaffKOM lyder under GNU-licens.  I den här texten presenteras 
+hur programmet fungerar samt vad som skiljer det från andra 
+liknande system.
+
+För mer information om Sklaffkom, vänligen besök https://www.sklaffkom.se.
 
 Möten
 -----
