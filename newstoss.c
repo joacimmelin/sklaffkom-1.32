@@ -273,7 +273,7 @@ main(int argc, char *argv[])
         rf = rf->next;
         free(top);
     }
-/*    if (first) notify_all_processes(SIGNAL_NEW_TEXT); */
+ if (first) notify_all_processes(SIGNAL_NEW_TEXT);
     printf("Now done");
     printf("\n");
     exit(0);
