@@ -61,7 +61,7 @@ unlock(int fd)
         printf("\nError %d at flock() on file: %s. Please note this error and inform us.\n",
                errno, filename);
     } else {
-	/* Optional debug logging. Can be commented out if it produces too much output, but I'll leave it here for now */
-        debuglog("Unlocked: %s\n", 20);
+      /* Optional debug logging that turned out to be broken, needs fix sometime (prob next time file unlocking becomes an issue.. :) PL 2025*/
+      /* debuglog("Unlocked: %s\n", 20); */
     }
 }

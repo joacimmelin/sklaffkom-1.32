@@ -31,6 +31,8 @@
 #include <sys/stat.h>
 #include <signal.h>
 #include <errno.h>
+#include <limits.h>	/* for safer handling of .plan */
+#include <sys/time.h>   /* for utimes() */
 #if defined(LINUX) || defined(__linux__)
 #include <bsd/string.h>  // Required for strlcpy on Linux via libbsd
 #endif
@@ -1128,11 +1130,10 @@ read_sklaffrc(int uid)
         char *heading;
     } headptr[100];             /* Limits maximum of headings */
 
-    char *buf, *oldbuf;
     char *startptr;
     char *ptr;
-    char lastchar, lasttwo;
-    int state, len, i;
+    char *buf = NULL, *oldbuf = NULL;
+    int state = 0, len = 0, i = 0, lastchar = 0, lasttwo = 0;   /* -Wmaybe-uninitialized warnings silenced */
 
     if ((kaffer = (struct SKLAFFRC *) malloc(sizeof(struct SKLAFFRC)))
         == (struct SKLAFFRC *) 0) {
@@ -1157,7 +1158,8 @@ read_sklaffrc(int uid)
     headptr[16].heading = "paydate";
     headptr[17].heading = "sig";
     headptr[18].heading = "url";
-    headptr[19].heading = "";
+    headptr[19].heading = "Numlines"; /* 2025-08-10, PL: we now set terminal height in sklaffrc on a per-user basis */
+    headptr[20].heading = "";
 
     memset(kaffer->user.adress, 0, 80);
     memset(kaffer->user.postnr, 0, 80);
@@ -1294,7 +1296,11 @@ read_sklaffrc(int uid)
                                 strcpy(kaffer->user.email2, entry);
                             if (strcmp(headptr[i].heading, "url") == 0)
                                 strcpy(kaffer->user.url, entry);
-
+			    if (strcmp(headptr[i].heading, "Numlines") == 0) {
+    				long v = strtol(entry, NULL, 10);
+			    if (v >= 10 && v <= 200)            /* sane range limit */
+			        Numlines = (int)v;
+				}
                             memset(entry, 0, 4096);
                         }
                         state = 1;
@@ -1307,7 +1313,7 @@ read_sklaffrc(int uid)
                 }
             }
         }
-        free(oldbuf);
+        if (oldbuf) free(oldbuf);
     }
     return kaffer;
 
@@ -1325,9 +1331,8 @@ write_sklaffrc(int uid, struct SKLAFFRC *kaffer)
     char user_home[255];
     char file1[255];
     char *outbuf, *out2;
-    char *function_name = "write_sklaffrc";
-    struct passwd *p;
-    int fd, fd2;
+    char *function_name = "write_sklaffrc";    
+    int fd;  /* fd2 moved to bottom - not used on linux PL 2025-08-10 */
 
     outbuf = (char *) malloc(24000);    /* write_buf frees the memory,yes? */
     out2 = (char *) malloc(24000);      /* write_buf frees the memory,yes? */
@@ -1458,36 +1463,38 @@ write_sklaffrc(int uid, struct SKLAFFRC *kaffer)
 
 
 #ifndef LINUX
+/* Mirror sig to ~/.plan (at our best efforts)
+ * We only update if the file already exists and is writable.
+ * Failures are logged and non-fatal. 2025-08-10 PL
+ */
+{
+    struct passwd *p = getpwuid(Uid);
+    if (!p || !p->pw_dir || !*p->pw_dir) {
+        debuglog("Skipping .plan: getpwuid() failed or empty home", 20);
+    } else {
+        char plan[PATH_MAX];
+        snprintf(plan, sizeof(plan), "%s/.plan", p->pw_dir);
 
- /*
-* The feature below does not work well with mordern Linux (Ubuntu 24.04),
-* due to how permission work slightly different than in FreeBSD. However,
-* I can't find a single other instance in the code where this .plan-file
-* is being used, so I suppose it's a planned feature that never came about.
-* For historical reasons, I've kept it as it is - with a flag to only
-* execute it if we're not on Linux 2025-07-10 PL
-*/
-
-    /* Mirror sig to .plan file */
-
-    p = getpwuid(Uid);
-    strcpy(user_home, p->pw_dir);
-    memcpy(file1, user_home, strlen(user_home) + 1);
-    strcat(file1, "/.plan");
-    if ((fd2 = create_file(file1)) <= 0) {
-        sys_error(function_name, 1, "create_file");
-        free(kaffer);
-        return -1;
+        /* Only proceed if file exists and is writable by sklaffuser */
+        if (access(plan, F_OK) != 0) {
+            debuglog("Skipping .plan: file does not exist", 20);
+        } else if (access(plan, W_OK) != 0) {
+            debuglog("Skipping .plan: file not writable", 20);
+        } else {
+            int fd2 = create_file(plan);
+            if (fd2 < 0) {
+                sys_error(function_name, 1, "create_file(.plan)");
+            } else {
+                critical();
+                if (write_file(fd2, out2) == -1) {
+                    sys_error(function_name, 2, "write_file(.plan)");
+                }
+                close_file(fd2);
+                non_critical();
+            }
+        }
     }
-    critical();
-    if (write_file(fd2, out2) == -1) {
-        sys_error("function_name", 2, "write_file");
-        free(kaffer);
-        return -1;
-    }
-    close_file(fd2);
-    non_critical();
-
-    return 0;
+}
 #endif
+return 0;
 }

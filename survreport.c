@@ -198,7 +198,9 @@ post_survey_result(char *resultbuf, struct TEXT_HEADER * th, int conf, int ouid,
     if (close_file(fdoutfile) == -1) {
         return -1L;
     }
-    chown(textfile, ouid, ogrp);
+    if (chown(textfile, ouid, ogrp) == -1) {			/* 2025-08-10 PL compiler silencer */
+    /* maybe perror("chown"); or debuglog(...) */
+    }
 
     if (write_file(fd, nbuf) == -1) {
         return -1L;

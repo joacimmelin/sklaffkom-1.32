@@ -49,7 +49,10 @@ prog_name(char *pname)
         strcpy(absname, pw->pw_shell);
         return absname;
     }
-    getcwd(cwd, HUGE_LINE_LEN);
+    if (getcwd(cwd, HUGE_LINE_LEN) == NULL) {
+    perror("getcwd"); /* keeps linux compiler happy 2025-07-25, PL */
+    return NULL;
+    }
 
     if (*pname == '/') {
         strcpy(absname, pname);

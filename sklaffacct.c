@@ -45,9 +45,11 @@ main(int argc, char *argv[])
     tty_raw();
     
     if ((fd = open_file(ACCT_FILE, OPEN_QUIET)) == -1) {
+	printf("[DEBUG] - Cannot open acct-file, inform Sysop!");
         goto cont;
     }
     if ((buf = read_file(fd)) == NULL) {
+        printf("[DEBUG] - Cannot read acct-file, inform Sysop!");
         goto cont;
     }
     
@@ -105,7 +107,12 @@ errlogin:
     strcat(outbuf, "\n");
     sprintf(fname, "/tmp/%d", getpid());
     fd = open_file(fname, OPEN_QUIET | OPEN_CREATE);
-    write(fd, outbuf, strlen(outbuf));
+    {
+    ssize_t n__ = write(fd, outbuf, strlen(outbuf));
+    if (n__ < 0) {
+        /* TODO: perror("write"); */
+    }
+}
     
  /* printf("Closing file: %s\n", fname); */		/* debug */
     close_file(fd);
@@ -117,13 +124,21 @@ errlogin:
         close(2);
         (void) open(fname, O_RDONLY);
         (void) open("/dev/null", O_WRONLY);
-        (void) dup(1);
+        {						/* Small tweak to keep linux compiler happy PL 2025-08-10 */
+        int d__ = dup(1);
+        if (d__ >= 0) close(d__);
+    }
         execl(MAILPRGM, MAILPRGM, SKLAFF_ACCT, (char *) 0);
     }
     unlink(fname);
     fd = open_file(ACCT_LOG, OPEN_QUIET | OPEN_CREATE);
     lseek(fd, 0L, 2);
-    write(fd, outbuf, strlen(outbuf));  
+    {
+    ssize_t n__ = write(fd, outbuf, strlen(outbuf));
+    if (n__ < 0) {
+        /* TODO perror("write"); in the future PL 2025-08-10 */
+    }
+}
  /* printf("Closing file: %s\n", ACCT_LOG); */		/* debug */
     close_file(fd);
     output(MSG_APPLIED);

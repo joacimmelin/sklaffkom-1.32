@@ -29,8 +29,10 @@
 #include <pwd.h>
 #include <fcntl.h>
 #include <signal.h>
-
+#include <unistd.h>
 #include "globals.h"
+#include <stdlib.h>
+#include <errno.h>   /* ENOENT for graceful "no mail" exit (2025-08-13, PL) */
 
 int send_mail(int uid, char *mbuf, int ouid, int ogrp);
 
@@ -40,7 +42,7 @@ main(int argc, char *argv[])
     LINE username, mbox;
     struct passwd *pw;
     char *ptr, *ptr2, *buf, *oldbuf;
-    int uid, fd;
+    int uid, fd = -1; /* init avoids -Wmaybe-uninitialized (2025-08-13, PL) */
 
     if (argc != 2) {
         printf("\n%s\n\n", MSG_MTINFO);
@@ -59,8 +61,16 @@ main(int argc, char *argv[])
         exit(0);
 
     sprintf(mbox, "%s/%s", MAIL_LIB, argv[1]);
+    /* Graceful exit if the spool is empty (common under cron - not a real error). */
+    if (access(mbox, R_OK) == -1) {
+        if (errno == ENOENT) {
+            return 0; /* no mail -- not an error (2025-08-13, PL) */
+        }
+    }
     if ((fd = open_file(mbox, 0)) == -1)
         exit(1);
+    if (fd < 0) /* belt & suspenders in case of weird flow */
+        return 1;
     if ((buf = read_file(fd)) == NULL)
         exit(1);
     oldbuf = buf;
@@ -210,9 +220,16 @@ send_mail(int uid, char *mbuf, int ouid, int ogrp)
     th.time = time(0);
 
     memset(fbuf, 0, strlen(mbuf) + sizeof(LONG_LINE));
-    sprintf(fbuf, "%ld:%d:%lld:%ld:%d:%d:%d\n", ce.last_text, 0,
-        (long long) th.time, 0L, 0,
-        0, th.size);
+    sprintf(fbuf, "%ld:%d:%lld:%ld:%d:%d:%d\n",
+        ce.last_text,         /* Text number */
+        0,                    /* Author UID */
+        (long long) th.time,  /* Unix time */
+        0L,                   /* Unknown */
+        0,                    /* Unknown */
+        0,                    /* Receiver UID? */
+        th.size);             /* Number of lines */
+
+
     strcat(fbuf, th.subject);
     strcat(fbuf, "\n");
     strcat(fbuf, mbuf);
@@ -222,7 +239,9 @@ send_mail(int uid, char *mbuf, int ouid, int ogrp)
     if (close_file(fdo) == -1)
         return -1;
 
-    chown(textfile, ouid, ogrp);
+    if (chown(textfile, ouid, ogrp) == -1) { /* Error handling PL 2025-08-10  */
+    /* TODO perror("chown"); debuglog(...); */
+    }
 
     if (write_file(fd, nbuf) == -1)
         return -1;

@@ -102,7 +102,7 @@ input(char *in_str, char *out_str, int max_len, int noecho, int wrap, int hist)
     char *p, *i, *space, *ptr;
     unsigned char c, outc;
 
-    Lines = 1;
+    unsigned char u8e[2] = {0,0}; int u8e_len = 0; Lines = 1;
     hptr = Comtop;
     ltop = Comtop;
     if (strlen(in_str) >= max_len) {
@@ -140,6 +140,25 @@ input(char *in_str, char *out_str, int max_len, int noecho, int wrap, int hist)
             fflush(stdout);
         }
         outc = c;
+        /* 2025-08-10, PL: minimal UTF-8 mapping for Swedish å ä ö Å Ä Ö */
+        if (c == 0xC3) {
+            int c2 = getc(stdin);
+            if (c2 != EOF) {
+                unsigned char u2 = (unsigned char)c2;
+                switch (u2) {
+                    case 0xA5: c = '}'; outc = c; u8e[0]=0xC3; u8e[1]=u2; u8e_len=2; break; /* å */
+                    case 0xA4: c = '{'; outc = c; u8e[0]=0xC3; u8e[1]=u2; u8e_len=2; break; /* ä */
+                    case 0xB6: c = '|'; outc = c; u8e[0]=0xC3; u8e[1]=u2; u8e_len=2; break; /* ö */
+                    case 0x85: c = ']'; outc = c; u8e[0]=0xC3; u8e[1]=u2; u8e_len=2; break; /* Å */
+                    case 0x84: c = '['; outc = c; u8e[0]=0xC3; u8e[1]=u2; u8e_len=2; break; /* Ä */
+                    case 0x96: c = 0x5c; outc = c; u8e[0]=0xC3; u8e[1]=u2; u8e_len=2; break; /* Ö -> backslash */
+                    default:
+                        ungetc(c2, stdin);
+                        break;
+                }
+            }
+        }
+
         if (c == 134)
             c = '}';
         else if (c == 132)
@@ -186,7 +205,7 @@ input(char *in_str, char *out_str, int max_len, int noecho, int wrap, int hist)
                 if (noecho) {
                     putc('*', stdout);
                 } else {
-                    putc(outc, stdout);
+                    if (u8e_len == 2) { fwrite(u8e, 1, 2, stdout); u8e_len = 0; } else { putc(outc, stdout); }
                 }
                 len++;
             } else {
@@ -299,7 +318,7 @@ input_extended(char *in_str, char *out_str, int max_len, int noecho, int wrap, i
 {
     int len, hptr, ltop;
     unsigned char c, outc;
-    char *p, *i, *space, *ptr;
+    unsigned char u8e[2] = {0,0}; int u8e_len = 0; char *p, *i, *space, *ptr;
 
     Lines = 1;
     hptr = Comtop;
@@ -339,6 +358,26 @@ input_extended(char *in_str, char *out_str, int max_len, int noecho, int wrap, i
             fflush(stdout);
         }
         outc = c;
+        /* 2025-08-10, PL: minimal UTF-8 mapping for Swedish å ä ö Å Ä Ö */
+        if (c == 0xC3) {
+            int c2 = getc(stdin);
+            if (c2 != EOF) {
+                unsigned char u2 = (unsigned char)c2;
+                switch (u2) {
+                    case 0xA5: c = '}'; outc = c; u8e[0]=0xC3; u8e[1]=u2; u8e_len=2; break; /* å */
+                    case 0xA4: c = '{'; outc = c; u8e[0]=0xC3; u8e[1]=u2; u8e_len=2; break; /* ä */
+                    case 0xB6: c = '|'; outc = c; u8e[0]=0xC3; u8e[1]=u2; u8e_len=2; break; /* ö */
+                    case 0x85: c = ']'; outc = c; u8e[0]=0xC3; u8e[1]=u2; u8e_len=2; break; /* Å */
+                    case 0x84: c = '['; outc = c; u8e[0]=0xC3; u8e[1]=u2; u8e_len=2; break; /* Ä */
+                    case 0x96: c = 0x5c; outc = c; u8e[0]=0xC3; u8e[1]=u2; u8e_len=2; break; /* Ö -> backslash */
+                    default:
+                        /* not a Swedish letter; push back for normal handling */
+                        ungetc(c2, stdin);
+                        break;
+                }
+            }
+        }
+
         if (c == 134)
             c = '}';
         else if (c == 132)
@@ -385,7 +424,7 @@ input_extended(char *in_str, char *out_str, int max_len, int noecho, int wrap, i
                 if (noecho) {
                     putc('*', stdout);
                 } else {
-                    putc(outc, stdout);
+                    if (u8e_len == 2) { fwrite(u8e, 1, 2, stdout); u8e_len = 0; } else { putc(outc, stdout); }
                 }
                 len++;
             } else {

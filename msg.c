@@ -48,7 +48,7 @@ add_to_mlist(struct MSG_ENTRY * me)
 void
 list_mlist(int max, int type_filter)
 {
-    int count, i, r = 0, l;
+    int count, i, r = 0; /* we must declare "l" later to silence warning when compiling for ENGLISH language 2025-08-11 PL */
     struct MSG_LIST *current;
     struct MSG_ENTRY **me;
     LINE name;
@@ -88,9 +88,9 @@ list_mlist(int max, int type_filter)
         case MSG_I:
             r = output("%s %s\n", name, me[i]->msg);
             break;
-        case MSG_MY:
-            l = strlen(name);
+        case MSG_MY: {            
 #ifdef SWEDISH
+            size_t l = strlen(name);              /* declared now only for Swedish */
             if (name[l - 1] == 's')
                 r = output("%s %s\n", name, me[i]->msg);
             else
@@ -99,6 +99,7 @@ list_mlist(int max, int type_filter)
             r = output("%s's %s\n", name, me[i]->msg);
 #endif
             break;
+        }
         case MSG_SMS:
             r = output("%s\n", me[i]->msg);
             break;
@@ -137,7 +138,7 @@ newmsg(int tmp)
 int
 display_msg(int num)
 {
-    int nl, l, r, fd, x;
+    int nl, r, fd, x; /* Again, we declare l later 2025-08-11 PL */
     char *oldbuf, *buf;
     sigset_t sigmask, oldsigmask;
     LINE name, msgfile;
@@ -229,8 +230,9 @@ display_msg(int num)
             if (Special)
                 output("#");
             user_name(me.num, name);
-            l = strlen(name);
+            {
 #ifdef SWEDISH
+            size_t l = strlen(name);
             if (name[l - 1] == 's')
                 r = output("%s %s\n", name, me.msg);
             else
@@ -238,6 +240,7 @@ display_msg(int num)
 #else
             r = output("%s's %s\n", name, me.msg);
 #endif
+            }
             if (r == -1) {
                 break;
             }

@@ -1,0 +1,20 @@
+Arguments:
+<number-of-lines>
+
+Description:
+The command allows you to set a screen length that matches your
+terminal. Normally not needed as the screen length should
+be automatically detected, but in rare cases this does
+not work, and then it is automatically set to 24.
+
+If you have already changed your screen length, but want to return to
+automatic detection, enter either '0' or 'A'-
+
+If you only give the command "Change screen length" you will be guided,
+if you already know what length you want, you can enter it as an
+argument instead.
+
+Example:
+'Change screen length' - helps you choose the right length.
+'Change screen length 24' - sets the screen length to 24.
+'Change screen length 0' - turns on automatic detection.

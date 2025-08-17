@@ -49,6 +49,7 @@ const struct COMMAND_ENTRY command_list[] = {
     { "cmd_mail", cmd_mail, },
     { "cmd_mod_login", cmd_mod_login, },
     { "cmd_mod_note", cmd_mod_note, },
+    { "cmd_mod_numlines", cmd_mod_numlines, },
     { "cmd_mod_pinfo", cmd_mod_pinfo, },
     { "cmd_mod_sig", cmd_mod_sig, },
     { "cmd_mod_timeout", cmd_mod_timeout, },

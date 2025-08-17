@@ -122,7 +122,6 @@ main(int argc, char *argv[])
     //printf("I think we're all set now.\n");
     //printf("Press ENTER to continue\n");
     //getchar();
-
     strcpy(ng, argv[1]);
     ptr = NULL;
     char *line = strtok(buf, "\n");
@@ -136,7 +135,7 @@ main(int argc, char *argv[])
     }
 
     if (!ptr) {
-    fprintf(stderr, "[ERROR] Group '%s' not found in active file!\n", argv[1]);
+    fprintf(stderr, "[ERROR] Group '%s' not found in active-file!\n", argv[1]);
     exit(1);
     }
 
@@ -273,7 +272,7 @@ main(int argc, char *argv[])
         rf = rf->next;
         free(top);
     }
- if (first) notify_all_processes(SIGNAL_NEW_TEXT);
+    if (first) notify_all_processes(SIGNAL_NEW_TEXT);
     printf("Now done");
     printf("\n");
     exit(0);
