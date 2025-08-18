@@ -4,10 +4,10 @@ So many changes here, sorry only in Swedish for now :
 
 Kända buggar :
 
-Lite skakig UTF8 i editorn fortfarande - väldigt inkonsekvent så det är
-svårt att felsöka, men det pågår...
+Lite skakig UTF8 i editorn fortfarande - väldigt inkonsekvent så det är svårt att felsöka, men det pågår...
 Skräptecken uppstår ibland vid tex signal när nån annan loggar in, skall undersökas.
 Kommandot "hjälp" funkar sådär, snart åtgärdart. Debug avslaget igen ;).
+
 Nya funktioner :
 
 UTF-8 stöds och aktiveras genom flagga (i nuläget avstängd "by default").
@@ -15,6 +15,7 @@ Snyggare prompt (enligt mig) - kan numera ändras i sklaff.h (#define PROMPT).
 Skärmlängden ska nu detekteras automatiskt och inställningen behålls session ut. Funkar inte detta finns även ett nytt kommando nedan.
 Nytt kommando - Ändra skärmlängd (OBS! glöm ej att kopiera /etc/parse.eng och /etc/parse.swe, samt hjälpfilerna "mod_numlines" för respektive språk (även nethack ligger bland hjälpfilerna nu).
 Färger stöds via ny flagga (ANSI), dock är ej färgläggningen färdig (tog mig friheten att låna delta citys färgschema sålänge hehe).
+
 Buggfixar :
 
 fixat citering vid usenet-inlägg (tror jag).
@@ -27,6 +28,7 @@ Basen "krashar" inte längre om .plan-fil saknas.
 Vi skapar nu usenet header i utgående post på ett mer robust sätt för att slippa fel i inews.
 Fixade en egen bugg jag själv infört eftersom compilern klagade över unused variables om news-postning var avstängd.
 Replace conf gav ibland segfault när man mailade användare utanför sklaffkom, nu fixat.
+
 Övrigt :
 
 uppdaterat versionsnumret till 1.33-beta2.
