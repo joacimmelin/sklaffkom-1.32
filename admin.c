@@ -70,13 +70,13 @@ display_prompt(char *p, char *oldp, int type)
         }
     }
     if (type == 0) {
-        output("%s - ", p);
+        output("%s " PROMPT , p);
     } else if (strcmp(oldp, p)) {
         y = strlen(oldp) + 3;
         for (x = 0; x < y; x++) {
             output("\b \b");
         }
-        output("\007%s - ", p);
+        output("\007%s " PROMPT , p);
     }
     Lines = 1;
     return p;
@@ -147,16 +147,23 @@ display_welcome(void)
         Timeout = 0;
     }
 
-    output("%s%s, %s.\n\n", MSG_CPY1, sklaff_version, MSG_LANG);
-    output(MSG_CPY2);
-    output(MSG_CPY3);
-    output(MSG_CPY4);
-    output(MSG_CPY4a);
-    output(MSG_CPY5);
-    output(MSG_CPY6);
-    output(MSG_CPY7);
-    output(MSG_CPY8);
-    output(MSG_CPY9);
+//  output("%s%s, %s.\n\n", MSG_CPY1, sklaff_version, MSG_LANG);
+//  output_ansi_fallback(YELLOW "%s%s, %s.\n\n", MSG_CPY1, sklaff_version, MSG_LANG DOT, "%s%s, %s.\n\n", MSG_CPY1, sklaff_version, MSG_LANG);
+    output_ansi_fmt(YELLOW "%s%s, %s.\n\n" DOT, "%s%s, %s.\n\n", MSG_CPY1, sklaff_version, MSG_LANG);
+//    output("NO CHARACTER CONVERSIONS IS HAPPENING NOW, ALSO THE ANSI-FLAG IS TURNED OFF, STILL THE PADDING IS AN ISSUE\n");
+//    output("AND NOW IT'S BACK... GIVING MSG_CPY2 LOTS OF EXTRA WHITE SPACES\n");
+//    output_ansi_fmt(YELLOW "%s%s, %s.\n\n" DOT, "%s%s, %s.\n\n", MSG_CPY1, sklaff_version, MSG_LANG);
+//    output("%s%s, %s.\n\n", MSG_CPY1, sklaff_version, MSG_LANG);
+    output_ansi_fallback(BLUE MSG_CPY2 DOT, MSG_CPY2);
+    output_ansi_fallback(BLUE MSG_CPY3 DOT, MSG_CPY3);
+    output_ansi_fallback(BLUE MSG_CPY4 DOT, MSG_CPY4);
+    output_ansi_fallback(BLUE MSG_CPY4a DOT,  MSG_CPY4a);;
+//    output_ansi_fallback(BLUE MSG_CPY5 DOT, MSG_CPY5);
+    output_ansi_fallback(BLUE MSG_CPY6 DOT, MSG_CPY6);
+    output_ansi_fallback(BLUE MSG_CPY7 DOT, MSG_CPY7);
+//    output(MSG_CPY8);
+//    output(MSG_CPY9);
+
 #ifdef MODEM_POOL
 #ifdef MODEM_GROUP
 #ifdef INET_GROUP
@@ -347,9 +354,15 @@ grep(int conf, char *search)
     } else {
         strlcpy(dirname, Mbox, sizeof(dirname));
     }
-    getcwd(cwd, LINE_LEN);
+    if (getcwd(cwd, LINE_LEN) == NULL) {
+    perror("getcwd");  /* modified on 2025-07-25, PL */
+    return -1;  /* modified on 2025-07-25, PL */
+    }
     found = 0;
-    chdir(dirname);
+    if (chdir(dirname) != 0) {
+    perror("chdir (to dirname)");  /* modified on 2025-07-25, PL */
+    return -1;  /* modified on 2025-07-25, PL */
+    }
 
     /* All dangerous characters must be taken out of the search string before
      * passing it on to the shell. */
@@ -376,7 +389,9 @@ grep(int conf, char *search)
             return -1;
         } else {
             while (!feof(pipe)) {
-                fgets(lineread, 80, pipe);
+                if (fgets(lineread, 80, pipe) == NULL) {	/* error handling */
+    		break;  					/* modified on 2025-07-25, PL */
+	}
                 if (!feof(pipe)) {
                     if (!found) {
                         output("\n");
@@ -395,7 +410,10 @@ grep(int conf, char *search)
         snprintf(greparg, sizeof(greparg), "%ld[0-9][0-9]", (long) curtext / 100);
     }
 
-    chdir(cwd);
+    if (chdir(cwd) != 0) {
+    perror("chdir (restore cwd)");  /* compiler silencer on linux, modified on 2025-07-25, PL */
+    return -1;  /* modified on 2025-07-25, PL */
+    }
     tty_raw();
     sig_setup();
     return found;
@@ -450,7 +468,10 @@ exec_logout(int tmp)
         unlink(tmpdir);
     }
     sprintf(tmpdir, "/tmp/%d", getpid());
-    chdir(Home);
+    if (chdir(Home) != 0) {
+    perror("chdir (Home)");  /* modified on 2025-07-25, PL due to compiler complaints */
+    return;
+    }
     rmdir(tmpdir);
 
     while (ustack) {

@@ -43,6 +43,7 @@ struct TEXT_HEADER *
 line_ed(char *fname, struct TEXT_HEADER * th, int edit_text, int allow_say, int allow_abort, int *nc, char *mailrec)
 {
     unsigned char c, c2;
+    unsigned char u8e[2] = {0,0}; int u8e_len = 0; /* UTF-8 echo buffer */
     char *space, *cptr, *j, *p, outc, lastchar, *confname;
     char *buf, *oldbuf;
     LINE waste, cmd, arg, upcasearg;
@@ -132,6 +133,25 @@ line_ed(char *fname, struct TEXT_HEADER * th, int edit_text, int allow_say, int 
             alarm(0);
             Warning = 0;
             outc = c;
+/* 2025-08-10, PL: minimal UTF-8 mapping for Swedish å ä ö Å Ä Ö -> SF7 ] [ \ } { | (echo UTF-8) */
+if (c == 0xC3) {
+    int c2tmp = getc(stdin);
+    if (c2tmp != EOF) {
+        unsigned char u2 = (unsigned char)c2tmp;
+        switch (u2) {
+            case 0xA5: c = '}'; outc = c; u8e[0]=0xC3; u8e[1]=u2; u8e_len=2; break; /* å */
+            case 0xA4: c = '{'; outc = c; u8e[0]=0xC3; u8e[1]=u2; u8e_len=2; break; /* ä */
+            case 0xB6: c = '|'; outc = c; u8e[0]=0xC3; u8e[1]=u2; u8e_len=2; break; /* ö */
+            case 0x85: c = ']'; outc = c; u8e[0]=0xC3; u8e[1]=u2; u8e_len=2; break; /* Å */
+            case 0x84: c = '['; outc = c; u8e[0]=0xC3; u8e[1]=u2; u8e_len=2; break; /* Ä */
+            case 0x96: c = 0x5c; outc = c; u8e[0]=0xC3; u8e[1]=u2; u8e_len=2; break; /* Ö -> backslash */
+            default:
+                ungetc(c2tmp, stdin); /* not a Swedish letter */
+                break;
+        }
+    }
+}
+
             if (c == 134)
                 c = '}';
             else if (c == 132)
@@ -174,7 +194,7 @@ line_ed(char *fname, struct TEXT_HEADER * th, int edit_text, int allow_say, int 
             if (c >= ' ' && c <= '~') {
                 if (len < 74) {
                     ptr->line[len] = (char) c;
-                    putc(outc, stdout);
+                    if (u8e_len == 2) { fwrite(u8e, 1, 2, stdout); u8e_len = 0; } else { putc(outc, stdout); }
                     len++;
                 } else {
                     ptr->line[len++] = (char) c;
@@ -497,61 +517,72 @@ line_ed(char *fname, struct TEXT_HEADER * th, int edit_text, int allow_say, int 
                         oldbuf = buf;
                         close_file(fd);
                         buf = get_text_entry(buf, &te);
-                        tb = te.body;
-                        if (!te.th.author) {
-                            while (1) {
-                                if (!strlen(tb->line))
-                                    break;
-                                tb = tb->next;
-                            }
-                            tb = tb->next;
-                        }
-                        qt = 0;
-                        output("\n%s\n\n", MSG_QUSE);
-                        while (tb) {
-                            output("> %s", tb->line);
-                            Lines = 1;
-                            if (!qt) {
-                                do
-                                    c2 = getc(stdin);
-                                while (c2 == 255);
-                                /* if (Strip) c2 &= 0x7f; Obsolete */
-                            } else
-                                c2 = MSG_YESANSWER;
-                            if ((c2 > 0x40) && (c2 < 0x5e))
-                                c2 = c2 + 0x20;
-                            output("\n");
-                            if (c2 == 'q')
-                                break;
-                            if (c2 == 'a') {
-                                qt = 1;
-                                c2 = MSG_YESANSWER;
-                            }
-                            if (c2 == MSG_YESANSWER) {
-                                Lines = 1;
-                                strcpy(ptr->line, "> ");
-                                strncat(ptr->line, tb->line, 71);
-                                ptr->line[73] = '\0';
-                                numlines++;
-                                Size++;
-                                if ((ptr->next = (struct EDIT_BUF *)
-                                        malloc(sizeof(struct EDIT_BUF))) ==
-                                    NULL) {
-                                    sys_error("line_ed", 2, "malloc");
-                                    return NULL;
-                                }
-                                tmpptr = ptr;
-                                ptr = ptr->next;
-                                ptr->previous = tmpptr;
-                                ptr->next = NULL;
-                                ptr->line[0] = '\0';
-                                waste[0] = '\0';
-                            }
-                            tb = tb->next;
-                        }
-                        output("\n");
-                        free_text_entry(&te);
-                        free(oldbuf);
+            		tb = te.body;
+			/* Some new code below to prevent segfault when quoting Usenet posts, 2025-08-15 PL */
+
+		    if (!tb) { /* No body found -> nothing to quote */
+    			output("\n%s\n\n", MSG_NOBODYQUOTE);
+    			goto done_quote;
+		    }
+		    if (!te.th.author) {
+    			struct TEXT_BODY *scan = tb;     
+    			while (scan && scan->line[0] != '\0') {
+        		scan = scan->next;
+    		    }
+    		    if (scan && scan->next) {
+        		tb = scan->next;
+    		    }
+		}
+			qt = 0;
+			output("\n%s\n\n", MSG_QUSE);
+
+			while (tb) {
+    			const char *qline = tb->line;
+    			output("> %s", qline);
+    			Lines = 1;
+
+    		    if (!qt) {
+        		do c2 = getc(stdin); while (c2 == 255);
+    		    	} else {
+        		c2 = MSG_YESANSWER;
+    		        }
+    		    if ((c2 > 0x40) && (c2 < 0x5e)) {
+        		c2 = c2 + 0x20;
+			}
+    			output("\n");
+
+    		    if (c2 == 'q')
+        		break;
+    		    if (c2 == 'a') {
+        		qt = 1;
+        		c2 = MSG_YESANSWER;
+    		        }
+
+    		    if (c2 == MSG_YESANSWER) {
+        		Lines = 1;
+        		strcpy(ptr->line, "> ");
+        		strncat(ptr->line, qline, 71);
+        		ptr->line[73] = '\0';
+        		numlines++;
+        		Size++;
+        	    if ((ptr->next = (struct EDIT_BUF *)malloc(sizeof(struct EDIT_BUF))) == NULL) {
+            		sys_error("line_ed", 2, "malloc");
+            		break;
+        		}
+        		tmpptr = ptr;
+        		ptr = ptr->next;
+        		ptr->previous = tmpptr;
+        		ptr->next = NULL;
+        		ptr->line[0] = '\0';
+    			}
+
+    			tb = tb->next;
+		    }
+
+			done_quote: ;
+			output("\n");
+			free_text_entry(&te);
+			free(oldbuf);
                     } else {
                         output("\n%s\n\n", MSG_NOREPLY);
                     }
@@ -723,10 +754,16 @@ save:
     }
     ptr = Start;
     while (ptr) {
-        if (numlines) {
-            write(fd, ptr->line, strlen(ptr->line));
-            write(fd, "\n", 1);
+    if (numlines) {
+        if (write(fd, ptr->line, strlen(ptr->line)) == -1) {
+            perror("write"); /* Modified 2025-07-25 by PL to silence compiler */
+            return NULL;
         }
+        if (write(fd, "\n", 1) == -1) {
+            perror("write"); /* Modified 2025-07-25 by PL to silence compiler */
+            return NULL;
+        }
+    }
         tmpptr = ptr;
         ptr = ptr->next;
         free(tmpptr);
@@ -764,8 +801,12 @@ abort_edit(int tmp)
         if (Size == 1) {
             strcpy(ptr->line, "");
         } else {
-            write(fd, ptr->line, strlen(ptr->line));
-            write(fd, "\n", 1);
+            if (write(fd, ptr->line, strlen(ptr->line)) == -1) {
+                perror("write (abort_edit:line)"); /* Linux compiler happy now 2025-07-25, PL */
+            }
+            if (write(fd, "\n", 1) == -1) {
+                perror("write (abort_edit:newline)"); /* Linux compiler happy now  2025-07-25, PL */
+            }
             tmpptr = ptr;
             ptr = ptr->next;
             free(tmpptr);
@@ -780,8 +821,12 @@ abort_edit(int tmp)
     if ((fd = create_file(fname)) == -1) {
         sys_error("abort_edit", 1, "create_file");
     }
-    write(fd, &Current_conf, sizeof(int));
-    write(fd, Globalth, sizeof(struct TEXT_HEADER));
+    if (write(fd, &Current_conf, sizeof(int)) == -1) {
+        perror("write (abort_edit:conf)"); /* Linux compiler happy now  2025-07-25, PL */
+    }
+   if (write(fd, Globalth, sizeof(struct TEXT_HEADER)) == -1) {
+       perror("write (abort_edit:header)"); /* Linux compiler happy now  2025-07-25, PL */
+    }
 
     if (close_file(fd) == -1) {
         sys_error("abort_edit", 2, "close_file");

@@ -15,6 +15,8 @@ beep = 1
 header = 0
 strip = 0
 presbeep = 0
+ansi = 0
+utf8 = +
 ![timeout]
 0
 ![paid]

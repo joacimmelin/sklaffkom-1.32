@@ -364,58 +364,84 @@ replace_confs(struct CONFS_ENTRY * cse, char *buf)
 /*
  * replace_conf - replace CONF_ENTRY in conffile
  * args: pointer to CONF_ENTRY (ce), buffer to replace in (buf)
- * ret: pointer to buffer with replaced entry
+ * ret: pointer to a newly allocated buffer with the replaced entry (caller must free), or NULL on failure
  */
 
+/* Major rewrite by PL August 2025 due to inconsisent behaviour in usenet meetings */
 char *
-replace_conf(struct CONF_ENTRY * ce, char *buf)
+replace_conf(struct CONF_ENTRY *ce, char *buf)
 {
     char *tbuf, *nbuf, *obuf;
     int i;
     LONG_LINE newline;
-    struct CONF_ENTRY tce = {0};               /* Temporary confs-entry */
+    struct CONF_ENTRY tce = {0};   /* Temporary entry for comparison */
 
-    obuf = buf;
+    if (!ce || !buf)
+        return NULL;  /* Invalid input */
 
+    obuf = buf;  /* Save original pointer */
+
+    /* Allocate a new buffer large enough to hold replacement */
     i = strlen(buf) + LINE_LEN;
-    nbuf = (char *) malloc(i);  /* Jaja... */
+    nbuf = (char *) malloc(i);
+    if (!nbuf)
+        return NULL;  /* Allocation failed */
+
     memset(nbuf, 0, i);
 
-    /* Find conf-entry */
-
+    /* Search for the conf entry to replace */
     while (buf) {
+        char *prev_buf = buf;
         buf = get_conf_entry(buf, &tce);
-        if (ce->num == tce.num)
+        if (buf && ce->num == tce.num)
             break;
+        if (!buf) {
+            /* Reached end without match */
+            free(nbuf);
+            return NULL;
+        }
+        if (buf == prev_buf) {
+            /* Prevent infinite loop if get_conf_entry is buggy */
+            break;
+        }
     }
 
-    if (ce->num == tce.num) {
-        tbuf = buf;
-
-        if (tbuf > obuf)
-            tbuf--;
-
-        while ((tbuf > obuf) && (*tbuf == '\n'))
-            tbuf--;
-
-        while ((tbuf > obuf) && (*tbuf != '\n'))
-            tbuf--;
-
-        if (tbuf > obuf)
-            tbuf++;
-
-        *tbuf = '\0';           /* Set 'length' of obuf */
-
-        sprintf(newline, "%d:%ld:%d:%lld:%d:%d:%d:%s\n", ce->num, ce->last_text,
-            ce->creator, (long long) ce->time, ce->type, ce->life, ce->comconf,
-            ce->name);
-        strcpy(nbuf, obuf);
-        strcat(nbuf, newline);
-        strcat(nbuf, buf);
-        free(obuf);
-        return nbuf;
+    /* At this point, buf points to the conf entry to be replaced */
+    tbuf = buf;
+    if (!tbuf) {
+        free(nbuf);
+        return NULL;
     }
-    return NULL;
+
+    /* Backtrack to find start of line for the matching entry */
+    if (tbuf > obuf)
+        tbuf--;
+
+    while ((tbuf > obuf) && (*tbuf == '\n'))
+        tbuf--;
+
+    while ((tbuf > obuf) && (*tbuf != '\n'))
+        tbuf--;
+
+    if (tbuf > obuf)
+        tbuf++;  /* Now tbuf points to start of the line to replace */
+
+    /* Terminate original buffer just before the matching line */
+    *tbuf = '\0';
+
+    /* Create the new replacement line */
+    snprintf(newline, sizeof(newline), "%d:%ld:%d:%lld:%d:%d:%d:%s\n",
+             ce->num, ce->last_text, ce->creator, (long long) ce->time,
+             ce->type, ce->life, ce->comconf, ce->name);
+
+    /* Assemble the new buffer */
+    strcpy(nbuf, obuf);        /* Keep content before the replaced line */
+    strcat(nbuf, newline);     /* Add new entry */
+    strcat(nbuf, buf);         /* Add remaining content after replaced line */
+
+    /* DO NOT free(obuf) here — caller owns original memory */
+
+    return nbuf;
 }
 
 /*
@@ -488,6 +514,7 @@ list_confs(int uid, int all)
     struct CONFS_ENTRY cse;
     struct CEL *ce_list, *top;
     struct CEN *topconf, *conflist;
+    long ftext, ntext;  /* we will now calculate the correct number of posts, as in sklaffadm 2025-08-11 PL */
 
     user_dir(uid, confsname);
     strcat(confsname, CONFS_FILE);
@@ -525,8 +552,13 @@ list_confs(int uid, int all)
         return -1;
     }
     output("\n");
-    if ((buf = get_conf_entry(buf, &ce))) {
-        output("%6ld       %s\n", ce.last_text, ce.name);
+    if ((buf = get_conf_entry(buf, &ce))) { 			/* Mailbox: show count instead of just the highest number 2025-08-11 PL */
+        ftext = first_text(ce.num, uid);
+        if (ftext <= 0 || ce.last_text <= 0 || ftext > ce.last_text)
+            ntext = 0;
+        else
+            ntext = ce.last_text - ftext + 1;
+        output("%6ld       %s\n", ntext, ce.name);
     }
     free(oldbuf);
 
@@ -577,6 +609,12 @@ list_confs(int uid, int all)
                 count++;
                 strcpy(ce_list->name, ce.name);
                 ce_list->unreads = ce.last_text;
+		ftext = first_text(ce.num, uid); 			/* In conferences: store count of articles instead of highest number 2025-08-11 PL */
+                if (ftext <= 0 || ce.last_text <= 0 || ftext > ce.last_text)
+                    ntext = 0;
+                else
+                    ntext = ce.last_text - ftext + 1;
+                ce_list->unreads = ntext;                                
                 ce_list->creator = ce.creator;
                 ce_list->num = ce.num;
                 ce_list->type = ce.type;

@@ -62,23 +62,31 @@ get_user_entry(char *buf, struct USER_ENTRY * ue)
  * ret: next position in buffer or NULL
  */
 
+/* This function was re-written by PL 2025-07-25 to prevent segfault and for increased portability */
 char *
-get_file_entry(char *buf, struct FILE_ENTRY * fe)
+get_file_entry(char *buf, struct FILE_ENTRY *fe)
 {
-    char *tmpbuf, *ptr;
+    char *sep, *newline;
 
-    tmpbuf = strchr(buf, ':');
-    if (!tmpbuf)
+    sep = strchr(buf, ':');
+    if (!sep)
         return NULL;
-    *tmpbuf = 0;
-    strcpy(fe->name, buf);
-    *tmpbuf = ':';
-    ptr = strchr(tmpbuf, '\n');
-    *ptr = 0;
-    strcpy(fe->desc, (tmpbuf + 1));
-    *ptr = '\n';
-    buf = ptr;
-    while (*buf && (*buf == '\n'))
+    *sep = '\0'; // Temporarily null-terminate filename
+    strncpy(fe->name, buf, sizeof(fe->name));
+    fe->name[sizeof(fe->name)-1] = '\0'; // Ensure null-termination
+    *sep = ':'; // Restore original char
+
+    newline = strchr(sep, '\n');
+    if (!newline)
+        return NULL;
+
+    *newline = '\0'; // Temporarily null-terminate desc
+    strncpy(fe->desc, sep + 1, sizeof(fe->desc));
+    fe->desc[sizeof(fe->desc)-1] = '\0'; // Ensure null-termination
+    *newline = '\n'; // Restore newline
+
+    buf = newline;
+    while (*buf && *buf == '\n')
         buf++;
     return buf;
 }
