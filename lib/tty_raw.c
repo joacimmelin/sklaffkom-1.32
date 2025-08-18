@@ -24,10 +24,34 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-
 #include <termios.h>
+#include <string.h>    					/* 2025-08-10 PL needed to detect callers terminal height */
+#include <unistd.h>     				/* 2025-08-10 PL needed to detect callers terminal height */
+#include <stdlib.h>     				/* 2025-08-10 PL needed to detect callers terminal height */
+#include <sys/ioctl.h>  				/* 2025-08-10 PL needed to detect callers terminal height (linux / freebsd) */
+
 #include "sklaff.h"
 #include "ext_globals.h"
+
+/*
+ * detect_terminal_lines - tries to autodetect callers terminal height, if fails defaults to 24
+ */
+
+int detect_terminal_lines(void) {	/* Not static anymore PL 2025-08-11 */
+#ifdef TIOCGWINSZ
+    struct winsize ws;
+    int fd = isatty(STDOUT_FILENO) ? STDOUT_FILENO :
+             (isatty(STDIN_FILENO) ? STDIN_FILENO : -1);
+    if (fd >= 0 && ioctl(fd, TIOCGWINSZ, &ws) == 0 && ws.ws_row > 0)
+        return ws.ws_row;
+#endif
+    const char *e = getenv("LINES");
+    if (e) {
+        long v = strtol(e, NULL, 10);
+        if (v >= 10 && v <= 200) return (int)v;
+    }
+    return 24;
+}
 
 /*
  * tty_raw - sets terminal in raw mode
@@ -47,6 +71,7 @@ tty_raw(void)
     temp_mode.c_cc[VMIN] = 1;
     temp_mode.c_cc[VTIME] = 0;
     tcsetattr(0, TCSANOW, &temp_mode);
-    Numlines = 24;
+    if (Numlines <= 0) /* 0 or unset = auto */
+        Numlines = detect_terminal_lines();  
     Lines = 1;
 }

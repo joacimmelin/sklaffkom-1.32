@@ -57,13 +57,15 @@ rebuild_index_file(void)
     if ((fd3 = open_file(fn3, OPEN_CREATE)) == -1) {
         return -1;
     }
-    getcwd(cwd, LINE_LEN);
-
+    if (getcwd(cwd, LINE_LEN) == NULL) {
+    perror("getcwd"); /* Modified on 2025-07-25 by PL */
+    return -1;
+    }
     sprintf(filed, "%s/%d", FILE_DB, Current_conf);
-    
-/*  fprintf(stderr, "FILE_DB: %s, Current_conf: %d\n", FILE_DB, Current_conf); */ /* Debugging */
-
-    chdir(filed);
+    if (chdir(filed) == -1) {
+    perror("chdir to filed"); /* Modified on 2025-07-25 by PL */
+    return -1;
+    }
     sprintf(fn2, "/tmp/%d", getpid());
     if (fork()) {
         (void) wait(&subba);
@@ -77,8 +79,10 @@ rebuild_index_file(void)
         execl(LSPRGM, LSPRGM, LSOPT, (char *) 0);
     }
 
-    chdir(cwd);
-
+    if (chdir(cwd) == -1) {
+    perror("chdir back to cwd"); /* Modified on 2025-07-25 by PL */
+    return -1;
+    }
     if ((oldbuf = read_file(fd)) == NULL) {
         return -1;
     }
@@ -104,14 +108,20 @@ rebuild_index_file(void)
                 if (buf) {
                     if (!strcmp(currfile, fe.name)) {
                         sprintf(outrec, "%s:%s\n", currfile, fe.desc);
-                        write(fd3, outrec, strlen(outrec));
+		    if (write(fd3, outrec, strlen(outrec)) == -1) {
+                        perror("write"); /* Modified on 2025-07-25 by PL */
+                        return -1;
+                        }
                         break;
                     }
                 }
             }
             if (!buf) {
                 sprintf(outrec, "%s:%s\n", currfile, "");
-                write(fd3, outrec, strlen(outrec));
+                        if (write(fd3, outrec, strlen(outrec)) == -1) {
+                            perror("write"); /* Modified on 2025-07-25 by PL */
+                            return -1;
+                            }
             }
         } else {
             *buf2 = '\0';

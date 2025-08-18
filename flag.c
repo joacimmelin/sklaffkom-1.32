@@ -182,6 +182,22 @@ set_flags(char *flags)
             Old_who = atoi(i);
         } else
             Old_who = 0;
+        
+        p = strstr(flags, "ansi");
+        if (p) {
+            i = strchr(p, '=');
+            i++;
+            Ansi_output = atoi(i);
+        } else
+            Ansi_output = 0;  /* default off */
+        
+        p = strstr(flags, "utf8");
+        if (p) {
+            i = strchr(p, '=');
+            i++;
+            Utf8 = atoi(i);
+        } else
+            Utf8 = 0;  /* default off */
     } else {
         Shout = 1;
         Say = 1;
@@ -201,6 +217,8 @@ set_flags(char *flags)
         Special = 0;
         Presbeep = 0;
         Old_who = 0;
+	Ansi_output = 0;
+	Utf8 = 0;
     }
 }
 
@@ -234,7 +252,7 @@ int
 turn_flag(int mode, char *flag)
 {
     int i;
-    LINE flags[18], outline, tmpline;
+    LINE flags[20], outline, tmpline;
     static HUGE_LINE newflags;
     struct SKLAFFRC *rc;
 
@@ -256,7 +274,8 @@ turn_flag(int mode, char *flag)
     strcpy(flags[15], MSG_FLAG15);
     strcpy(flags[16], MSG_FLAG16);
     strcpy(flags[17], MSG_FLAG17);
-
+    strcpy(flags[18], MSG_FLAG18);
+    strcpy(flags[19], MSG_FLAG19);
     if (!flag || (*flag == '\0')) {
         output("\n%s\n\n", MSG_NOFLAG);
         return 0;
@@ -264,9 +283,12 @@ turn_flag(int mode, char *flag)
     down_string(flag);
     i = strlen(flag);
     if ((strstr(flags[0], flag) == flags[0]) && (i >= MSG_FLAG0N)) {
-        if (mode && (Iso8859 || Mac)) {
+        if (mode && (Iso8859 || Mac || Utf8)) {
             if (Iso8859) {
                 output("\n%s\n\n", MSG_ISOWARN);
+                return 0;
+	    } else if (Utf8) {
+ 	        output("\n%s\n\n", MSG_UTFWARN);
                 return 0;
             } else if (Mac) {
                 output("\n%s\n\n", MSG_MACWARN);
@@ -276,9 +298,12 @@ turn_flag(int mode, char *flag)
         Ibm = mode;
         strcpy(outline, MSG_FLAG0F);
     } else if ((strstr(flags[1], flag) == flags[1]) && (i >= MSG_FLAG1N)) {
-        if (mode && (Ibm || Mac)) {
+        if (mode && (Ibm || Mac || Utf8)) {
             if (Ibm) {
                 output("\n%s\n\n", MSG_PCWARN);
+                return 0;
+	    } else if (Utf8) {
+                output("\n%s\n\n", MSG_UTFWARN);
                 return 0;
             } else if (Mac) {
                 output("\n%s\n\n", MSG_MACWARN);
@@ -288,9 +313,12 @@ turn_flag(int mode, char *flag)
         Iso8859 = mode;
         strcpy(outline, MSG_FLAG1F);
     } else if ((strstr(flags[2], flag) == flags[2]) && (i >= MSG_FLAG2N)) {
-        if (mode && (Ibm || Iso8859)) {
+        if (mode && (Ibm || Iso8859 || Utf8)) {
             if (Ibm) {
                 output("\n%s\n\n", MSG_PCWARN);
+                return 0;
+            } else if (Utf8) {
+                output("\n%s\n\n", MSG_UTFWARN);
                 return 0;
             } else if (Iso8859) {
                 output("\n%s\n\n", MSG_ISOWARN);
@@ -344,7 +372,25 @@ turn_flag(int mode, char *flag)
     } else if ((strstr(flags[17], flag) == flags[17]) && (i >= MSG_FLAG17N)) {
         Old_who = mode;
         strcpy(outline, MSG_FLAG17F);
-    } else {
+    } else if ((strstr(flags[18], flag) == flags[18]) && (i >= MSG_FLAG18N)) {
+        Ansi_output = mode;
+        strcpy(outline, MSG_FLAG18F);
+    } else if ((strstr(flags[19], flag) == flags[19]) && (i >= MSG_FLAG19N)) {
+        if (mode && (Ibm || Iso8859 || Mac)) {
+            if (Ibm) {
+                output("\n%s\n\n", MSG_PCWARN);
+                return 0;
+            } else if (Mac) {
+                output("\n%s\n\n", MSG_MACWARN);
+                return 0;
+            } else if (Iso8859) {
+                output("\n%s\n\n", MSG_ISOWARN);
+                return 0;
+            }
+        }
+        Utf8 = mode;
+        strcpy(outline, MSG_FLAG19F);
+     } else {
         output("\n%s\n\n", MSG_BADFLAG);
         return 0;
     }
@@ -386,7 +432,10 @@ turn_flag(int mode, char *flag)
     strcat(newflags, tmpline);
     sprintf(tmpline, "oldwho = %d\n", Old_who);
     strcat(newflags, tmpline);
-
+    sprintf(tmpline, "ansi = %d\n", Ansi_output);
+    strcat(newflags, tmpline);
+    sprintf(tmpline, "utf8 = %d\n", Utf8);
+    strcat(newflags, tmpline);
     strcpy(rc->flags, newflags);
     write_sklaffrc(Uid, rc);
     output("\n%s %s ", MSG_FLAG, outline);

@@ -1,0 +1,20 @@
+Argument:
+  <antal-rader>
+
+Beskrivning:
+  Kommandot låter dig ställa in en skärmlängd som matchar med din
+  terminal. Ska i normala fall inte behövas då skärmlängden ska
+  detekteras automatiskt, men i sällsynta fall fungerar inte
+  detta, och då sätts den per automatik till 24.
+
+  Om du redan har ändrat din skärmlängd, men vill återgå till
+  automatisk detektering anger du antingen '0' eller 'A'-
+
+  Ger du enbart kommandot "Ändra skärmlängd" får du vägledning,
+  om du redan vet vilken längd du vill ha kan du ange den som
+  argument istället.
+
+Exempel:
+  'Ändra skärmlängd' - hjälper dig att välja rätt längd.
+  'Ändra skärmlängd 24' - sätter skärmlängden på 24.
+  'Ändra skärmlängd 0' - slår på automatisk detektering.

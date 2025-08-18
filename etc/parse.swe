@@ -6,6 +6,7 @@
 Addera r{ttigheter:cmd_add_rights:Addera r{ttigheter f|r en anv{ndare i aktuellt m|te 
 (Definera) alias:cmd_alias:Definierar ett alias f|r ett kommando
 (L{sa) alla (texter):cmd_readall:Visar alla dina ol{sta texter
+Antal rader:cmd_mod_numlines: [ndra din sk{rml{ngd
 Beskriv (fil):cmd_describe:Beskriv en fil i m|tets filarea
 Avprioritera (m|te):cmd_deprio:Avprioritera m|te
 (Skriv) brev:cmd_mail:Skicka brev till anv{ndare
@@ -96,6 +97,7 @@ Visa ol{sta (texter):cmd_reclaim_unread:Ol{smarkerar dina ol{sta texter direkt.
 [ndra kommentarsm|te:cmd_change_comc:[ndra kommentarsm|te till ett m|te
 [ndra personuppgifter:cmd_mod_pinfo:[ndra dina personuppgifter
 [ndra plan:cmd_mod_sig:[ndra din plan-fil
+[ndra sk{rml{ngd:cmd_mod_numlines:[ndra din sk{rml{ngd
 [ndra timeout:cmd_mod_timeout:[ndra tid f|r inaktivitetsutloggning
 [ndra uppstartskommandon:cmd_mod_login:[ndra vilka kommandon som k|rs vid login
 Nethack:cmd_nethack:Spela nethack

@@ -29,11 +29,75 @@
 #include "ext_globals.h"
 #include <signal.h>
 #include <ctype.h>
+#include <strings.h>
+
+/*
+ * extract_display_name - helper for humanizing header (real name in usenet posts)
+ * PL 2025-08-09
+ *       
+ */
+static void
+extract_display_name(const char *from, char *out, size_t outlen)
+{
+        
+    if (!from || !*from) { out[0] = '\0'; return; }
 
 
+    char buf[256];
+    snprintf(buf, sizeof(buf), "%s", from);
 
-/* better blank line detection for usenet headers */
+    /* Trim leading/trailing spaces */
+    char *s = buf;
+    while (*s && (*s==' ' || *s=='\t')) s++;
+    char *e = s + strlen(s);
+    while (e > s && (e[-1]==' ' || e[-1]=='\t' || e[-1]=='\r' || e[-1]=='\n')) --e;
+    *e = '\0';
 
+    /* Case 1: "Name" <email>  => prefer Name (strip quotes) */
+    char *lt = strchr(s, '<');
+    if (lt) {
+        /* take the part before '<' */
+        while (lt > s && (lt[-1]==' ' || lt[-1]=='\t')) --lt;
+        *lt = '\0';
+        /* strip optional surrounding quotes */
+        if (*s=='"' && e> s+1 && e[-1]=='"') { s++; e--; *e='\0'; }
+        /* if non-empty, use it */
+        if (*s) { snprintf(out, outlen, "%s", s); return; }
+        /* else fall back to content inside <...> */
+        char *gt = strchr(lt+1, '>');
+        if (gt && gt > lt+1) {
+            *gt = '\0';
+            snprintf(out, outlen, "%s", lt+1);
+            return;
+        }
+    }
+
+    /* Case 2: email (Name) => prefer (Name) */
+    char *lp = strchr(s, '(');
+    if (lp) {
+        char *rp = strchr(lp+1, ')');
+        if (rp && rp > lp+1) {
+            *rp = '\0';
+            /* trim inner spaces/quotes */
+            char *ns = lp+1;
+            while (*ns==' '||*ns=='\t') ns++;
+            char *ne = ns + strlen(ns);
+            while (ne>ns && (ne[-1]==' '||ne[-1]=='\t'||ne[-1]=='"')) --ne;
+            if (*ns=='"') ns++;
+            *ne = '\0';
+            if (*ns) { snprintf(out, outlen, "%s", ns); return; }
+        }
+    }
+
+    /* Default: just use input as-is */
+    snprintf(out, outlen, "%s", *s ? s : "");
+}
+
+/*
+ * better blank line detection for usenet headers PL 2025.
+ * sometimes sklaffkom stripped not only the usenet-header but the
+ * body also, this helper prevents that
+*/
 int is_blank_line(const char *line) {
     if (!line) return 1;
     while (*line) {
@@ -45,6 +109,237 @@ int is_blank_line(const char *line) {
 }
 
 /*
+ * RFC 2047 + underline helpers. This code is partly AI-generated and I must
+ * admit I don't understand it fully myself, but it has been tested thoroughly
+ * and works. Purpose : display text humans can read in usenet subjects and
+ * name of the author. PL 2025-08-09
+*/
+static size_t 
+utf8_disp_len(const char *s) /* Count display chars (UTF-8 codepoints ≈ 1 col each; good enough for headers) */
+{
+    size_t n = 0;
+    while (*s) {
+        unsigned char c = (unsigned char)*s++;
+        if ((c & 0xC0) != 0x80) /* count non-continuation bytes */
+            n++;
+    }
+    return n;
+}
+
+static void utf8_trunc_cols(const char *in, size_t max_cols, char *out, size_t outlen) /* 2025-08-10, PL: truncate by display columns (UTF-8 safe, 1 col/codepoint) */
+{
+    size_t cols = 0, o = 0;
+    if (!in || !out || outlen == 0) return;
+    while (*in && o + 4 < outlen) {
+        unsigned char c = (unsigned char)in[0];
+        size_t clen;
+        if ((c & 0x80) == 0x00) clen = 1;
+        else if ((c & 0xE0) == 0xC0) clen = 2;
+        else if ((c & 0xF0) == 0xE0) clen = 3;
+        else if ((c & 0xF8) == 0xF0) clen = 4;
+        else clen = 1; 
+
+        if (cols + 1 > max_cols) break;
+        if (o + clen >= outlen) break;
+
+        
+        for (size_t i = 0; i < clen && in[i]; i++) out[o++] = in[i];
+        in += clen;
+        cols++;
+    }
+    out[o] = '\0';
+}
+
+static void
+print_underlined_line(const char *line) /* Build underline matching a printed line */
+{
+    LINE under;
+    size_t i, w = utf8_disp_len(line);
+    if (w >= sizeof(under)) w = sizeof(under) - 1;
+    for (i = 0; i < w; i++) under[i] = '-';
+    under[i] = '\0';
+    output("%s\n", line);
+    output("%s\n", under);
+}
+
+static int b64v(int c)  /* Base64 table */
+{
+    if (c >= 'A' && c <= 'Z') return c - 'A';
+    if (c >= 'a' && c <= 'z') return c - 'a' + 26;
+    if (c >= '0' && c <= '9') return c - '0' + 52;
+    if (c == '+') return 62;
+    if (c == '/') return 63;
+    return -1;
+}
+
+static size_t
+qp_decode_bytes(const char *in, size_t inlen, unsigned char *out, size_t outlen)    /* Decode a single encoded-word's bytes with quoted-printable (Q) */
+{
+    size_t i = 0, o = 0;
+    while (i < inlen && o < outlen) {
+        char c = in[i++];
+        if (c == '_') { out[o++] = ' '; continue; }
+        if (c == '=' && i + 1 < inlen && isxdigit((unsigned char)in[i]) && isxdigit((unsigned char)in[i+1])) {
+            int hi = isdigit((unsigned char)in[i]) ? in[i]-'0' : (tolower((unsigned char)in[i])-'a'+10);
+            int lo = isdigit((unsigned char)in[i+1]) ? in[i+1]-'0' : (tolower((unsigned char)in[i+1])-'a'+10);
+            unsigned char b = (unsigned char)((hi<<4) | lo);
+            if (o < outlen) out[o++] = b;
+            i += 2;
+        } else {
+            out[o++] = (unsigned char)c;
+        }
+    }
+    return o;
+}
+
+static size_t
+b64_decode_bytes(const char *in, size_t inlen, unsigned char *out, size_t outlen)   /* Decode a single encoded-word's bytes with base64 (B) */
+{
+    size_t i = 0, o = 0;
+    while (i + 3 < inlen) {
+        int a = b64v(in[i++]);
+        int b = b64v(in[i++]);
+        int c = (in[i] == '=') ? -1 : b64v(in[i]);
+        i++;
+        int d = (in[i] == '=') ? -1 : b64v(in[i]);
+        i++;
+        if (a < 0 || b < 0 || (c < -1) || (d < -1)) break;
+        if (o < outlen) out[o++] = (unsigned char)((a<<2) | (b>>4));
+        if (c >= 0 && o < outlen) out[o++] = (unsigned char)(((b&0x0F)<<4) | (c>>2));
+        if (d >= 0 && o < outlen) out[o++] = (unsigned char)(((c&0x03)<<6) | d);
+    }
+    return o;
+}
+
+static size_t
+latin1_to_utf8(const unsigned char *in, size_t inlen, char *out, size_t outlen) /* Minimal charset -> UTF-8: utf-8 (pass), us-ascii (pass), iso-8859-1 (map) */
+
+{
+    size_t o = 0;
+    for (size_t i = 0; i < inlen; i++) {
+        unsigned char c = in[i];
+        if (c < 0x80) {
+            if (o + 1 >= outlen) break;
+            out[o++] = (char)c;
+        } else {
+            if (o + 2 >= outlen) break;
+            out[o++] = (char)(0xC0 | (c >> 6));
+            out[o++] = (char)(0x80 | (c & 0x3F));
+        }
+    }
+    if (o < outlen) out[o] = '\0';
+    return o;
+}
+
+static size_t
+bytes_to_utf8(const char *charset, const unsigned char *in, size_t inlen, char *out, size_t outlen)
+{
+    if (!charset) charset = "us-ascii";
+    /* lowercase compare */
+    char cs[32]; size_t n = 0;
+    while (charset[n] && n+1 < sizeof(cs)) { cs[n] = (char)tolower((unsigned char)charset[n]); n++; }
+    cs[n] = '\0';
+
+    if (!strcmp(cs, "utf-8") || !strcmp(cs, "us-ascii")) {
+        size_t copy = (inlen >= outlen-1) ? (outlen-1) : inlen;
+        memcpy(out, in, copy);
+        out[copy] = '\0';
+        return copy;
+    }
+    if (!strcmp(cs, "iso-8859-1") || !strcmp(cs, "latin1") || !strcmp(cs, "iso8859-1")) {
+        return latin1_to_utf8(in, inlen, out, outlen);
+    }
+
+    /* Fallback: best-effort raw copy (won't crash; shows something) */
+    size_t copy = (inlen >= outlen-1) ? (outlen-1) : inlen;
+    memcpy(out, in, copy);
+    out[copy] = '\0';
+    return copy;
+}
+
+
+static void
+rfc2047_decode(const char *in, char *out, size_t outlen)    /* RFC 2047 decoder: decodes any number of encoded-words in a header field */
+{
+    const char *p = in;
+    size_t o = 0;
+    if (!in || !*in) { if (outlen) out[0] = '\0'; return; }
+
+    while (*p && o + 1 < outlen) {
+        const char *start = strstr(p, "=?");
+        if (!start) {
+            /* copy the rest */
+            size_t rem = strlen(p);
+            if (rem >= outlen - 1 - o) rem = outlen - 1 - o;
+            memcpy(out + o, p, rem);
+            o += rem;
+            break;
+        }
+        /* copy literal up to start */
+        size_t lit = (size_t)(start - p);
+        if (lit) {
+            size_t rem = (lit >= outlen - 1 - o) ? (outlen - 1 - o) : lit;
+            memcpy(out + o, p, rem);
+            o += rem;
+        }
+
+        /* parse =?charset?enc?text?= */
+        const char *q1 = strchr(start + 2, '?'); if (!q1) { p = start + 2; continue; }
+        const char *q2 = strchr(q1 + 1, '?');    if (!q2) { p = q1 + 1; continue; }
+        const char *q3 = strstr(q2 + 1, "?=");   if (!q3) { p = q2 + 1; continue; }
+
+        char charset[32];
+        size_t cslen = (size_t)(q1 - (start + 2));
+        if (cslen >= sizeof(charset)) cslen = sizeof(charset) - 1;
+        memcpy(charset, start + 2, cslen);
+        charset[cslen] = '\0';
+
+        char enc = (char)toupper((unsigned char)q1[1]);
+
+        /* raw decoded bytes */
+        unsigned char bytes[512];
+        size_t blen = 0;
+
+        const char *payload = q2 + 1;
+        size_t plen = (size_t)(q3 - payload);
+
+        if (enc == 'B') {
+            blen = b64_decode_bytes(payload, plen, bytes, sizeof(bytes));
+        } else if (enc == 'Q') {
+            blen = qp_decode_bytes(payload, plen, bytes, sizeof(bytes));
+        } else {
+            /* unknown encoding, copy raw */
+            blen = (plen > sizeof(bytes)) ? sizeof(bytes) : plen;
+            memcpy(bytes, payload, blen);
+        }
+
+        /* convert to UTF-8 (minimal supported charsets) */
+        o += bytes_to_utf8(charset, bytes, blen, out + o, (outlen - o));
+
+        /* advance past ?= and any single space between adjacent encoded-words */
+        p = q3 + 2;
+        while (*p == ' ' || *p == '\t') {
+            const char *peek = p;
+            while (*peek == ' ' || *peek == '\t') peek++;
+            if (peek[0] == '=' && peek[1] == '?') p = peek; /* glue encoded-words */
+            break;
+        }
+    }
+    if (o < outlen) out[o] = '\0';
+}
+
+
+static void
+normalize_label(const char *raw, char *norm, size_t nlen)   /* Normalize a label to ensure exactly one trailing ": " */
+{
+    size_t L = raw ? strlen(raw) : 0;
+    int ends_with_colon = (L > 0 && raw[L-1] == ':');
+    snprintf(norm, nlen, "%s%s", raw ? raw : "", ends_with_colon ? " " : ": ");
+}
+
+
+
+/*
  * display_header - displays textheader
  * args: pointer to TEXT_HEADER (th), allow editing of subject (edit_subject),
  *       conf/uid (type), absolute date? (dtype)
@@ -53,12 +348,12 @@ int is_blank_line(const char *line) {
 void
 display_header(struct TEXT_HEADER * th, int edit_subject, int type, int dtype, char *mailrec)
 {
-    LINE time_val, c, filename, username;
+    LINE time_val, username, confname; /* + confname for humanized header */
     char fname[128];  /* increased from LINE to avoid overflow, modified on 2025-07-12, PL */
-    int i, uid, right, nc, fd;
+    int uid, right, nc, fd;
     char *tmp, *buf, *oldbuf;
     char *ptr = NULL;   /* modified on 2025-07-12, PL */
-    struct CONF_ENTRY *ce;
+    struct CONF_ENTRY *ce = NULL;
 
     if (mailrec && type && (th->author == 0)) {
         strcpy(username, mailrec);
@@ -66,39 +361,42 @@ display_header(struct TEXT_HEADER * th, int edit_subject, int type, int dtype, c
         user_name(th->author, username);
         Current_author = th->author;
     }
-    if (strlen(username) > 33) {
-        strcpy(filename, username);
-        if ((ptr = strchr(filename, '(')) != NULL) {
-            if ((tmp = strchr(ptr, ')')) != NULL) {
-                *tmp = '\0';
-                strcpy(username, (ptr + 1));
-            } else {
-                ptr--;
-                if (ptr > filename) {
-                    *ptr = '\0';
-                    strcpy(username, filename);
-                }
-            }
-        } else if ((ptr = strchr(filename, '<')) != NULL) {
-            if ((tmp = strchr(ptr, '>')) != NULL) {
-                *tmp = '\0';
-                strcpy(username, (ptr + 1));
-            } else {
-                ptr--;
-                if (ptr > filename) {
-                    *ptr = '\0';
-                    strcpy(username, filename);
-                }
-            }
-        }
+  /* Humanized headers PL 2025-08-09 */
+{
+    LINE from_dec, disp;
+    rfc2047_decode(username, from_dec, sizeof(from_dec));
+    extract_display_name(from_dec, disp, sizeof(disp));
+    snprintf(username, sizeof(username), "%.*s", (int)sizeof(username)-1, disp);
+}
+/* 2025-08-10, PL: strip surrounding quotes from display name */
+{
+    size_t L__ = strlen(username);
+    if (L__ >= 2 && username[0] == '"' && username[L__-1] == '"') {
+        username[L__-1] = '\0';
+        memmove(username, username + 1, L__ - 1);
     }
+}
     if (th->num == 0) {
         output("%s %s\n", MSG_WRITTENBY, username);
     } else {
-        time_string(th->time, time_val, (dtype | Date));
-        output("%s %d; %s %s; %s;",
-            (th->type == TYPE_TEXT) ? MSG_TEXTNAME : MSG_SURVEYNAME,
-            th->num, MSG_WRITTENBY, username, time_val);
+/* 2025-08-09, PL: Human-first layout */
+time_string(th->time, time_val, (dtype | Date));
+
+if (Current_conf != 0) {
+    /* In a conference: "Text N i <conf> <date>" */
+    conf_name(Current_conf, confname);
+    output_ansi_fmt("%s " GREEN "%d" DOT " %s " YELLOW "%s " DOT "%s\n", "%s %d %s %s %s\n",
+        (th->type == TYPE_TEXT) ? MSG_TEXTNAME : MSG_SURVEYNAME,
+        th->num, MSG_IN, confname, time_val);
+
+    /* Then: "Skriven av <name>" on its own line */
+    output_ansi_fmt("%s " YELLOW "%s\n" DOT, "%s %s\n", MSG_WRITTENBY, username);
+} else {
+    /* In mailbox: keep old style */
+    output("%s %d %s %s %s\n",
+        (th->type == TYPE_TEXT) ? MSG_TEXTNAME : MSG_SURVEYNAME,
+        th->num, MSG_WRITTENBY, username, time_val);
+}
     }
     switch (th->size) {
     case 0:
@@ -107,14 +405,14 @@ display_header(struct TEXT_HEADER * th, int edit_subject, int type, int dtype, c
                 (th->type == TYPE_TEXT) ? MSG_EMPTYTEXT : MSG_EMPTYSURVEY);
         break;
     case 1:
-        output(" %s\n", MSG_ONELINE);
+        //output(" %s\n", MSG_ONELINE);
         break;
     default:
-        output(" %d %s\n", th->size, MSG_LINES);
+	//output(" %d %s\n", th->size, MSG_LINES);
         break;
     }
     if (th->type == TYPE_SURVEY && (th->num != 0)) {
-        time_string(th->sh.time, time_val, (dtype | Date));
+	time_string(th->sh.time, time_val, (dtype | Date));
         output("%s: %d; %s: %s\n", MSG_NQUESTIONS, th->sh.n_questions,
             MSG_REPORTRESULT, time_val);
     }
@@ -126,9 +424,8 @@ display_header(struct TEXT_HEADER * th, int edit_subject, int type, int dtype, c
             right = 1;
         }
         if (right) {
-            output("%s %d ", MSG_REPLYTO, th->comment_num);
-
-            nc = th->comment_conf;
+            output_ansi_fmt("%s " GREEN "%d " DOT, "%s %d ", MSG_REPLYTO, th->comment_num);
+	    nc = th->comment_conf;
             if (!nc)
                 nc = Current_conf;
             /* I put this chunk last instead to allow for display of author
@@ -165,9 +462,26 @@ display_header(struct TEXT_HEADER * th, int edit_subject, int type, int dtype, c
                 } else {
                     user_name(th->comment_author, username);
                 }
-                output("%s %s", MSG_BY, username);
-                if (th->comment_conf) {
+		/* 2025-08-09, PL: prefer human name (no email) on follow-up line */
+		{
+		    char disp[256];
+		    extract_display_name(username, disp, sizeof(disp));
+		    snprintf(username, sizeof(username), "%.*s", (int)sizeof(username)-1, disp);
+		}
+		
+		/* 2025-08-10, PL: strip surrounding quotes from display name */
+		{
+		    size_t L__ = strlen(username);
+		    if (L__ >= 2 && username[0] == '"' && username[L__-1] == '"') {
+		        username[L__-1] = '\0';
+		        memmove(username, username + 1, L__ - 1);
+		    }
+		}
+output_ansi_fmt("%s " YELLOW "%s" DOT, "%s %s", MSG_BY, username); /* 2025-08-09, PL: print "av <name>" only once */
+		if (th->comment_conf) {
                     conf_name(nc, username);
+        	    sprintf(fname, "  showing MSG_IN");
+                    debuglog(fname, 20);
                     output(" %s %s\n", MSG_IN, username);
                 } else
                     output("\n");
@@ -181,26 +495,36 @@ display_header(struct TEXT_HEADER * th, int edit_subject, int type, int dtype, c
         user_name(th->comment_author, username);
         output("%s %s\n", MSG_COPYTO, username);
     }
+    /* 2025-08-09, PL: Conference name is baked into line 1 now */
+
+    if (Current_conf == 0) {
+    /* Mailbox: keep "Mottagare:" logic unchanged */
     if (mailrec && !type) {
         output("%s %s\n", MSG_RECIPIENT, mailrec);
     } else {
         if (type < 0) {
-            uid = type - (type * 2);
+            uid = -type;
             user_name(uid, username);
         } else {
             conf_name(type, username);
         }
         output("%s %s\n", MSG_RECIPIENT, username);
+        }
     }
+    //* decoded subject + trying to match underline everywhere WORK IN PROGRESS PL 2025-08-10*/
     if (edit_subject) {
-        output(MSG_SUBJECT);
-        input(th->subject, th->subject, SUBJECT_LEN, 0, 0, 0);
-    } else
-        output("%s%s\n", MSG_SUBJECT, th->subject);
-    for (i = 0; i < (strlen(th->subject) + 8); i++)
-        c[i] = '-';
-    c[i] = '\0';
-    output("%s\n", c);
+    output(MSG_SUBJECT);
+    input(th->subject, th->subject, SUBJECT_LEN, 0, 0, 0);
+    } else {
+    const char *raw_label = MSG_SUBJECT; /* 2025-08-10, PL: safe default to avoid NULL */
+    LINE subj_dec, label_norm, subj_line;
+
+    rfc2047_decode(th->subject, subj_dec, sizeof(subj_dec));
+    normalize_label(raw_label, label_norm, sizeof(label_norm));
+
+    snprintf(subj_line, sizeof(subj_line), "%s%s", label_norm, subj_dec);
+    print_underlined_line(subj_line);  /* prints line + perfectly matching dashes (soon ;)) */
+    }
 }
 
 /*
@@ -1100,7 +1424,7 @@ display_text(int conf, long num, int stack, int dtype)
     if (th->author) {
         display_header(th, 0, type, dtype, NULL);
     } else {
-        /* Rewritten 2025-07-09 to avoid segfault if author = 0 */
+        /* Rewritten 2025-07-09 to avoid segfault if author = 0 and header-lookup fails */
 	tb = te.body;
 ptr = NULL;
 char *tmp = NULL;  // <- this was missing before
@@ -1116,12 +1440,12 @@ while (tb) {
     } else if ((ptr = strstr(tb->line, MSG_EMFROM3)) != NULL) {
         ptr += strlen(MSG_EMFROM3);
         break;
-    } else if ((ptr = strstr(tb->line, MSG_EMFROM4)) != NULL) {
-        ptr += strlen(MSG_EMFROM4);
-        break;
-    } else if ((ptr = strstr(tb->line, MSG_EMFROM5)) != NULL) {
-        ptr += strlen(MSG_EMFROM5);
-        break;
+//    } else if ((ptr = strstr(tb->line, MSG_EMFROM4)) != NULL) {
+//        ptr += strlen(MSG_EMFROM4);
+//        break;
+//    } else if ((ptr = strstr(tb->line, MSG_EMFROM5)) != NULL) {
+//        ptr += strlen(MSG_EMFROM5);
+//        break;
 
     }
     tb = tb->next;
@@ -1229,7 +1553,27 @@ if (!ptr || strlen(ptr) == 0) {
                 if ((th->size >= (Numlines - 6)) || Author) {
                     if (th->author)
                         user_name(th->author, aname);
-                    output("\n%s %ld %s %s\n",
+                    
+                    /* 2025-08-10, PL: cleanup footer author: trim CR/LF/space and strip quotes before '<' */
+                    {
+                        size_t L__ = strlen(aname);
+                        while (L__ && (aname[L__-1] == '\r' || aname[L__-1] == '\n' || aname[L__-1] == ' ' || aname[L__-1] == '\t'))
+                            aname[--L__] = '\0';
+                        char *lt__ = strchr(aname, '<');
+                        char *end__ = lt__ ? lt__ : aname + strlen(aname);
+                        char *q__ = aname;
+                        while ((q__ = strchr(q__, '"')) && q__ < end__) {
+                            memmove(q__, q__ + 1, strlen(q__ + 1) + 1);
+                        }
+                    }
+
+        /* 2025-08-10, PL: RFC2047-decode footer author */
+        {
+            LINE adec;
+            rfc2047_decode(aname, adec, sizeof(adec));
+            snprintf(aname, sizeof(aname), "%.*s", (int)sizeof(aname)-1, adec);
+        }
+ output_ansi_fmt("\n%s " GREEN "%ld "DOT "%s " YELLOW "%s\n" DOT, "\n%s %ld %s %s\n",
                         (th->type == TYPE_TEXT) ? MSG_EOT : MSG_EOSURVEY,
                         th->num, MSG_BY, aname);
                 } else
@@ -1269,7 +1613,7 @@ if (!ptr || strlen(ptr) == 0) {
             } else {
                 user_name(cl->comment_author, username);
             }
-            if (output("%s %ld %s %s\n", MSG_REPLYIN, cl->comment_num,
+            if (output_ansi_fmt("%s " GREEN "%ld " DOT "%s " YELLOW "%s\n" DOT, "%s %ld %s %s\n",  MSG_REPLYIN, cl->comment_num,
                     MSG_BY, username) == -1)
                 break;
         }
@@ -1279,7 +1623,25 @@ if (!ptr || strlen(ptr) == 0) {
     if (!endwritten && ((th->size >= (Numlines - 6)) || Author)) {
         if (th->author)
             user_name(th->author, aname);
-        output("\n%s %ld %s %s\n",
+	else
+            //snprintf(aname, sizeof(aname), "%s", MSG_UNKNOWNU); /* fallback because why not PL 2025-08-10 */
+
+        /* 2025-08-10, PL: strip surrounding quotes in author name */
+    {
+        size_t L = strlen(aname);
+        if (L >= 2 && aname[0] == '"' && aname[L-1] == '"') {
+            aname[L-1] = '\0';
+            memmove(aname, aname + 1, L - 1);
+        }
+    }
+
+        /* 2025-08-10, PL: RFC2047-decode footer author */
+        {
+            LINE adec;
+            rfc2047_decode(aname, adec, sizeof(adec));
+            snprintf(aname, sizeof(aname), "%.*s", (int)sizeof(aname)-1, adec);
+        }
+        output_ansi_fmt("\n%s " GREEN "%ld "DOT "%s " YELLOW "%s\n" DOT, "\n%s %ld %s %s\n",
             (th->type == TYPE_TEXT) ? MSG_EOT : MSG_EOSURVEY,
             th->num, MSG_BY, aname);
     }
@@ -1330,7 +1692,7 @@ parse_text(char *args)
     char *buf, *oldbuf;
     struct TEXT_ENTRY te;
     struct TEXT_HEADER *th;
-    struct CONF_ENTRY *ce;
+    struct CONF_ENTRY *ce = NULL;
     struct USER_LIST *ul;
 
     if (!args || (*args == '\0')) {
@@ -1549,9 +1911,9 @@ tree_top(long text)
 int
 list_subj(char *str)
 {
-    LINE subject, author;
+    LINE subject, author, subj_disp, subj_dec;
     char fname[128];  /* increased from LINE to avoid overflow, modified on 2025-07-12, PL */
-    char *buf, *oldbuf, *ptr3, *ptr4, sav, c;
+    char *buf, *oldbuf; char c;
     char *ptr2 = NULL;   /* modified on 2025-07-12, PL */
     long firsttext, current_text;
     int dot_count, wait_count, strlgth, xit, from, fd;
@@ -1623,47 +1985,61 @@ list_subj(char *str)
                     tb = tb->next;
                 }
                 ptr2 = ptr2 + strlen(MSG_EMFROM);
-                ptr3 = strchr(ptr2, '@');
-                if (!ptr3)
-                    ptr3 = strchr(ptr2, '!');
-                if (ptr3) {
-                    while ((*ptr3 != ' ') && (*ptr3 != '<'))
-                        ptr3--;
-                    ptr3++;
-                    ptr4 = strchr(ptr3, '>');
-                    if (!ptr4)
-                        ptr4 = strchr(ptr3, ' ');
-                    if (ptr4) {
-                        sav = *ptr4;
-                        *ptr4 = '\0';
-                    }
-                    strcpy(author, ptr3);
-                    if (ptr4)
-                        *ptr4 = sav;
-                } else {
-                    ptr3 = strchr(ptr2, '(');
-                    if (!ptr3)
-                        ptr3 = strchr(ptr2, '<');
-                    if (ptr3) {
-                        ptr3--;
-                        sav = *ptr3;
-                        *ptr3 = '\0';
-                        strcpy(author, ptr2);
-                        *ptr3 = sav;
-                    } else
-                        strcpy(author, ptr2);
+/* 2025-08-10, PL: humanize From: for listing (prefer display name) */
+{
+    LINE from_dec, disp;
+    rfc2047_decode(ptr2, from_dec, sizeof(from_dec));
+    extract_display_name(from_dec, disp, sizeof(disp));
+    /* strip surrounding quotes */
+    size_t L__ = strlen(disp);
+    if (L__ >= 2 && disp[0] == '"' && disp[L__-1] == '"') {
+        disp[L__-1] = '\0';
+        memmove(disp, disp + 1, L__ - 1);
+    }
+    if (disp[0]) {
+        snprintf(author, sizeof(author), "%s", disp);
+    } else {
+        /* Fallback to old email extraction if no display name */
+        char *p3 = strchr(from_dec, '@');
+        if (!p3) p3 = strchr(from_dec, '!');
+        if (p3) {
+            while ((p3 > from_dec) && (p3[-1] != ' ') && (p3[-1] != '<')) p3--;
+            char *p4 = strchr(p3, '>');
+            if (!p4) p4 = strchr(p3, ' ');
+            if (p4) { char sav__ = *p4; *p4 = '\0'; snprintf(author, sizeof(author), "%s", p3); *p4 = sav__; }
+            else snprintf(author, sizeof(author), "%s", p3);
+        } else {
+            snprintf(author, sizeof(author), "%s", from_dec);
+        }
+    }
+}
+}
+            /* 2025-08-10, PL: decode/humanize author for listing */
+            {
+                LINE tmpdec, disp;
+                rfc2047_decode(author, tmpdec, sizeof(tmpdec));
+                extract_display_name(tmpdec, disp, sizeof(disp));
+                /* strip surrounding quotes, e.g. "Carlos E.R." -> Carlos E.R. */
+                size_t L__ = strlen(disp);
+                if (L__ >= 2 && disp[0] == '"' && disp[L__-1] == '"') {
+                    disp[L__-1] = '\0';
+                    memmove(disp, disp + 1, L__ - 1);
                 }
+                snprintf(author, sizeof(author), "%s", disp);
             }
 
-            strcpy(subject, th->subject);
+            /* 2025-08-10, PL: decode subject for search/display (don't mutate th->subject) */
+            rfc2047_decode(th->subject, subj_dec, sizeof(subj_dec));
+            strcpy(subject, subj_dec);
             up_string(subject);
 
-            if (strlen(author) > 30) {
-                author[30] = 0;
+            /* 2025-08-10, PL: UTF-8 safe author truncation to 30 cols */
+            {
+                LINE tmpa;
+                utf8_trunc_cols(author, 30, tmpa, sizeof(tmpa));
+                snprintf(author, sizeof(author), "%s", tmpa);
             }
-            if (strlen(th->subject) > 36) {
-                th->subject[36] = 0;
-            }
+            utf8_trunc_cols(subj_dec, 36, subj_disp, sizeof(subj_disp));
             if (strncmp(subject, str, strlgth) == 0) {
                 while (dot_count > 0) {
                     output("\b \b");
@@ -1679,20 +2055,20 @@ list_subj(char *str)
                     if (th->type == TYPE_SURVEY)
                         c = '#';
                     if (output("%7ld  %-30s  %c %s\n",
-                            th->num, author, c, th->subject
+                            th->num, author, c, subj_disp
                         ) == -1) {
                         xit = 1;
                     }
                 } else {
                     if (from) {
                         if (output("%7ld  %s%-24s  %s\n",
-                                th->num, MSG_TOSUB, author, th->subject
+                                th->num, MSG_TOSUB, author, subj_disp
                             ) == -1) {
                             xit = 1;
                         }
                     } else {
                         if (output("%7ld  %s%-24s  %s\n",
-                                th->num, MSG_FROMSUB, author, th->subject
+                                th->num, MSG_FROMSUB, author, subj_disp
                             ) == -1) {
                             xit = 1;
                         }

@@ -31,6 +31,7 @@
 #include <signal.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
+#include <ctype.h>  /* isspace */
 
 /*
  * cmd_sendbatch - send all texts in database format, zipped
@@ -117,12 +118,19 @@ cmd_sendbatch(char *args)
     set_avail(Uid, 1);
 
     output("\n%s", MSG_CRPACK);
+    output("\n");
     fflush(stdout);
 
     snprintf(tmpdir, sizeof(tmpdir), "/tmp/%d", getpid());
     mkdir(tmpdir, 0777);
-    getcwd(cwd, LINE_LEN);
-    chdir(tmpdir);
+    if (getcwd(cwd, LINE_LEN) == NULL) {
+    perror("getcwd"); /* Modified by PL 2025-07-25 to keep linux compiler happy */
+    return 0;
+    }
+    if (chdir(tmpdir) == -1) {
+    perror("chdir"); /* Modified by PL 2025-07-25 to keep linux compiler happy */
+    return 0;
+    }
 
     /* copy userlist */
 
@@ -290,15 +298,35 @@ cmd_sendbatch(char *args)
         return -1;
     }
     memset(info.bbs, 0, 64);
-    fgets(info.bbs, 63, fp);
+    if (fgets(info.bbs, 63, fp) == NULL) {
+    perror("fgets info.bbs"); 		/* Linux compiler complained here and below (untested due to other errors - work in progress / TODO 2025-07-25, PL */
+    fclose(fp);
+    return 0;
+    }
     memset(info.adress, 0, 64);
-    fgets(info.adress, 63, fp);
+    if (fgets(info.adress, 63, fp) == NULL) {
+    perror("fgets info.adress");	/* Modified on 2025-07-25, PL */
+    fclose(fp);
+    return 0;
+    }
     memset(info.phone, 0, 128);
-    fgets(info.phone, 127, fp);
+    if (fgets(info.phone, 127, fp) == NULL) {
+    perror("fgets info.phone");		/* Modified on 2025-07-25, PL */
+    fclose(fp);
+    return 0;
+    }
     memset(info.sysop, 0, 128);
-    fgets(info.sysop, 127, fp);
+    if (fgets(info.sysop, 127, fp) == NULL) {
+    perror("fgets info.sysop");		/* Modified on 2025-07-25, PL */
+    fclose(fp);
+    return 0;
+    }
     memset(info.user, 0, 64);
-    fgets(info.user, 63, fp);
+    if (fgets(info.user, 63, fp) == NULL) {
+    perror("fgets info.user");		/* Modified on 2025-07-25, PL */
+    fclose(fp);
+    return 0;
+    }   
     cnvnat(info.bbs, ch);
     cnvnat(info.adress, ch);
     cnvnat(info.phone, ch);
@@ -394,7 +422,10 @@ cmd_sendbatch(char *args)
                     return -1;
                 }
                 msg_count++;
-                fgets(txt.subject, 127, msf);
+                if (fgets(txt.subject, 127, msf) == NULL) {
+                perror("fgets txt.subject"); /* 2025-07-25, PL (compiler was unhappy) */
+                return 0;
+                }
                 txt.subject[strlen(txt.subject) - 1] = '\0';
 
                 /* Get name of writer */
@@ -466,7 +497,10 @@ cmd_sendbatch(char *args)
 
                 msg_size = 0L;
                 for (l = 0; l < txt.lines; l++) {
-                    fgets(sbuf, 127, msf);      /* Get text */
+                    if (fgets(sbuf, 127, msf) == NULL) { /* Get text */
+    		    perror("fgets sbuf"); /* error checking 2025-07-25, PL */
+  		    return 0;
+		    }     
                     cnvnat(sbuf, ch);
                     sbuf[strlen(sbuf) - 1] = (char) 227;        /* Replace nl */
                     msg_size += fprintf(mep, "%s", sbuf);       /* Write text */
@@ -496,7 +530,8 @@ cmd_sendbatch(char *args)
     fclose(mep);
 
     /* Create CONTROL.DAT file */
-
+	printf("\n");
+	printf("[DEBUG] Skapar control.dat...");
     if ((cof = fopen(CTL_FILE, "wt")) == NULL) {
         output("Can't create %s\n", CTL_FILE);
         set_avail(Uid, 0);
@@ -539,7 +574,9 @@ cmd_sendbatch(char *args)
     strcat(sbuf, " ");
     strcat(sbuf, package);
     strcat(sbuf, ".qwk control.dat messages.dat *.ndx > /dev/null");
-    system(sbuf);
+    if (system(sbuf) == -1) {
+    perror("system"); /* PL 2025-07-25 */
+    }
 
     /* Cleanup */
 
@@ -570,7 +607,9 @@ cmd_sendbatch(char *args)
 
     snprintf(cmdline, sizeof(cmdline), "%d.qwk", getpid());
     unlink(cmdline);
-    chdir(cwd);
+    if (chdir(cwd) == -1) {
+    perror("chdir"); /* 2025-07-25 PL */
+    }
     rmdir(tmpdir);
 
     signal(SIGNAL_NEW_TEXT, baffo);
@@ -611,6 +650,114 @@ safe_str(const char *s)
 {
     return (s && *s) ? s : "";
 }
+
+/*
+ * rc_set_scalar - sets a single value in sklaffrc (2025-08-10 PL)
+ * args: 
+ * ret:
+ */
+int rc_set_scalar(int uid, const char *key, const char *value)
+{
+    char path[512], tmp[512], *buf = NULL, *newbuf = NULL;
+    size_t blen = 0, klen, vlen;
+    int fd = -1, rc = -1;
+
+    if (!key || !*key || !value) return -1;
+    klen = strlen(key);
+    vlen = strlen(value);
+
+    if (user_dir(uid, path) == NULL) return -1;          
+    strncat(path, "sklaffrc", sizeof(path)-strlen(path)-1);
+    snprintf(tmp, sizeof(tmp), "%s.tmp", path);
+
+    /* read existing */
+    fd = open_file(path, OPEN_QUIET);
+    if (fd != -1) {
+        buf = read_file(fd);
+        close_file(fd);
+    }
+    if (!buf) {
+        buf = strdup("");                                
+        if (!buf) return -1;
+    }
+    blen = strlen(buf);
+
+    /* find heading at start-of-line: "![Key]" */
+    char heading[128];
+    snprintf(heading, sizeof(heading), "![%s]", key);
+
+    char *p = buf;
+    char *hit = NULL;
+    while ((p = strstr(p, heading))) {
+        if (p == buf || p[-1] == '\n') { hit = p; break; }
+        p += 2; 
+    }
+
+    if (hit) {
+        /* replace the single value line following the heading */
+        char *val_start = strchr(hit, '\n');            
+        if (!val_start) val_start = buf + blen; else val_start++;
+        char *val_end = val_start;
+   
+        while (*val_end && *val_end != '\n') val_end++;
+   
+        size_t prefix_len = (size_t)(val_start - buf);
+        size_t suffix_len = blen - (size_t)(val_end - buf);
+        size_t need = prefix_len + vlen + 1 /* \n */ + suffix_len + 1;
+
+        newbuf = malloc(need);
+        if (!newbuf) goto out;
+
+        memcpy(newbuf, buf, prefix_len);
+        memcpy(newbuf + prefix_len, value, vlen);
+        newbuf[prefix_len + vlen] = '\n';
+        memcpy(newbuf + prefix_len + vlen + 1, val_end, suffix_len);
+        newbuf[need - 1] = '\0';
+    } else {
+        /* append at end; ensure file ends with a newline */
+        int need_nl = (blen > 0 && buf[blen-1] != '\n') ? 1 : 0;
+        size_t add_len = (need_nl ? 1 : 0) + 2 + 1 + klen + 1 + 1 + vlen + 1;
+        /* "\n" + "![" + key + "]" + "\n" + value + "\n" */
+        size_t need = blen + add_len + 1;
+
+        newbuf = malloc(need);
+        if (!newbuf) goto out;
+
+        memcpy(newbuf, buf, blen);
+        size_t o = blen;
+        if (need_nl) newbuf[o++] = '\n';
+        newbuf[o++] = '!';
+        newbuf[o++] = '[';
+        memcpy(newbuf + o, key, klen); o += klen;
+        newbuf[o++] = ']';
+        newbuf[o++] = '\n';
+        memcpy(newbuf + o, value, vlen); o += vlen;
+        newbuf[o++] = '\n';
+        newbuf[o] = '\0';
+    }
+    {
+        int tfd = create_file(tmp);
+        if (tfd == -1) goto out;
+        critical();
+        if (write_file(tfd, newbuf) == -1) { close_file(tfd); non_critical(); newbuf = NULL; goto out; }
+        close_file(tfd);
+	newbuf = NULL; 
+        if (rename(tmp, path) == -1) { /* POSIX-safe; Linux/FreeBSD */
+            unlink(tmp);
+            non_critical();
+            goto out;
+        }
+        non_critical();
+    }
+    rc = 0;
+
+out:
+    if (buf) free(buf);
+    if (newbuf) free(newbuf);
+    return rc;
+}
+
+
 
 /*
  * cmd_help - list all commands
@@ -2285,7 +2432,8 @@ cmd_post_text(char *args)
     int confid, fd;
     long textnum;
     struct CONF_ENTRY *ce;
-    LONG_LINE uname, group, cmdline;
+    LONG_LINE uname, cmdline; /* We don't use group anymore */
+    LONG_LINE tmp; /* moved here for inews header generation (2025-08-07, PL) */
     FILE *pipe;
     struct SKLAFFRC *rc;
 
@@ -2320,13 +2468,12 @@ cmd_post_text(char *args)
 #endif
 #ifdef POSTING_OK
     if (ce->type == NEWS_CONF) {
-        LONG_LINE tmp;
         struct passwd *pw = getpwuid(Uid);
 
         snprintf(uname, sizeof(uname), "%s@%s (%s)", pw->pw_name, MACHINE_NAME,
             user_name(Uid, tmp));
         un = uname;
-        snprintf(group, sizeof(group), "%s %s", MSG_NGROUP, conf_name(confid, tmp));
+ //       snprintf(group, sizeof(group), "%s %s", MSG_NGROUP, conf_name(confid, tmp));
         th.author = 0;
     }
 #endif
@@ -2376,13 +2523,47 @@ cmd_post_text(char *args)
         rc = read_sklaffrc(Uid);
         if (rc != NULL) {
             if (strlen(rc->sig)) {
-                fprintf(pipe, "%s%s\n%s\n%s%s\n\n%s--\n%s", MSG_EMFROM,
-                    uname, group, MSG_EMSUB, th.subject, inbuf, rc->sig);
-            } else
-                fprintf(pipe, "%s%s\n%s\n%s%s\n\n%s", MSG_EMFROM, uname,
-                    group, MSG_EMSUB, th.subject, inbuf);
-        }
-        fputs("\004", pipe);
+             /*fprintf(pipe, "%s%s\n%s\n%s%s\n\n%s--\n%s", MSG_EMFROM,
+                    uname, group, MSG_EMSUB, th.subject, inbuf, rc->sig);*/
+/*
+		fprintf(pipe, "From: %s\n", uname);
+		fprintf(pipe, "Newsgroups: %s\n", conf_name(confid, tmp));
+		fprintf(pipe, "Subject: %s\n", th.subject);
+		fprintf(pipe, "\n%s\n--\n%s\n", inbuf, rc->sig);
+*/
+
+fprintf(pipe, "From: %s\n", uname);
+fprintf(pipe, "Newsgroups: %s\n", conf_name(confid, tmp));
+fprintf(pipe, "Subject: %s\n", th.subject);
+fprintf(pipe, "Content-Type: text/plain; charset=UTF-8\n");
+fprintf(pipe, "MIME-Version: 1.0\n");
+fprintf(pipe, "\n");
+fprintf(pipe, "%s\n", inbuf);
+fprintf(pipe, "--\n%s\n", rc->sig);
+
+
+            } else {
+                /*fprintf(pipe, "%s%s\n%s\n%s%s\n\n%s", MSG_EMFROM, uname,
+                    group, MSG_EMSUB, th.subject, inbuf);*/
+
+/*
+
+		fprintf(pipe, "From: %s\n", uname);
+		fprintf(pipe, "Newsgroups: %s\n", conf_name(confid, tmp));
+		fprintf(pipe, "Subject: %s\n", th.subject);
+		fprintf(pipe, "\n%s\n", inbuf);
+*/
+		fprintf(pipe, "From: %s\n", uname);
+		fprintf(pipe, "Newsgroups: %s\n", conf_name(confid, tmp));
+		fprintf(pipe, "Subject: %s\n", th.subject);
+		fprintf(pipe, "Content-Type: text/plain; charset=UTF-8\n");
+		fprintf(pipe, "MIME-Version: 1.0\n");
+		fprintf(pipe, "\n");  // REQUIRED blank line between headers and body
+		fprintf(pipe, "%s\n", inbuf);
+        } 
+}
+	fflush(pipe);        /* Added for good measure 2025-08-07 PL */
+        fputs("\004", pipe); /* Writes ^D (not sure if really needed?) */
         if (rc != NULL)
             free(rc);
         free(inbuf);
@@ -2826,7 +3007,8 @@ cmd_mod_pinfo(char *args)
     rc = read_sklaffrc(Uid);
     if (rc != NULL) {
         output("\n%s %s.\n\n", MSG_MODPINFO, u_name);
-
+//        output(MSG_MODPINFO2); /* upcoming feature */
+/*
         output(MSG_INFOADDR);
         input(rc->user.adress, str2, 60, 0, 0, 0);
         strcpy(rc->user.adress, str2);
@@ -2834,10 +3016,6 @@ cmd_mod_pinfo(char *args)
         output(MSG_INFOZIP);
         input(rc->user.postnr, str2, 60, 0, 0, 0);
         strcpy(rc->user.postnr, str2);
-
-        output(MSG_INFOTOWN);
-        input(rc->user.ort, str2, 60, 0, 0, 0);
-        strcpy(rc->user.ort, str2);
 
         output(MSG_INFOTELE1);
         input(rc->user.tele1, str2, 60, 0, 0, 0);
@@ -2850,23 +3028,27 @@ cmd_mod_pinfo(char *args)
         output(MSG_INFOTELE3);
         input(rc->user.tele3, str2, 60, 0, 0, 0);
         strcpy(rc->user.tele3, str2);
-
+*/
         output(MSG_INFOMAIL1);
         input(rc->user.email1, str2, 60, 0, 0, 0);
         strcpy(rc->user.email1, str2);
-
+/*
         output(MSG_INFOMAIL2);
         input(rc->user.email2, str2, 60, 0, 0, 0);
         strcpy(rc->user.email2, str2);
-
+*/
         output(MSG_INFOURL);
         input(rc->user.url, str2, 60, 0, 0, 0);
         strcpy(rc->user.url, str2);
 
+        output(MSG_INFOTOWN);
+        input(rc->user.ort, str2, 60, 0, 0, 0);
+        strcpy(rc->user.ort, str2);
+/*
         output(MSG_INFOORG);
         input(rc->user.org, str2, 60, 0, 0, 0);
         strcpy(rc->user.org, str2);
-
+*/
         output("\n%s", MSG_SAVEINFO);
         input(MSG_YES, str2, 4, 0, 0, 0);
         down_string(str2);
@@ -3805,6 +3987,8 @@ cmd_list_flags(char *args)
         return 0;
     }
     output("\n");
+    out_onoff(Utf8);
+    output("%s\n", MSG_FLAG19F); /* Catching up with modern times ;) - utf8 is now fully supported 2025-08-11 PL */
     out_onoff(Ibm);
     output("%s\n", MSG_FLAG0F);
     out_onoff(Iso8859);
@@ -3840,8 +4024,9 @@ cmd_list_flags(char *args)
     out_onoff(Presbeep);
     output("%s\n", MSG_FLAG16F);
     out_onoff(Old_who);
-    output("%s\n\n", MSG_FLAG17F);
-
+    output("%s\n", MSG_FLAG17F);
+    out_onoff(Ansi_output); /* We now have an ANSI flag PL 2025 */
+    output("%s\n\n", MSG_FLAG18F);
     return 0;
 }
 
@@ -3910,13 +4095,12 @@ cmd_info(char *args)
  * args: user arguments (args)
  * ret: ok (0) or error (-1)
  */
-
 int
 cmd_long_help(char *args)
 {
     static LINE tmp;
     static LONG_LINE fname;
-    char *tmp2;
+    char *tmp2, *us;
     int (*fcn) (), i, fd;
     char *buf;
 
@@ -3925,56 +4109,81 @@ cmd_long_help(char *args)
         if (fcn) {
             for (i = 0; Par_ent[i].func[0]; i++) {
                 if (fcn == Par_ent[i].addr) {
-                    tmp2 = strchr(Par_ent[i].func, '_') + 1;
-                    if (strlen(tmp2) == 1 || !strchr(tmp2, '_')) {
-                        strcpy(tmp, tmp2);
+                    us = strchr(Par_ent[i].func, '_');
+                    if (us) {
+                        tmp2 = us + 1; 
+                        if (strlen(tmp2) == 1 || !strchr(tmp2, '_')) {
+                            strcpy(tmp, tmp2);
+                        } else {
+                            strcpy(tmp, strchr(tmp2, '_') + 1);
+                        }
                     } else {
-                        strcpy(tmp, strchr(tmp2, '_') + 1);
+                        strcpy(tmp, Par_ent[i].func);
                     }
                     snprintf(fname, sizeof(fname), "%s/%s", HELP_DIR, tmp);
-                    if (file_exists(fname)) {
+                    /*output("[HELP-DEBUG] lookup func=\"%s\" derived=\"%s\" path=\"%s\"\n",
+                           Par_ent[i].func, tmp, fname); */
+                    if (file_exists(fname) == -1) {
+                    //    output("[HELP-DEBUG] not found: %s\n", fname);
                         output("\n%s\n\n", MSG_NOHELP);
                     } else {
                         if ((fd = open_file(fname, 0)) == -1) {
+                      //      output("[HELP-DEBUG] open_file() failed for %s\n", fname);
                             sys_error("cmd_long_help", 1, "open_file");
                             return -1;
                         }
                         if ((buf = read_file(fd)) == NULL) {
+                       //     output("[HELP-DEBUG] read_file() returned NULL for %s\n", fname);
                             sys_error("cmd_long_help", 2, "read_file");
+                            /* try to close before bailing */
+                            (void) close_file(fd);
                             return -1;
                         }
                         if (close_file(fd) == -1) {
+                         //   output("[HELP-DEBUG] close_file() failed for %s\n", fname);
                             sys_error("cmd_long_help", 3, "close_file");
-                            return -1;
+                            /* continue; we still have buf to show */
                         }
+
                         output("\n%s\n", MSG_COMMAND);
                         for (i = 0; Par_ent[i].func[0]; i++) {
                             if (fcn == Par_ent[i].addr)
                                 output("  %s\n", Par_ent[i].cmd);
                         }
                         output("\n%s\n", buf);
+                        free(buf); /* avoid leak */
                     }
                     break;
                 }
             }
+        } else {
+        //    output("[HELP-DEBUG] parse() did not resolve command: \"%s\"\n", args);
+            output("\n%s\n\n", MSG_NOHELP);
         }
     } else {
-        if (file_exists(HELP_FILE)) {
+       // output("[HELP-DEBUG] no args, checking HELP_FILE: %s\n", HELP_FILE);
+        if (file_exists(HELP_FILE) == -1) {
+         //   output("[HELP-DEBUG] HELP_FILE missing, falling back to cmd_help()\n");
             cmd_help(args);
         } else {
             if ((fd = open_file(HELP_FILE, 0)) == -1) {
+           //     output("[HELP-DEBUG] open_file() failed for HELP_FILE\n");
                 sys_error("cmd_long_help", 1, "open_file");
                 return -1;
             }
             if ((buf = read_file(fd)) == NULL) {
+             //   output("[HELP-DEBUG] read_file() returned NULL for HELP_FILE\n");
                 sys_error("cmd_long_help", 2, "read_file");
+                (void) close_file(fd);
                 return -1;
             }
             if (close_file(fd) == -1) {
+              //  output("[HELP-DEBUG] close_file() failed for HELP_FILE\n");
                 sys_error("cmd_long_help", 3, "close_file");
-                return -1;
+                /* continue; we still have buf */
             }
             output("\n%s\n", buf);
+            free(buf);
         }
     }
     return 0;
@@ -4195,11 +4404,17 @@ cmd_upload(char *args)
     }
     set_avail(Uid, 1);
     output("\n");
-    getcwd(cwd, LINE_LEN);
+    if (getcwd(cwd, LINE_LEN) == NULL) {
+    perror("getcwd"); /* Keeps grumpy compiler happy on Linux PL 2025-07-25 */
+    return 0;
+    }
     signal(SIGNAL_NEW_TEXT, SIG_IGN);
     signal(SIGNAL_NEW_MSG, SIG_IGN);
     snprintf(filed, sizeof(filed), "%s/%d", FILE_DB, Current_conf);
-    chdir(filed);
+    if (chdir(filed) == -1) {
+    perror("chdir"); /* Keeps grumpy compiler happy on Linux PL 2025-07-25 */
+    return 0;
+    }
     if (fork()) {
         (void) wait(&fd);
     } else {
@@ -4217,7 +4432,10 @@ cmd_upload(char *args)
 
 
     }
-    chdir(cwd);
+    if (chdir(cwd) == -1) {
+    perror("chdir"); /* Keeps grumpy compiler happy on Linux PL 2025-07-25 */
+    return 0;
+    }
     signal(SIGNAL_NEW_TEXT, baffo);
     signal(SIGNAL_NEW_MSG, newmsg);
  /* rebuild_index_file();*/ 	/* Replaced with new code with error checking below, PL 2025-07-17 */
@@ -4268,7 +4486,10 @@ cmd_download(char *args)
         output("%s\n\n", MSG_BADFNAME);
         return 0;
     }
-    getcwd(cwd, LINE_LEN);
+    if (getcwd(cwd, LINE_LEN) == NULL) {
+    perror("getcwd"); /* Keeps grumpy compiler happy on Linux PL 2025-07-25 */
+    return 0;
+    }
 
     sigemptyset(&sigmask);
     sigaddset(&sigmask, SIGNAL_NEW_TEXT);
@@ -4278,7 +4499,10 @@ cmd_download(char *args)
     signal(SIGNAL_NEW_MSG, SIG_IGN);
     set_avail(Uid, 1);
     snprintf(filed, sizeof(filed), "%s/%d", FILE_DB, Current_conf);
-    chdir(filed);
+    if (chdir(filed) == -1) {
+    perror("chdir"); /* Keeps grumpy compiler happy on Linux PL 2025-07-25 */
+    return 0;
+    }
     if (!fork()) {
         sig_reset();        
  /* fprintf(stderr, "Executing: %s %s\n\n\n", DOWNLOADPRGM, DLOPT1, DLOPT2, DLOPT3); */ 	/* debugging */
@@ -4302,7 +4526,10 @@ cmd_download(char *args)
     signal(SIGNAL_NEW_TEXT, baffo);
     signal(SIGNAL_NEW_MSG, newmsg);
     sigprocmask(SIG_UNBLOCK, &oldsigmask, NULL);
-    chdir(cwd);
+    if (chdir(cwd) == -1) {
+    perror("chdir"); /* Keeps grumpy compiler happy on Linux PL 2025-07-25 */
+    return 0;
+    }
     tty_raw();
     output("\n");
     set_avail(Uid, 0);
@@ -5591,5 +5818,140 @@ cmd_reclaim_unread(char *args)
     } else {
         output("\n");
     }
+    return 0;
+}
+
+/*
+ * cmd_mod_numlines - set per-user terminal height (Numlines)
+ * args: user arguments (args) — optional integer rows (10–200), 0 or 'A'/'a' for autodetect; if empty, run picker UX
+ * ret: ok (0) or failure (-1)  [invalid value or could not save to sklaffrc]
+ */
+int
+cmd_mod_numlines(char *args)
+{
+    LINE buf;
+    int v;
+
+    /* fast path: arg provided */
+    if (args && *args) {
+        /* trim */
+        while (*args && isspace((unsigned char)*args)) args++;
+        size_t alen = strlen(args);
+        while (alen && isspace((unsigned char)args[alen - 1])) { args[--alen] = '\0'; }
+
+        /* 'A'/'a' => auto-detect */
+        if (alen == 1 && (args[0] == 'a' || args[0] == 'A')) {
+            if (rc_set_scalar(Uid, "Numlines", "0") != 0) {
+                output(MSG_NUMLNSFAIL);
+                return -1;
+            }
+            Numlines = detect_terminal_lines();
+            output(MSG_NUMLNSOK, Numlines);
+            return 0;
+        }
+
+        /* numeric (0 => auto) */
+        char *endp = NULL;
+        long t = strtol(args, &endp, 10);
+        while (endp && *endp && isspace((unsigned char)*endp)) endp++;
+
+        if (endp != args && (!endp || *endp == '\0') && t == 0) {
+            if (rc_set_scalar(Uid, "Numlines", "0") != 0) {
+                output(MSG_NUMLNSFAIL);
+                return -1;
+            }
+            Numlines = detect_terminal_lines();
+            output(MSG_NUMLNSOK, Numlines);
+            return 0;
+        }
+
+        if (endp == args || (endp && *endp) || t < 10 || t > 200) {
+            output(MSG_NUMLNSERR);
+            return 0;  /* don’t kick user out */
+        }
+
+        v = (int)t;  /* valid explicit value */
+    } else {
+        /* interactive countdown */
+        int top = 80;
+        int old_num = Numlines;
+        int old_lines = Lines;
+
+        /* temporarily disable paging */
+        Numlines = 0;
+        Lines = 0;
+
+        output("\n");
+        for (int n = top; n >= 2; n--) output("%d\n", n);
+        output(MSG_NUMLNSHELLO);
+
+        /* IMPORTANT: make initial value empty to avoid garbage */
+        buf[0] = '\0';
+        input(buf, buf, sizeof(buf)-1, 0, 0, 0);
+
+        /* trim both ends */
+        rtrim(buf);
+        char *p = buf;
+        while (*p && isspace((unsigned char)*p)) p++;
+
+        /* restore line counter; Numlines set below only on success */
+        Lines = old_lines;
+
+        /* cancel on empty or q/Q */
+        if (*p == '\0' || ((p[0] == 'q' || p[0] == 'Q') && p[1] == '\0')) {
+            Numlines = old_num;
+            output(MSG_NUMLNCONF);
+            return 0;
+        }
+
+        /* 'A'/'a' => auto */
+        if ((p[0] == 'a' || p[0] == 'A') && p[1] == '\0') {
+            if (rc_set_scalar(Uid, "Numlines", "0") != 0) {
+                output(MSG_NUMLNSFAIL);
+                Numlines = old_num;
+                return -1;
+            }
+            Numlines = detect_terminal_lines();
+            output(MSG_NUMLNSOK, Numlines);
+            return 0;
+        }
+
+        /* numeric (0 => auto) */
+        char *endp = NULL;
+        long t = strtol(p, &endp, 10);
+        while (endp && *endp && isspace((unsigned char)*endp)) endp++;
+
+        if (endp != p && (!endp || *endp == '\0') && t == 0) {
+            if (rc_set_scalar(Uid, "Numlines", "0") != 0) {
+                output(MSG_NUMLNSFAIL);
+                Numlines = old_num;
+                return -1;
+            }
+            Numlines = detect_terminal_lines();
+            output(MSG_NUMLNSOK, Numlines);
+            return 0;
+        }
+
+        if (endp == p || (endp && *endp) || t < 10 || t > 200) {
+            Numlines = old_num;
+            output(MSG_NUMLNSERR);
+            return 0;  /* don’t kick user out */
+        }
+
+        v = (int)t;
+        Numlines = v;  /* accept immediately */
+    }
+
+    /* persist explicit value to sklaffrc */
+    {
+        char vstr[16];
+        snprintf(vstr, sizeof(vstr), "%d", v);
+        if (rc_set_scalar(Uid, "Numlines", vstr) != 0) {
+            output(MSG_NUMLNSFAIL);
+            return -1;  /* real error: file write */
+        }
+    }
+
+    output(MSG_NUMLNSOK, v);
     return 0;
 }
