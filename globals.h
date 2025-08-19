@@ -74,18 +74,20 @@ int Present;                    /* Allow present-messages	 */
 int Ibm;                        /* IBM mode			 */
 int Iso8859;                    /* ISO-8859  mode		 */
 int Mac;                        /* Macintosh mode		 */
-int Old_who;                    /* Old-style who list           */
+int Old_who;                    /* Old-style who list            */
 int Subject_change;             /* Subject change wanted	 */
 int End_default;                /* Logout as default		 */
-int Space;                      /* Conservative space-handling  */
+int Space;                      /* Conservative space-handling   */
 int Copy;                       /* Copy of mail sent		 */
 int Author;                     /* Author after text		 */
 int Date;                       /* Show date in textheader	 */
 int Beep;                       /* Allow beeps 		   	 */
 int Clear;                      /* Clear screen		   	 */
 int Header;                     /* email header		   	 */
-int Special;                    /* Special use, e.g. GUI client */
+int Special;                    /* Special use, e.g. GUI client  */
 int Presbeep;                   /* Beep at present msg        	 */
+int Ansi_output;		/* Allow display of ANSI colors  */
+int Utf8;                	/* UTF-8 mode			 */
 struct termios Tty_mode;
 sigset_t Oldmask;
 
