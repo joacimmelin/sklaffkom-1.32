@@ -11,7 +11,7 @@ SKLAFFSYS = FREEBSD	# FreeBSD
 #SKLAFFSYS = SOLARIS	# Solaris
 #SKLAFFSYS = LINUX	# Linux
 
-#CC=gcc
+CC=gcc
 SKLAFFFLAGS = -D$(SKLAFFSYS) -DSKLAFFDIR=\"$(SKLAFFDIR)\" -DSKLAFFBIN=\"$(SKLAFFBIN)\"
 CFLAGS = $(SKLAFFFLAGS) -O2 -g -pipe -Wall -Werror
 
@@ -191,15 +191,36 @@ clean:
 	(cd lib; make clean)
 	-rm -f *.o *.a \#* *~ core sklaffkom sklaffadm sklaffacct mailtoss newstoss survreport sklaffwho version.c
 
+# distrib is rewritten 2025-08-16 by PL to work in our modern times
+
 distrib:
 	echo 0 > .compile
-	(cd ..; \
-	find sklaff-1.28 -type f -not -name "*.o" -not -name "*.a" \
-		-not -name "*~" \( -not -perm +111 -or -name "version.sh" \) \
-		-print | sort > /tmp/sklaff; \
-	tar --create --file - --files-from /tmp/sklaff | \
-		compress > sklaff128.tz; \
-	tar --create --file - --files-from /tmp/sklaff | \
-		gzip -c > sklaff128.tgz; \
-	cat /tmp/sklaff | xargs -iFILE zip sklf128 FILE; \
-	rm /tmp/sklaff)
+	@BASENAME=$$(basename "$$PWD"); \
+	DISTDIR="./dist"; \
+	LIST="/tmp/sklaff.$$"; \
+	mkdir -p "$$DISTDIR"; \
+	( \
+	  echo "Updating version.c from version.sh..."; \
+	  sh "version.sh" >/dev/null 2>&1 || { echo "version.sh failed!"; exit 1; }; \
+	  find . -type f \
+	    ! -name '*.o' ! -name '*.a' ! -name '*~' \
+	    \( ! -perm /111 -o -name 'version.sh' \) \
+	    -print | sort > "$$LIST"; \
+	  RAWV=$$(sh "version.sh" -s 2>/dev/null | awk '{print $$NF}' || echo unknown); \
+	  PRETTYV=$$(printf '%s' "$$RAWV" | sed -E 's/#.*//' | sed -E 's/\([^)]+\)//g' | sed -E 's/([0-9]+)\.([0-9]+)b([0-9]+)/\1.\2-beta\3/'); \
+	  SAFEV=$$(printf '%s' "$$PRETTYV" | tr -cd 'A-Za-z0-9._+-'); \
+	  PKG="sklaff-$${SAFEV}"; \
+	  echo "Version string from version.sh: $$RAWV"; \
+	  echo "Filename-safe version: $$SAFEV"; \
+	  if command -v compress >/dev/null 2>&1; then \
+	    tar -cf - --files-from "$$LIST" | compress > "$$DISTDIR/$$PKG.tz"; \
+	  else \
+	    echo "Note: 'compress' not found; skipping .tz"; \
+	  fi; \
+	  tar -cf - --files-from "$$LIST" | gzip -9c > "$$DISTDIR/$$PKG.tgz"; \
+	  zip -q -@ "$$DISTDIR/$$PKG.zip" < "$$LIST"; \
+	  rm -f "$$LIST"; \
+	  echo "Done. Created files in $$DISTDIR:"; \
+	  ls -l "$$DISTDIR"/$$PKG.* 2>/dev/null || true \
+	)
+

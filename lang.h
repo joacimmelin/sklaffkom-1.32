@@ -102,7 +102,7 @@
 #define MSG_POWER	"Str|mavbrott, kontakta operat|r!"
 #define MSG_OP		"Utloggad av operat|r!"
 #define MSG_TIMEOUT	"Utloggad pga inaktivitet!"
-#define MSG_WELBACK	"V{lkommen tillbaka"
+#define MSG_WELBACK	"V{lkommen }ter"
 #define MSG_ACTIVETIME	"Du var inloggad i"
 #define MSG_MINUTES	"minuter."
 #define MSG_ONEMIN	"en minut."
@@ -235,16 +235,17 @@
 #define MSG_GREPNFOUND	"S|kstr{ngen hittades inte n}gonstans i detta m|te."
 #define MSG_GGREPNFOUND	"Ingen text inneh|ll s|kstr{ngen."
 #define MSG_MODPINFO	"Uppdatering av personuppgifter f|r"
-#define MSG_INFOADDR	"Adress : "
-#define MSG_INFOZIP	"Postnr : "
-#define MSG_INFOTOWN	"Ort    : "
-#define MSG_INFOTELE1	"Tele1  : "
-#define MSG_INFOTELE2	"Tele2  : "
-#define MSG_INFOTELE3	"Tele3  : "
-#define MSG_INFOMAIL1	"E-mail1: "
-#define MSG_INFOMAIL2	"E-mail2: "
-#define MSG_INFOURL     "URL    : "
-#define MSG_INFOORG	"Org    : "
+//#define MSG_MODPINFO2	"Samtliga uppgifter {r givetvis frivilliga, men fyller du i stad ser du v{dret hos dig i prompten.\n\n" /* Upcoming feature */
+#define MSG_INFOADDR	"Adress  : "
+#define MSG_INFOZIP	"Postnr  : "
+#define MSG_INFOTOWN	"Stad    : "
+#define MSG_INFOTELE1	"Telef}n : "
+#define MSG_INFOTELE2	"Tele2   : "
+#define MSG_INFOTELE3	"Tele3   : "
+#define MSG_INFOMAIL1	"E-post  : "
+#define MSG_INFOMAIL2	"E-mail2 : "
+#define MSG_INFOURL     "Hemsida : "
+#define MSG_INFOORG	"Org     : "
 #define MSG_SAVEINFO	"Ska f|r{ndringarna sparas (Ja/Nej) ? "
 #define MSG_INFOSAVED	"Personuppgifterna uppdaterade."
 #define MSG_INFONOSAVE	"Inga f|r{ndringar gjorda."
@@ -288,6 +289,13 @@
 #define MSG_YOUAREFROM  "Du {r nu fr}n "
 #define MSG_NOWHERE     "ingenstans"
 #define MSG_UNREADUNREAD "\n%d text(er) ol{smarkerades.\n"
+#define MSG_NUMLNSERR	"Ogiltigt v{rde. Ange 10 – 200.\n"
+#define MSG_NUMLNSHELLO	"Skriv in siffran du ser h|gst upp (0 f|r auto) :"
+#define MSG_NUMLNSFAIL	"Kunde tyvärr inte spara inst{llningen, meddela SysOp!\n"
+#define MSG_NUMLNSOK	"Antal rader satt till %d.\n"
+#define MSG_NUMLNCONF	"Ingen {ndring.\n"
+//#define MSG_NO_ZORK	"No z3-file found, sorry"  					/*Zork */
+//#define MSG_BADARG      "\nFöljande infocom-spel finns för närvarande :\n\nZork 1\nZork 2\nZork 3\n\nFör att spela, ge kommandot Zork <nr>.\n\n"	/* Zork */
 
 /* conf.c */
 
@@ -371,6 +379,7 @@
 #define MSG_EDRECOVER	"]terupptar en avbruten editering..."
 #define MSG_NOSAVE	"Du f}r inte spara texten h{r, flytta den f|rst."
 #define MSG_QUSE	"j = citera rad, a = citera resten, q = avbryt, annat = n{sta rad"
+#define MSG_NOBODYQUOTE	"Sorry, hittar ingen text att citera\n"
 
 #define MSG_SURVHELP1    "Fr}getyper f|r enk{ter\n\n"
 #define MSG_SURVHELP2    "Fritext  : ## text\n"
@@ -440,10 +449,17 @@
 #define MSG_FLAG17      "gammal"
 #define MSG_FLAG17N     1
 #define MSG_FLAG17F     "Gammal (vilkalistesortering)"
+#define MSG_FLAG18	"ansi"
+#define MSG_FLAG18N	2
+#define MSG_FLAG18F	"ANSI-färger"
+#define MSG_FLAG19	"utf8"
+#define MSG_FLAG19N	1
+#define MSG_FLAG19F	"UTF-8 (teckenupps{ttning)"
 #define MSG_NOFLAG	"Du m}ste ange en flagga."
 #define MSG_PCWARN	"Du b|r sl} av IBM-PC f|rst."
 #define MSG_ISOWARN	"Du b|r sl} av ISO 8859-1 f|rst."
 #define MSG_MACWARN	"Du b|r sl} av Macintosh f|rst."
+#define MSG_UTFWARN	"Du b|r sl} av UTF-8 f|rst."
 #define MSG_BADFLAG	"Felaktig flagga."
 #define MSG_FLAG	"Flaggan"
 #define MSG_FLON	"p}slagen."
@@ -497,6 +513,7 @@
 #define MSG_IN		"i"
 #define MSG_BY		"av"
 #define MSG_RECIPIENT	"Mottagare:"
+#define MSG_CONF	"M|te:"
 #define MSG_SUBJECT	"[rende: "
 #define MSG_SUBJECT2	"[rende"
 #define MSG_NOTEXTNUM	"Du m}ste ange ett textnummer."
@@ -617,18 +634,18 @@
 /* sklaffacct.c */
 
 #define MSG_INNAME	"F|r och efternamn      : "
-#define MSG_INLOGIN	"Inloggningsnamn : "
+#define MSG_INLOGIN	"Inloggningsnamn        : "
 #define MSG_INPASSWD	"|nskat l|senord        : "
 #define MSG_INMODEM	"Modempools-tillg}ng    : "
-#define MSG_INPOST	"E-postadress      : " /* Upcoming feature : ask for e-mail address in sklaffacct 2025-07-14 PL*/
-#define MSG_INTELE	"Telefonnummer     : "
+#define MSG_INPOST	"E-postadress           : "
+#define MSG_INTELE	"Telefonnummer          : "
 #define MSG_ACCAPP	"Kontoans|kning: "
-#define MSG_INSNAME	"Namn   : "
-#define MSG_INSLOGIN	"\nlogin  : "
-#define MSG_INSPASSWD	"\npasswd : "
-#define MSG_INSMODEM	"\nModem  : "
-#define MSG_INSPOST	"\nE-post : " /* Upcoming feature : ask for e-mail address in sklaffacct 2025-07-14 PL*/
-#define MSG_INSTELE	"\nTelefon: "
+#define MSG_INSNAME	"Namn     : "
+#define MSG_INSLOGIN	"\nLogin    : "
+#define MSG_INSPASSWD	"\nL|sen    : "
+#define MSG_INSMODEM	"\nModem    : "
+#define MSG_INSPOST	"\nE-post   : "
+#define MSG_INSTELE	"\nTelefon  : "
 #define MSG_APPLIED	"Din ans|kan {r registrerad.\nV{lkommen }ter.\n\n"
 #define MSG_UIDINUSE	"Inloggningsnamn kan ej anv{ndas. V{nligen v{lj annat."
 
@@ -640,7 +657,7 @@
 
 #define MSG_NTINFO	"Syntax: newstoss <conference>"
 #define MSG_BADACTIVE	"Kan inte |ppna active-filen."
-#define MSG_NOGROUP	"Det finns ingen s}dan newsgrupp."
+#define MSG_NOGROUP	"Det finns ingen s}dan newsgrupp i din active-fil."
 #define MSG_MSGID	"Message-ID:"
 #define MSG_REFID	"References:"
 
@@ -860,6 +877,7 @@
 #define MSG_GREPNFOUND	"The search string was not found in this conference."
 #define MSG_GGREPNFOUND	"No articles contained the search string."
 #define MSG_MODPINFO	"Changing personal information for"
+//#define MSG_MODPINFO2 "Samtliga uppgifter {r givetvis frivilliga, men fyller du i stad ser du v{dret hos dig i prompten.\n\n" /* Upcoming feature */
 #define MSG_INFOADDR	"Address: "
 #define MSG_INFOZIP	"Zip    : "
 #define MSG_INFOTOWN	"Town   : "
@@ -913,6 +931,15 @@
 #define MSG_NOWHERE     "nowhere"
 #define MSG_UNREADUNREAD "\n%d text(s) marked unread.\n"
 #define MSG_THECOMMAND  "The command" /* Missing language strings made the english binary crash, now fixed 2025-07-14 PL */
+#define MSG_NUMLNSERR	"Invalid entry, try 10-200"
+#define MSG_NUMLNSHELLO	"Type the number at the top (0 equals auto):"
+#define MSG_NUMLNSFAIL	"Save failed, please contact SysOp!\n"
+#define MSG_NUMLNSOK	"Number of rows set to %d.\n"
+#define MSG_NUMLNCONF	"Same as before then.\n"
+//#define MSG_NO_ZORK     "No z3-file found, sorry"       /*Zork */
+//#define MSG_BADARG      "Hoppas, du glömde ange vilket Zork (1-3) du vill spela.\n\n"   /* Zork */
+
+
 
 /* conf.c */
 
@@ -996,6 +1023,7 @@
 #define MSG_EDRECOVER	"Resuming an aborted editing session..."
 #define MSG_NOSAVE	"You can't save your text here, please move it."
 #define MSG_QUSE	"j = quote line, a = quote all lines, q = abort, any other key = next line"
+#define MSG_NOBODYQUOTE	"Sorry, there's "no body" to be found for quation\n"
 
 #define MSG_SURVHELP1    "Question types for surveys\n\n"
 #define MSG_SURVHELP2    "Free text      : ## text\n"
@@ -1073,10 +1101,17 @@
 #define MSG_FLAG17      "old"
 #define MSG_FLAG17N     1
 #define MSG_FLAG17F     "Old (who-list sort order)"
+#define MSG_FLAG18      "ansi"
+#define MSG_FLAG18N     2
+#define MSG_FLAG18F      "ANSI colors"
+#define MSG_FLAG19	"utf8"
+#define MSG_FLAG19N	"2"
+#define MSG_FLAG19F	"UTF-8 (character set)"
 #define MSG_NOFLAG	"You must supply a flagname."
 #define MSG_PCWARN	"You should turn off IBM-PC first."
 #define MSG_ISOWARN	"You should turn off ISO 8859-1 first."
 #define MSG_MACWARN	"You should turn off Macintosh first."
+#define MSG_UTFWARN	"You should turn off UTF-8 first."
 #define MSG_BADFLAG	"Bad flag."
 #define MSG_FLAG	"The flag"
 #define MSG_FLON	"turned on."
@@ -1118,6 +1153,7 @@
 #define MSG_IN		"in"
 #define MSG_BY		"by"
 #define MSG_RECIPIENT	"To:"
+#define MSG_CONF	"Conference:"
 #define MSG_SUBJECT	"Subject: "
 #define MSG_SUBJECT2	"Subject"
 #define MSG_NOTEXTNUM	"You must supply a article number."
@@ -1243,8 +1279,8 @@
 #define MSG_INPOST      "E-mail address         : "
 #define MSG_ACCAPP	"Account application: "
 #define MSG_INSNAME	"Name     : "
-#define MSG_INSLOGIN	"\nlogin    : "
-#define MSG_INSPASSWD	"\npasswd   : "
+#define MSG_INSLOGIN	"\nLogin    : "
+#define MSG_INSPASSWD	"\nPasswd   : "
 #define MSG_INSMODEM	"\nModem    : "
 #define MSG_INSTELE	"\nTelephone: "
 #define MSG_INSPOST     "\nE-mail : "

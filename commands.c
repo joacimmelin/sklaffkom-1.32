@@ -32,6 +32,13 @@
 #include <sys/stat.h>
 #include <sys/wait.h>
 #include <ctype.h>  /* isspace */
+//* a bunch of new includes for zork */
+//#include <limits.h>
+//#include <unistd.h>
+//#include <errno.h>
+//#include <ctype.h>
+//#include <stdio.h>
+//#include <string.h>
 
 /*
  * cmd_sendbatch - send all texts in database format, zipped
