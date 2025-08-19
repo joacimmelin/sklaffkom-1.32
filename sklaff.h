@@ -107,7 +107,7 @@ https://github.com/joacimmelin/sklaffkom-1.32/wiki/Install-Instructions */
 #define LSOPT		"-1"    /* option to make one column */
 #define MVPRGM		"/bin/mv"
 #define MAILPRGM	"/usr/sbin/sendmail --"
-#define NEWSPRGM	"/usr/bin/inews"
+#define NEWSPRGM	"/usr/bin/inews -h" /*-h needed!  */
 #define SURVREPORT 	SKLAFFBIN "/srep"
 
 /* SklaffKOM-files */
@@ -163,6 +163,26 @@ https://github.com/joacimmelin/sklaffkom-1.32/wiki/Install-Instructions */
 /* Log level (lower means less logs, 0 = no logs) */
 
 #define LOGLEVEL 6
+
+/* Misc settings */
+#define PROMPT		"-> " /* one whitespace at the end is a good idea PL 2025-07-30*/
+
+/* Macros */
+
+#define ansi_output(...) do { if (Ansi_output) output(__VA_ARGS__); } while (0) /* 2025-07-30 PL */
+#define output_ansi_fallback(ansi_str, plain_str) \
+        do { output(Ansi_output ? (ansi_str) : (plain_str)); } while (0)  	/* 2025-07-30 PL */
+
+/* ANSI colors */ 								/* 2025-07-30 PL */
+#define RED             "\e[31m"
+#define GREEN		"\e[32m"
+#define YELLOW		"\e[33m"
+#define BLUE		"\e[34m"
+#define PURPLE		"\e[35m"
+#define CYAN		"\e[36m"
+#define WHITE		"\e[37m"
+#define DOT		"\e[0m" /* Reset to default */
+#define RESET		"\e[0m" /* Alias for the above */
 
 /* Change nothing below this line (unless it won't compile) */
 
@@ -293,6 +313,8 @@ char *real_string(char *);
 char *reorder_name(char *, char *);
 char *prog_name(char *);
 char *mbox_dir(int, char *);
+int output_ansi_fmt(const char *ansi_fmt, const char *plain_fmt, ...); 	/* 2025-07-30 PL */
+int detect_terminal_lines(void);					/* 2025-08-10 PL */
 
 /* Debugging */
 /* void *my_malloc (size_t); */
@@ -385,6 +407,8 @@ int cmd_post_survey(char *);
 int cmd_read_last_text(char *);
 int cmd_reclaim_unread(char *);
 int cmd_nethack(char *);
+int cmd_mod_numlines(char *args); /* 2025-08-10 PL */
+int cmd_zork(char *args); /* 2025-08-17 PL */
 
 /* admin.c */
 
