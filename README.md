@@ -9,9 +9,9 @@ It was never meant to be a complete, permanent BBS system but rather a temporary
 
 The reason for keeping this old codebase alive and working on modern operating systems is simple: it is a big part of the cultural heritage of a small BBS community in Sweden. The goal is, of course, to have Sklaffkom support a modern version of a modern operating system to be able to open this BBS system to online users again. Because we can. 
 
-This version, 1.32.1, is based on the last publically released version by the original team behind Sklaffkom. Later additions to Sklaffkom was added but never released to the world.  
+This version of Sklaffkom is based on the last publically released version by the original team behind Sklaffkom. Later additions to Sklaffkom was added but never released to the world.  
 
-The source code and documentation was updated in June-July 2025 (and onwards) to run on modern 64-bit OSes by Petri Stenberg, Fredrik Björeman, Peter London, Marcus Sundberg and Joakim Melin. 
+The source code and documentation was updated in June-July 2025 (and onwards) to run on modern 64-bit OSes by Petri Stenberg, Fredrik Björeman, Peter London, Marcus Sundberg and Joakim Melin. Please see the [changelog](https://github.com/joakimmelin/sklaffkom/blob/master/ChangeLog) (not a 100% complete list) for information on what has been changed. 
 
 As of 2025-06-09 it has been verified to run with FreeBSD, Linux and MacOS 15.5 x86_64. Complete instructions on how to compile and install Sklaffkom can be found [here](https://github.com/joakimmelin/sklaffkom/wiki). 
 
