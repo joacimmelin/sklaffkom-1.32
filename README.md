@@ -1,6 +1,7 @@
 Sklaffkom is a Swedish, command based BBS system (also known as [KOM](https://en.wikipedia.org/wiki/KOM_(bulletin_board_system))) written for SunOS 5.x, later ported to Interactive Unix, NetBSD, FreeBSD and later (sort-of) ported to Linux. 
 
-The BBS system was originally written by Torbjörn Bååth, Peter Forsberg, Peter Lindberg, Odd Petersson and Carl Sundbom in the winter of 1992.  Later additions was written by Daniel Grönjord and Olof Runborg. 
+The BBS system was originally written by Torbjörn Bååth, Peter Forsberg, Peter Lindberg, Odd Petersson and Carl Sundbom in the winter of 1992.  
+Later additions was written by Daniel Grönjord and Olof Runborg. 
 
 Sklaffkom was, and still is, distributed under the GPL 2.0 license from 1991. 
 
@@ -12,7 +13,7 @@ This version, 1.32.1, is based on the last publically released version by the or
 
 The source code and documentation was updated in June-July 2025 (and onwards) to run on modern 64-bit OSes by Petri Stenberg, Fredrik Björeman, Peter London, Marcus Sundberg and Joakim Melin. 
 
-As of 2025-06-09 it has been verified to run with at least basic functionality on AlmaLinux 9 x86_64 (for now need to remove -Werror to compile on Linux) and MacOS 15.5 x86_64. Complete instructions on how to compile and install Sklaffkom can be found [here](https://github.com/joacimmelin/sklaffkom-1.32/wiki/Install-Instructions). 
+As of 2025-06-09 it has been verified to run with FreeBSD, Linux and MacOS 15.5 x86_64. Complete instructions on how to compile and install Sklaffkom can be found [here](https://github.com/joakimmelin/sklaffkom/wiki). 
 
 Since the ancient nlist() hack to find command functions has now been replaced with plain ISO C it should be able to run on almost any modern *nix-like OS (both 32- and 64-bit) with only minor modifications.
 
