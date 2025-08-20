@@ -1,3 +1,7 @@
+2025-08-20
+
+Merged old and new changelog into this file. // JM
+
 v1.33 beta 2, tisdag 18:e augusti 18:55: 
 
 So many changes here, sorry only in Swedish for now :
@@ -135,3 +139,74 @@ Sun Nov 24 19:50:50 1996  S|derKOM administration  <sklaff@skom.skom.se>
 	the URL field in the user information and finally added the toy
 	command "from". I also made some commands silent when used in
 	the "login scripts".
+
+
+19 Aug 1993	      * SklaffKOM v1.00 released.
+
+20 Aug 1993		All "system" changed to "execl" for security
+			reasons.  Minor cosmetic fixes.  New #defines
+			in sklaff.h for program options.
+
+21 Aug 1993		Wordwrap when in "say"-mode.
+
+22 Aug 1993		Fixed bug in "unread tree" when text was moved
+			from another conference.
+
+23 Aug 1993		Fixed bug when compiling for BSD. Variable
+			oldmask should be called oldsigmask. Several
+			places. Changed add_active to look for dead
+			users before adding self. Cleared msg-file at
+			every login.
+
+27 Aug 1993		Fixed bug in cmd_goto_text when text does not
+			exist.
+
+29 Aug 1993		Fixed bug i parse.c when two commands gave
+			full hits. Fixed bug in edit.c concerning
+			"move text".
+
+30 Aug 1993		Fixed bug concering variable Last_text. Now
+			it is changed only if the text exists. Also
+			fixed bug in next_text, it had problem finding
+			the right text if the next one was deleted.
+			Fixed bug in editor, when changing a line you
+			had one character less available on the line.
+
+1 Sep 1993		Fixed bug in "resume_aborted_edit". Sometimes
+			the text resumed was added to the wrong confernce.
+			Added "ULTRIX"-define for compilation.
+
+2 Sep 1993	      *	SklaffKOM v1.01 released.
+
+4 Sep 1993	        Fixed bug in list_confs concering (F)-flag.
+
+9 Sep 1993		Fixed bug i cmd_download, wildcards didn't work.
+
+22 Sep 1993		Changed signal handling, suspects bug. Changed
+			ULTRIX define to not equal LINUX. Changed length
+			of say/yell messages to one character shorter.
+
+30 Sep 1993		Changed getwd/getcwd compilation defines.
+
+5 Oct 1993		Added cls before text flag.
+
+10 Nov 1993		Fixed bug when redisplaying other peoples letters.
+
+12 Nov 1993		Fixed textnumber check in cmd_unread_text.
+
+28 Nov 1993		Comments no longer allowed i database-files.
+			sscanf removed from buf.c and custom routines
+			used instead.
+
+2 Feb 1994              Added paydate to sklaffrc-struct.  Addes support
+                        in sklaffadm-program to set paydate and some 
+                        code in cmd_show_status, list_user, and some
+                        added functionality in sklaffadm userlist.
+
+xx Mar 1994	      *	Here a lot has happened, a zillion fixed during
+                        the last month, a bunch on new commands and
+                        support for news and email.  1.10 released.
+
+9 March 1996		Well, I sort of forgot to update this file, but
+                        a lot of bugfixes and some new commands. 1.11
+			released.
