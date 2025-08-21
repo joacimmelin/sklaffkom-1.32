@@ -32,14 +32,70 @@
 #include <sys/stat.h>
 #include <sys/wait.h>
 #include <ctype.h>  /* isspace */
-//* a bunch of new includes for zork */
-//#include <limits.h>
-//#include <unistd.h>
-//#include <errno.h>
-//#include <ctype.h>
-//#include <stdio.h>
-//#include <string.h>
+/* a bunch of new includes for zork */
+#include <limits.h>
+#include <unistd.h>
+#include <errno.h>
+#include <ctype.h>
+#include <stdio.h>
+#include <string.h>
 
+
+/* TODO Move this someplace else */
+
+const char *
+month_name(int mon)
+{
+    static const char *months[] = {
+        "januari", "februari", "mars", "april", "maj", "juni",
+        "juli", "augusti", "september", "oktober", "november", "december"
+    };
+    if (mon >= 0 && mon <= 11)
+        return months[mon];
+    return "okänd";
+}
+
+/* TODO Move this someplace else */
+void
+chomp(char *s)
+{
+    int len = strlen(s);
+    while (len > 0 && (s[len - 1] == '\n' || s[len - 1] == '\r'))
+        s[--len] = '\0';
+}
+
+
+
+
+/*
+ * get_wallclock_localtime - little helper to show correct time at all times (2025-08-16 PL)
+ */
+
+static void
+get_wallclock_localtime(const time_t *t, struct tm *out)
+{
+    char *saved = NULL;
+    const char *tz = getenv("TZ");
+    if (tz && tz[0]) {
+        saved = strdup(tz);            
+    }
+
+    unsetenv("TZ");                    
+    tzset();
+
+    {
+        struct tm *tmp = localtime(t); 
+        if (tmp) *out = *tmp;
+    }
+
+    if (saved) {
+        setenv("TZ", saved, 1);       
+        free(saved);
+    } else {
+        unsetenv("TZ");                
+    }
+    tzset();
+}
 /*
  * cmd_sendbatch - send all texts in database format, zipped
  * args: user arguments (args)
@@ -859,8 +915,105 @@ cmd_change_conf(char *args)
  * cmd_display_time - display current time
  * args: user arguments (args)
  * ret: ok (0) or error (-1)
+ *
+ * Upgraded on 2025-08-15 by PL:
+ * - Friendly Swedish timestamp and login duration
+ * - Rotating nerdy @beat messages (Swatch Internet Time)
+ * - Random tip from SKLAFFDIR "/etc/strings"
  */
+int
+cmd_display_time(char *args)
+{
+    char *tip = NULL;
+    char linebuf[512];
+    FILE *fp = NULL;
+    int linecount = 0, chosen = 0, current = 0;
+    int beatstyle;
+    long at;
+    time_t now;
+    struct tm ltm = {0};       /* <- zero-init to silence -Wmaybe-uninitialized */
+    struct tm *gmt = NULL;
+    int tbeat = 0;
 
+    now = time(0);
+    get_wallclock_localtime(&now, &ltm);   /* fills ltm using /etc/localtime */
+    gmt = gmtime(&now);                   /* for @beat */
+    at = active_time(Uid);
+
+    if (gmt) {
+        tbeat = ((gmt->tm_hour + 1) % 24) * 3600 / 86.4
+              +  (gmt->tm_min * 60) / 86.4
+              +  (gmt->tm_sec) / 86.4;
+    } else {
+        tbeat = 0; /* fallback; extremely unlikely gmtime() failure */
+    }
+
+    output("\n(Se) tiden :\n\n");
+    output("Klockan är nu %02d:%02d den %d %s %d,\noch du har varit inloggad i ",
+           ltm.tm_hour, ltm.tm_min, ltm.tm_mday, month_name(ltm.tm_mon),
+           1900 + ltm.tm_year);
+
+    if (at == 1) output("1 minut");
+    else         output("%ld minuter", at);
+    output(".\n");
+
+    beatstyle = rand() % 5;
+    switch (beatstyle) {
+        case 0:
+            output("(@%03d) = Swatch Internet Time — %.1f%% through the UTC day\n", tbeat, tbeat / 10.0);
+            break;
+        case 1:
+            output("System Clock (Internet Time): @%03d. Transmission window optimal.\n", tbeat);
+            break;
+        case 2:
+            output("UTC Sync: @%03d beats — %.1f%% of the day has elapsed.\n", tbeat, tbeat / 10.0);
+            break;
+        case 3:
+            output("(@%03d)  // Internet Time: one beat = 86.4 seconds (UTC)\n", tbeat);
+            break;
+        case 4:
+            output(">>> Timecode @%03d // Swatch Internet Time engaged\n", tbeat);
+            break;
+    }
+
+    fp = fopen(SKLAFFDIR "/etc/strings", "r");
+    if (fp) {
+        while (fgets(linebuf, sizeof(linebuf), fp)) {
+            if (linebuf[0] == '#' || linebuf[0] == '\n' || linebuf[0] == '\r')
+                continue;
+            linecount++;
+        }
+
+        if (linecount > 0) {
+            rewind(fp);
+            chosen = rand() % linecount;
+            current = 0;
+            while (fgets(linebuf, sizeof(linebuf), fp)) {
+                if (linebuf[0] == '#' || linebuf[0] == '\n' || linebuf[0] == '\r')
+                    continue;
+                if (current == chosen) {
+                    chomp(linebuf);
+                    tip = strdup(linebuf);
+                    break;
+                }
+                current++;
+            }
+        }
+        fclose(fp);
+    }
+
+    if (tip) {
+        output("\n%s\n", tip);
+        free(tip);
+    }
+
+    output("\n");
+    return 0;
+}
+
+
+
+/*
 int
 cmd_display_time(char *args)
 {
@@ -872,9 +1025,9 @@ cmd_display_time(char *args)
 
     now = time(0);
     at = active_time(Uid);
-
+*/
     /* Time beats */
-
+/*
     gmt = gmtime(&now);
     tbeat = ((gmt->tm_hour + 1) % 24) * 3600 / 86.4 + gmt->tm_min * 60 / 86.4 + gmt->tm_sec / 86.4;
 
@@ -888,7 +1041,7 @@ cmd_display_time(char *args)
     return 0;
 }
 
-
+*/
 /*
  * cmd_end_session - end session for user
  * args: user arguments (args)
@@ -4097,59 +4250,77 @@ cmd_info(char *args)
     return 0;
 }
 
+/* TEMP: verbose help debugging; comment out to silence */
+//#define HELP_DEBUG 1
+
 /*
  * cmd_long_help - show help about a specific command
  * args: user arguments (args)
  * ret: ok (0) or error (-1)
  */
+
+/* (hopefully repaired 2025-08-21 to work with commands with more than one underscore) /PL */
 int
 cmd_long_help(char *args)
 {
-    static LINE tmp;
-    static LONG_LINE fname;
-    char *tmp2, *us;
-    int (*fcn) (), i, fd;
+    static LINE tmp;         /* derived basename (e.g., "mod_numlines") */
+    static LONG_LINE fname;  /* full path */
     char *buf;
+    int (*fcn) (), i, fd;
 
     if (args && *args) {
-        fcn = parse(args, tmp);
+        fcn = parse(args, tmp);  /* tmp will hold normalized command text for parse */
         if (fcn) {
             for (i = 0; Par_ent[i].func[0]; i++) {
                 if (fcn == Par_ent[i].addr) {
-                    us = strchr(Par_ent[i].func, '_');
-                    if (us) {
-                        tmp2 = us + 1; 
-                        if (strlen(tmp2) == 1 || !strchr(tmp2, '_')) {
-                            strcpy(tmp, tmp2);
-                        } else {
-                            strcpy(tmp, strchr(tmp2, '_') + 1);
-                        }
+                    /* Derive help filename = function name without "cmd_" prefix as per docs. */
+                    const char *sym = Par_ent[i].func;
+                    const char *p = strstr(sym, "cmd_");
+                    if (p) {
+                        p += 4; /* skip "cmd_" */
+                        strcpy(tmp, p);
                     } else {
-                        strcpy(tmp, Par_ent[i].func);
+                        /* fallback: if there is an underscore, use everything after the first '_' */
+                        const char *us = strchr(sym, '_');
+                        if (us && us[1]) strcpy(tmp, us + 1);
+                        else strcpy(tmp, sym);
                     }
+
                     snprintf(fname, sizeof(fname), "%s/%s", HELP_DIR, tmp);
-                    /*output("[HELP-DEBUG] lookup func=\"%s\" derived=\"%s\" path=\"%s\"\n",
-                           Par_ent[i].func, tmp, fname); */
+
+#ifdef HELP_DEBUG
+                    output("[HELP-DEBUG] func=\"%s\" args=\"%s\" base=\"%s\" path=\"%s\"\n",
+                           sym, (args ? args : ""), tmp, fname);
+#endif
+
+                    /* file_exists() returns -1 when NOT found in rest of codebase */
                     if (file_exists(fname) == -1) {
-                    //    output("[HELP-DEBUG] not found: %s\n", fname);
+#ifdef HELP_DEBUG
+                        output("[HELP-DEBUG] not found: %s\n", fname);
+#endif
                         output("\n%s\n\n", MSG_NOHELP);
                     } else {
                         if ((fd = open_file(fname, 0)) == -1) {
-                      //      output("[HELP-DEBUG] open_file() failed for %s\n", fname);
+#ifdef HELP_DEBUG
+                            output("[HELP-DEBUG] open_file() failed for %s\n", fname);
+#endif
                             sys_error("cmd_long_help", 1, "open_file");
                             return -1;
                         }
                         if ((buf = read_file(fd)) == NULL) {
-                       //     output("[HELP-DEBUG] read_file() returned NULL for %s\n", fname);
+#ifdef HELP_DEBUG
+                            output("[HELP-DEBUG] read_file() returned NULL for %s\n", fname);
+#endif
                             sys_error("cmd_long_help", 2, "read_file");
-                            /* try to close before bailing */
                             (void) close_file(fd);
                             return -1;
                         }
                         if (close_file(fd) == -1) {
-                         //   output("[HELP-DEBUG] close_file() failed for %s\n", fname);
+#ifdef HELP_DEBUG
+                            output("[HELP-DEBUG] close_file() failed for %s\n", fname);
+#endif
                             sys_error("cmd_long_help", 3, "close_file");
-                            /* continue; we still have buf to show */
+                            /* continue; we still have buf */
                         }
 
                         output("\n%s\n", MSG_COMMAND);
@@ -4158,36 +4329,49 @@ cmd_long_help(char *args)
                                 output("  %s\n", Par_ent[i].cmd);
                         }
                         output("\n%s\n", buf);
-                        free(buf); /* avoid leak */
+                        free(buf);
                     }
                     break;
                 }
             }
         } else {
-        //    output("[HELP-DEBUG] parse() did not resolve command: \"%s\"\n", args);
+#ifdef HELP_DEBUG
+            output("[HELP-DEBUG] parse() did not resolve command: \"%s\"\n", args);
+#endif
             output("\n%s\n\n", MSG_NOHELP);
         }
     } else {
-       // output("[HELP-DEBUG] no args, checking HELP_FILE: %s\n", HELP_FILE);
+        /* No args: general help */
+#ifdef HELP_DEBUG
+        output("[HELP-DEBUG] no args, checking HELP_FILE: %s\n", HELP_FILE);
+#endif
         if (file_exists(HELP_FILE) == -1) {
-         //   output("[HELP-DEBUG] HELP_FILE missing, falling back to cmd_help()\n");
+#ifdef HELP_DEBUG
+            output("[HELP-DEBUG] HELP_FILE missing, falling back to cmd_help()\n");
+#endif
             cmd_help(args);
         } else {
+            int fd;
             if ((fd = open_file(HELP_FILE, 0)) == -1) {
-           //     output("[HELP-DEBUG] open_file() failed for HELP_FILE\n");
+#ifdef HELP_DEBUG
+                output("[HELP-DEBUG] open_file() failed for HELP_FILE\n");
+#endif
                 sys_error("cmd_long_help", 1, "open_file");
                 return -1;
             }
             if ((buf = read_file(fd)) == NULL) {
-             //   output("[HELP-DEBUG] read_file() returned NULL for HELP_FILE\n");
+#ifdef HELP_DEBUG
+                output("[HELP-DEBUG] read_file() returned NULL for HELP_FILE\n");
+#endif
                 sys_error("cmd_long_help", 2, "read_file");
                 (void) close_file(fd);
                 return -1;
             }
             if (close_file(fd) == -1) {
-              //  output("[HELP-DEBUG] close_file() failed for HELP_FILE\n");
+#ifdef HELP_DEBUG
+                output("[HELP-DEBUG] close_file() failed for HELP_FILE\n");
+#endif
                 sys_error("cmd_long_help", 3, "close_file");
-                /* continue; we still have buf */
             }
             output("\n%s\n", buf);
             free(buf);
@@ -5961,4 +6145,154 @@ cmd_mod_numlines(char *args)
 
     output(MSG_NUMLNSOK, v);
     return 0;
+}
+
+/*
+* Implementation of Zork (and possibly other z-code games
+* Work in progress, only testing for now
+*/
+
+static int ensure_dir(const char *path, mode_t mode)
+{
+    struct stat st;
+    if (stat(path, &st) == 0) {
+        if (S_ISDIR(st.st_mode)) return 0;
+        errno = ENOTDIR;
+        return -1;
+    }
+    if (errno != ENOENT) return -1;
+    return mkdir(path, mode);
+}
+
+static int file_exists_r(const char *path)
+{
+    return access(path, R_OK) == 0;
+}
+
+static int find_frotz(char *out, size_t outsz)
+{
+    /* Prefer pinned path */
+    if (access(FROTZ_BIN, X_OK) == 0) {
+        snprintf(out, outsz, "%s", FROTZ_BIN);
+        return 0;
+    }
+    /* Fallback to PATH using which (silent) */
+    FILE *pf = popen("which frotz 2>/dev/null", "r");
+    if (!pf) return -1;
+    char buf[PATH_MAX] = {0};
+    if (fgets(buf, sizeof buf, pf) == NULL) {
+        pclose(pf);
+        return -1;
+    }
+    pclose(pf);
+    /* strip trailing newline */
+    size_t n = strcspn(buf, "\r\n");
+    buf[n] = '\0';
+    if (buf[0] == '\0' || access(buf, X_OK) != 0) return -1;
+    snprintf(out, outsz, "%s", buf);
+    return 0;
+}
+
+int
+cmd_zork(char *args)
+{
+    char *p = args;
+    char gamefile[PATH_MAX], zdir[PATH_MAX], datadir[PATH_MAX];
+    char frotz_path[PATH_MAX];
+    const char *zname = NULL;
+
+    Change_msg = 1;
+    Change_prompt = 1;
+
+    /* No arguments => prompt */
+    if (!p) { output(MSG_BADARG); return 0; }
+    while (*p && isspace((unsigned char)*p)) p++;
+    if (*p == '\0') { output(MSG_BADARG); return 0; }
+
+    /* Accept “1”, “2”, or “3” (also tolerant of words like “zork 1”) */
+    if (*p == '1') zname = FROTZ_ZORK1;
+    else if (*p == '2') zname = FROTZ_ZORK2;
+    else if (*p == '3') zname = FROTZ_ZORK3;
+    else {
+        /* Could add MSG_BADARG, but spec says show MSG_NOARG */
+        output(MSG_NOARG);
+        return 0;
+    }
+
+    /* Build paths: /usr/local/sklaff/doors/frotz and .../data */
+{
+    int r;
+
+    r = snprintf(zdir, sizeof zdir, "%s", FROTZ_HOME);
+    if (r < 0 || (size_t)r >= sizeof zdir) {
+        output("Frotz home path is too long.\n");
+        return 0;
+    }
+
+    r = snprintf(datadir, sizeof datadir, "%s/data", FROTZ_HOME);
+    if (r < 0 || (size_t)r >= sizeof datadir) {
+        output("Frotz data path is too long.\n");
+        return 0;
+    }
+}
+
+if (ensure_dir(zdir, 0755) == -1) {
+    output("Could not create Frotz home directory.\n");
+    return 0;
+}
+if (ensure_dir(datadir, 0700) == -1) {
+    output("Could not create Frotz save directory.\n");
+    return 0;
+}
+    /* Verify chosen z-code file exists */
+{
+    size_t need = strlen(zdir) + 1 /* '/' */ + strlen(zname) + 1 /* NUL */;
+    if (need > sizeof gamefile) {
+        output("Zork game path is too long.\n");
+        return 0;
+    }
+    int r = snprintf(gamefile, sizeof gamefile, "%s/%s", zdir, zname);
+    if (r < 0 || (size_t)r >= sizeof gamefile) {
+        output("Failed to build Zork game path.\n");
+        return 0;
+    }
+}
+if (!file_exists_r(gamefile)) {
+    output(MSG_NO_ZORK);
+    return 0;
+}
+    /* Find frotz binary (pinned path then PATH) */
+    if (find_frotz(frotz_path, sizeof frotz_path) == -1) {
+        output("Frotz not found. Please install it or set FROTZ_BIN.\n");
+        return 0;
+    }
+
+    /* Prepare argv: frotz -Z 0 -R <datadir> <gamefile> */
+    char *const argv[] = {
+        frotz_path,
+        "-Z", "0",
+        "-R", (char *)datadir,
+        (char *)gamefile,
+        NULL
+    };
+
+    /* Fork/exec and wait */
+    pid_t pid = fork();
+    if (pid < 0) {
+        perror("fork");
+        return 0;
+    } else if (pid == 0) {
+        /* child */
+        /* Optionally reset signals/tty modes like your nethack function does */
+        execv(frotz_path, argv);
+        /* If exec fails: */
+        perror("execv");
+        _exit(127);
+    }
+
+    /* parent */
+    int status = 0;
+    (void)waitpid(pid, &status, 0);
+    /* You can examine status if you want to report non-zero exit codes */
+    return 1;
 }
