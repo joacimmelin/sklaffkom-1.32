@@ -1,8 +1,13 @@
+v1.33 beta 3, Thursday August 21 2025 PL
+
+	* Help files hopefully works for commands with more than one
+	  underscore now (a 30 year old bug finally fixed?)
+
 2025-08-20
 
 Merged old and new changelog into this file. // JM
 
-v1.33 beta 2, tisdag 18:e augusti 18:55: 
+v1.33 beta 2, tisdag 18:e augusti 18:55:
 
 So many changes here, sorry only in Swedish for now :
 
@@ -59,7 +64,7 @@ Sat Jan 11 17:01:21 1997  Olof Runborg  <olofr@c2m2-12.nada.kth.se>
 
 	* Added code in survreport.c to change ownership
 	and group of survey reports.
-	
+
 Thu Jan  9 15:58:01 1997  Olof Runborg  <olofr@c2m2-12.nada.kth.se>
 
 	* Version 1.28 released.
